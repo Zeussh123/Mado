@@ -955,8 +955,7 @@ function drawTableCart(){
         <span class="stt ${m.ready ? "ok" : "wait"}">${esc(ui(m.ready ? "tbDone" : "tbChoosing"))}</span></div>
         ${TB.lines.filter(l => l.m === m.id).map(l => line(l, m.id === ME)).join("")}</div>`).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
     ${TB.lines.length ? `<div class="big-total"><span>${esc(ui("tbTotal"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>
-      <textarea id="orderNote" class="note-in" rows="2" maxlength="300" placeholder="${esc(ui("notePh"))}"></textarea>
-      ${owners.length > 1 ? `<label class="splitchk"><input type="checkbox" id="tbSplit" ${SPLIT ? "checked" : ""}> ${esc(ui("tbSplit"))}</label>` : ""}` : ""}
+      <textarea id="orderNote" class="note-in" rows="2" maxlength="300" placeholder="${esc(ui("notePh"))}"></textarea>` : ""}
     ${sendConfirm ? `<div class="warnbox">${esc(fill(ui("tbWait"), {names: owners.filter(m => !m.ready && m.id !== ME).map(mname).join(", ")}))}</div>` : ""}
   </div>`;
   if (!TB.lines.length) { $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return; }
