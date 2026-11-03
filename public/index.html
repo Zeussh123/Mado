@@ -210,6 +210,34 @@ main{padding-bottom:96px}
 .status.st-ready{background:#1f3a1f;border-color:#5cb85c;color:#bff0bf}
 .status.st-ready .dot,#cartPill.ready .dot{background:#5cb85c;animation:none}
 @keyframes blink{50%{opacity:.25}}
+/* panier commun */
+.av{flex:none;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;color:#111}
+.avs{display:inline-flex}.avs .av{width:22px;height:22px;font-size:.62rem;margin-left:-6px;border:2px solid var(--accent-ink)}.avs .av:first-child{margin-left:0}
+#cartPill.shared{border-radius:18px;padding:10px 16px;flex-direction:column;align-items:stretch;gap:3px;min-width:min(330px,calc(100vw - 32px))}
+#cartPill.shared b{font-size:1rem}
+#cartPill.shared small{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700}
+.person{border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-top:12px;background:var(--surface)}
+.person.me{border-color:var(--accent)}
+.ph{display:flex;align-items:center;gap:10px;font-weight:800}
+.ph .stt{margin-left:auto;font-size:.75rem;border-radius:999px;padding:4px 10px}
+.stt.ok{background:#1d3d1d;color:#9fe39f}.stt.wait{background:#3a2e14;color:#ffd38a}
+.person .cl{background:var(--surface)}
+.oline{display:flex;gap:10px;padding:10px 0;border-top:1px dashed var(--line)}
+.oline:first-of-type{border-top:0}
+.warnbox{background:#3a2e14;color:#ffd38a;border-radius:12px;padding:10px 12px;margin-top:12px;font-weight:600}
+.join{padding:26px 18px 8px;display:grid;gap:12px}
+.join h2{margin:0;font-size:1.4rem;text-wrap:balance}
+.join p{margin:0;color:var(--muted)}
+.join .who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+.join input{padding:14px;border-radius:14px;border:1px solid var(--accent);background:var(--surface);color:var(--text);font:inherit;font-size:17px}
+.ask{text-align:center;padding:30px 18px 10px;display:grid;gap:10px;justify-items:center}
+.ask .big{font-size:3rem}
+.ask h2{margin:0;font-size:1.45rem}
+.ask p{margin:0;color:var(--muted)}
+#toast{position:fixed;z-index:44;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px);background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:.9rem;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:toastin .35s ease both}
+#toast[hidden]{display:none}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,10px)}}
+@media (prefers-reduced-motion:reduce){#toast{animation:none}}
 #cartPill.track{background:var(--surface);color:var(--text);border:1px solid var(--line);padding:12px 18px}
 #cartPill.ready{background:#1f3a1f;border-color:#5cb85c;color:#bff0bf}
 </style>
@@ -241,6 +269,7 @@ main{padding-bottom:96px}
   <main id="menu"></main>
   <footer id="footer"></footer>
   <button id="cartPill" hidden></button>
+  <div id="toast" hidden></div>
   <div id="sheet" aria-hidden="true"><div class="sh" role="dialog" aria-modal="true"><div class="sh-scroll" id="shScroll"></div><div class="sh-bar" id="shBar"></div></div></div>
 </div>
 
@@ -340,6 +369,7 @@ function openMenu(code){
   $("#q").placeholder = ui("search"); $("#q").value = "";
   if (TABLE) { $("#tableChip").hidden = false; $("#tableChip").textContent = tableLabel(); }
   renderMenu(); drawPill(); window.scrollTo(0,0);
+  if (SHARED()) tbStart();
 }
 
 /* ---------- Promos (heure de Paris) ---------- */
@@ -482,8 +512,9 @@ function choiceSummary(it, sel){
     return [all ? t(all.name) : "", ...shown.map(c => t(c.name))].filter(Boolean).join(", ");
   }).filter(Boolean).join(" · ");
 }
-const cartCount = () => CART.reduce((n, l) => n + l.qty, 0);
-const cartTotal = () => CART.reduce((n, l) => n + l.qty * l.price, 0);
+const allLines = () => SHARED() ? TB.lines : CART;
+const cartCount = () => allLines().reduce((n, l) => n + l.qty, 0);
+const cartTotal = () => allLines().reduce((n, l) => n + l.qty * l.price, 0);
 
 /* ----- ouverture / fermeture ----- */
 function showSheet(){
@@ -504,8 +535,8 @@ function closeSheet(){
 /* ----- ajout au panier et enchaînement ----- */
 function addCurrent(){
   const it = CUR, price = unitPrice(it) + extras(it, SEL);
-  LAST = {key: Date.now() + Math.random(), id: it.id, sel: SEL, price, qty: 1};
-  CART.push(LAST); saveCart(); bumpPill();
+  LAST = {key: newKey(), id: it.id, sel: SEL, price, qty: 1};
+  cartAdd(LAST); bumpPill();
   const up = it.upgrade && visibleItem(it.upgrade);
   if (STAFF) { flashAdded(); return; }
   if (up && unitPrice(up) > unitPrice(it)) { STEP = "upsell"; drawSheet(); return; }
@@ -526,7 +557,7 @@ function flashAdded(){
 }
 function acceptMenu(){
   const it = CUR, menu = visibleItem(it.upgrade);
-  CART = CART.filter(l => l !== LAST); saveCart(); drawPill();
+  cartRemove(LAST.key); drawPill();
   burst($("#shScroll .upsell"));
   // on garde les choix déjà faits (viande, crudités, sauces) et on ouvre le menu
   setTimeout(() => { CUR = menu; SEL = JSON.parse(JSON.stringify(LAST.sel)); STEP = "item"; drawSheet(); $("#shScroll").scrollTop = 0; }, 450);
@@ -587,10 +618,11 @@ function drawBar(){
     <button class="btn grow" data-sh="add">${esc(ui("addToOrder"))} · ${esc(fmtPrice(total))}</button>`;
 }
 function drawCart(){
+  if (SHARED()) return drawTableCart();
   $("#shScroll").innerHTML = `<div class="cart">
     <div class="cart-h"><h2>${esc(ui("myOrder"))}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
     <p class="hint">${esc(ui("orderHint"))}${CART.length ? `<br><small>↔ ${esc(ui("swipeHint"))}</small>` : ""}</p>
-    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-i="${i}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl">
+    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-k="${esc(l.key)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl">
       <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>
       <div class="ct"><div class="cn">${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div>
       <div class="cp">${esc(fmtPrice(l.price * l.qty))}</div></div></div>`; }).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
@@ -630,7 +662,8 @@ const STATUS_TXT = {new: "stNew", ready: "stReady", done: "stDone", paid: "stDon
 function drawSent(fresh){
   const o = ORDERS[0]; if (!o) return closeSheet();
   $("#shScroll").innerHTML = `<div class="sent ${fresh ? "fresh" : ""}">
-    <div class="check">✓</div><h2>${esc(ui("orderSent"))}</h2>
+    <div class="check">✓</div><h2>${esc(ui(o.shared ? "tbSentH" : "orderSent"))}</h2>
+    ${o.shared && o.by ? `<p class="onum">${esc(fill(ui("tbSentBy"), {name: o.by}))}</p>` : ""}
     <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
     <p class="hint">${esc(ui("payAtCounter"))}</p></div>`;
@@ -669,7 +702,7 @@ async function pollOrders(){
     if (!sw.on) {
       if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; }   // c'est un défilement vertical
       if (Math.abs(dx) < 12) return;
-      sw.on = true; sw.row.classList.remove("back"); try { sw.row.setPointerCapture(e.pointerId); } catch {}
+      sw.on = true; window.SWIPING = true; sw.row.classList.remove("back"); try { sw.row.setPointerCapture(e.pointerId); } catch {}
     }
     sw.dx = dx;
     const w = sw.row.offsetWidth, armed = Math.abs(dx) > w * 0.45;
@@ -683,7 +716,7 @@ async function pollOrders(){
   });
   const end = (e) => {
     if (!sw || (e.pointerId !== undefined && e.pointerId !== sw.id)) return;
-    const s = sw; sw = null; if (!s.on) return;
+    const s = sw; sw = null; window.SWIPING = false; if (!s.on) return;
     const w = s.row.offsetWidth;
     // évite le « clic » sur + / − à la fin du geste
     s.wrap.addEventListener("click", (ev) => { ev.stopPropagation(); ev.preventDefault(); }, {capture: true, once: true});
@@ -691,7 +724,7 @@ async function pollOrders(){
       s.row.classList.add("back"); s.row.style.transform = `translateX(${s.dx > 0 ? w : -w}px)`;
       s.wrap.style.height = s.wrap.offsetHeight + "px";
       setTimeout(() => { s.wrap.style.height = "0px"; s.wrap.style.opacity = "0"; }, 180);
-      setTimeout(() => { CART.splice(+s.wrap.dataset.i, 1); saveCart(); drawCart(); drawPill(); }, 430);
+      setTimeout(() => { cartRemove(s.wrap.dataset.k); drawCart(); drawPill(); }, 430);
     } else {
       s.row.classList.add("back"); s.row.style.transform = "";
       const bg = s.wrap.querySelector(".cl-bg"); bg.style.opacity = 0; bg.classList.remove("armed");
@@ -708,6 +741,12 @@ function drawPill(){
   p.hidden = !n && !live;
   p.classList.toggle("track", !n && !!live);
   p.classList.toggle("ready", !n && live && live.status === "ready");
+  p.classList.toggle("shared", !!(n && SHARED()));
+  if (n && SHARED()) {
+    const who = tbOwners();
+    p.innerHTML = `<b>${esc(ui("tbBasket"))} · ${esc(fill(ui("tbItems"), {n}))} · ${esc(fmtPrice(cartTotal()))}</b><small><span class="avs">${who.map(avatar).join("")}</span>${esc(fill(ui("tbPeople"), {n: who.length}))}</small>`;
+    return;
+  }
   p.innerHTML = n ? `<span class="cnum">${n}</span><span>${esc(ui("myOrder"))}</span><b>${esc(fmtPrice(cartTotal()))}</b>`
     : live ? `<span class="dot"></span><span>n° ${live.num} · ${esc(ui(STATUS_TXT[live.status]))}</span>` : "";
 }
@@ -749,6 +788,181 @@ function toggleChoice(gid, cid, tileEl){
   drawBar();
 }
 
+/* ----- panier commun de la table ----- */
+// Tous les téléphones d'une même table remplissent le même panier (enregistré sur le serveur).
+// Une seule personne envoie : un seul ticket en cuisine.
+const SHARED = () => !STAFF && !!TABLE && !!MENU && !!(MENU.ordering && MENU.ordering.enabled);
+const newKey = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const ss = { get(k){ try { return sessionStorage.getItem(k); } catch { return null; } }, set(k, v){ try { sessionStorage.setItem(k, v); } catch {} } };
+const ME = (() => { let id = ss.get("mado-member"); if (!id) { id = newKey() + newKey(); ss.set("mado-member", id); } return id; })();
+const COLORS = ["#f39200", "#7cc4ff", "#b9d76a", "#f28cb1", "#c9a3ff", "#ffd166", "#5ee0c3", "#ff8a65"];
+let TB = {version: -1, members: [], lines: [], last: null}, tbTimer = null, tbBusy = 0;
+let lastActivity = Date.now(), remindedAt = 0, allDoneKey = "", sendConfirm = false;
+const member = (id) => TB.members.find(m => m.id === id) || {id, name: "", c: 0};
+const mname = (m) => m.name || ui("tbGuest");
+const avatar = (m) => `<span class="av" style="background:${COLORS[(m.c || 0) % COLORS.length]}">${esc((m.name || "?").slice(0, 1).toUpperCase())}</span>`;
+const tbOwners = () => { const ids = [...new Set(TB.lines.map(l => l.m))]; return ids.map(member).sort((a, b) => (b.id === ME) - (a.id === ME)); };
+const meM = () => member(ME);
+
+async function tbPost(action, data){
+  tbBusy++;
+  try {
+    const r = await fetch(`/api/table/${TABLE}/${action}`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({member: ME, ...data})});
+    const j = await r.json().catch(() => ({}));
+    if (j.basket) applyTB(j.basket, action === "send");
+    return r.ok ? j : null;
+  } catch { return null; } finally { tbBusy--; }
+}
+async function tbPoll(){
+  clearTimeout(tbTimer);
+  if (SHARED() && document.visibilityState === "visible" && !tbBusy) {
+    try { const r = await fetch(`/api/table/${TABLE}`, {cache: "no-store"}); if (r.ok) applyTB(await r.json()); } catch {}
+  }
+  tbTimer = setTimeout(tbPoll, 3000);
+}
+function tbStart(){
+  if (!ss.get("mado-joined")) { STEP = "join"; CUR = null; drawJoin(); showSheet(); }
+  if (!tbTimer) tbPoll();
+}
+function applyTB(b, iSent){
+  if (!b || b.version < TB.version) return;
+  const first = TB.version === -1, known = new Set(TB.lines.map(l => l.k));
+  const prevLast = ss.get("mado-tb-last") || "";
+  TB = {version: b.version, members: b.members || [], lines: b.lines || [], last: b.last || null};
+  // mes plats (pour les propositions et le geste « glisser pour retirer »)
+  CART = TB.lines.filter(l => l.m === ME).map(l => ({key: l.k, id: l.id, sel: l.sel, price: l.price, qty: l.qty}));
+  // un ami vient d'ajouter un plat
+  if (!first) {
+    const fresh = TB.lines.filter(l => !known.has(l.k) && l.m !== ME);
+    if (fresh.length) { const l = fresh[fresh.length - 1], it = findItem(l.id)[0]; if (it) toast(member(l.m), fill(ui("tbAdded"), {name: mname(member(l.m)), item: t(it.name)})); }
+  }
+  // la commande de la table vient de partir (envoyée par moi ou par un ami)
+  if (TB.last && String(TB.last.id) !== prevLast) {
+    ss.set("mado-tb-last", String(TB.last.id));
+    if (!first || iSent) {
+      ORDERS.unshift({id: TB.last.id, num: TB.last.num, token: TB.last.token, table: TABLE, status: "new", at: Date.now(), shared: true, by: TB.last.by});
+      ORDERS = ORDERS.slice(0, 5); saveOrders();
+      CUR = null; STEP = "sent"; sendConfirm = false; drawSent(true); showSheet(); pollOrders();
+      drawPill(); return;
+    }
+  }
+  drawPill();
+  const open = $("#sheet").classList.contains("on");
+  if (open && STEP === "cart" && !window.SWIPING) { const y = $("#shScroll").scrollTop, note = ($("#orderNote") || {}).value; drawTableCart(); $("#shScroll").scrollTop = y; if (note && $("#orderNote")) $("#orderNote").value = note; }
+  if (open && STEP === "join") drawJoin(true);
+  // tout le monde a fini : chaque téléphone propose d'envoyer
+  const owners = tbOwners();
+  if (owners.length && owners.every(m => m.ready)) {
+    const key = TB.lines.map(l => l.k + l.qty).join();
+    if (key !== allDoneKey && (!open || STEP === "cart" || STEP === "remind")) { allDoneKey = key; STEP = "alldone"; CUR = null; drawAsk(); showSheet(); }
+  }
+}
+function toast(m, text){
+  const el = $("#toast"); el.innerHTML = `${avatar(m)}<span>${esc(text)}</span>`; el.hidden = false;
+  el.style.animation = "none"; void el.offsetWidth; el.style.animation = "";
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 3500);
+}
+
+// ajout / retrait : en local, ou dans le panier commun
+function cartAdd(l){
+  lastActivity = Date.now();
+  if (!SHARED()) { CART.push(l); saveCart(); return; }
+  const k = String(l.key);
+  TB.lines.push({k, m: ME, id: l.id, qty: l.qty, sel: l.sel, price: l.price}); CART.push({...l, key: k}); l.key = k;
+  tbPost("add", {line: {k, id: l.id, qty: l.qty, sel: l.sel, price: l.price}});
+}
+function cartRemove(k){
+  k = String(k);
+  CART = CART.filter(l => String(l.key) !== k);
+  if (!SHARED()) { saveCart(); return; }
+  TB.lines = TB.lines.filter(l => !(l.k === k && l.m === ME));
+  tbPost("remove", {k});
+}
+function cartSetQty(k, q){
+  if (q <= 0) return cartRemove(k);
+  const l = CART.find(x => String(x.key) === String(k)); if (l) l.qty = q;
+  if (!SHARED()) { saveCart(); return; }
+  const x = TB.lines.find(x => x.k === String(k) && x.m === ME); if (x) x.qty = q;
+  tbPost("qty", {k: String(k), qty: q});
+}
+function cartClear(){ if (!SHARED()) { CART = []; saveCart(); return; } [...CART].forEach(l => cartRemove(l.key)); }
+
+// écrans
+function drawJoin(refresh){
+  const others = TB.members.filter(m => m.id !== ME && (m.name || TB.lines.some(l => l.m === m.id)));
+  const html = `<div class="join"><h2>${esc(fill(ui("tbJoinH"), {t: TABLE}))}</h2><p>${esc(ui("tbJoinP"))}</p>
+    ${others.length ? `<div class="who">${esc(ui("tbAlready"))} ${others.map(m => `${avatar(m)}<span>${esc(mname(m))}</span>`).join("")}</div>` : ""}
+    <input id="tbName" maxlength="20" autocomplete="given-name" placeholder="${esc(ui("tbNamePh"))}" value="${esc(ss.get("mado-name") || "")}"></div>`;
+  if (refresh) { const v = $("#tbName") && $("#tbName").value; $("#shScroll").innerHTML = html; if (v) $("#tbName").value = v; return; }
+  $("#shScroll").innerHTML = html;
+  $("#shBar").innerHTML = `<button class="btn grow" data-sh="tbJoin">${esc(ui("tbGo"))}</button>`;
+}
+function drawAsk(){
+  if (STEP === "remind") {
+    const n = CART.reduce((n, l) => n + l.qty, 0), name = meM().name;
+    $("#shScroll").innerHTML = `<div class="ask"><div class="big">⏰</div><h2>${esc(ui("tbRemindH"))}${name ? `<br><small style="font-size:1rem;color:var(--muted)">${esc(name)}</small>` : ""}</h2><p>${esc(fill(ui("tbRemindP"), {n}))}</p></div>`;
+    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="tbContinue">${esc(ui("tbContinue"))}</button><button class="btn grow" data-sh="tbYes">${esc(ui("tbYes"))}</button>`;
+  } else {
+    $("#shScroll").innerHTML = `<div class="ask"><div class="big">🎉</div><h2>${esc(ui("tbAllH"))}</h2><p>${esc(ui("tbAllP"))}</p>
+      <div class="big-total" style="width:100%;display:flex;justify-content:space-between;font-weight:800;font-size:1.2rem"><span>${esc(fill(ui("tbItems"), {n: cartCount()}))}</span><span style="color:var(--accent)">${esc(fmtPrice(cartTotal()))}</span></div></div>`;
+    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="cart">${esc(ui("seeOrder"))}</button><button class="btn grow pulse" data-sh="tbSendForce">${esc(ui("tbSend"))}</button>`;
+  }
+}
+function drawTableCart(){
+  const owners = tbOwners(), me = meM(), mine = TB.lines.some(l => l.m === ME);
+  const line = (l, editable) => {
+    const it = findItem(l.id)[0]; if (!it) return "";
+    const s = choiceSummary(it, l.sel || {});
+    const body = `<div class="ct"><div class="cn">${l.qty} × ${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div><div class="cp">${esc(fmtPrice(l.price * l.qty))}</div>`;
+    if (!editable) return `<div class="oline">${body}</div>`;
+    return `<div class="clw" data-k="${esc(l.k)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl">
+      <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>${body.replace(`${l.qty} × `, "")}</div></div>`;
+  };
+  const people = owners.length ? owners : [];
+  $("#shScroll").innerHTML = `<div class="cart">
+    <div class="cart-h"><h2>${esc(ui("tbBasket"))} · ${esc(tableLabel())}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
+    <p class="hint">${esc(ui("payAtCounter"))}${mine ? `<br><small>↔ ${esc(ui("tbSwipe"))}</small>` : ""}</p>
+    ${people.length ? people.map(m => `<div class="person ${m.id === ME ? "me" : ""}"><div class="ph">${avatar(m)}<span>${esc(mname(m))}${m.id === ME ? ` (${esc(ui("tbYou"))})` : ""}</span>
+        <span class="stt ${m.ready ? "ok" : "wait"}">${esc(ui(m.ready ? "tbDone" : "tbChoosing"))}</span></div>
+        ${TB.lines.filter(l => l.m === m.id).map(l => line(l, m.id === ME)).join("")}</div>`).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
+    ${TB.lines.length ? `<div class="big-total"><span>${esc(ui("tbTotal"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>
+      <textarea id="orderNote" class="note-in" rows="2" maxlength="300" placeholder="${esc(ui("notePh"))}"></textarea>` : ""}
+    ${sendConfirm ? `<div class="warnbox">${esc(fill(ui("tbWait"), {names: owners.filter(m => !m.ready && m.id !== ME).map(mname).join(", ")}))}</div>` : ""}
+  </div>`;
+  if (!TB.lines.length) { $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return; }
+  const readyBtn = mine ? `<button class="btn ghost" data-sh="tbReady">${esc(ui(me.ready ? "tbNotDone" : "tbImDone"))}</button>` : "";
+  $("#shBar").innerHTML = sendConfirm
+    ? `<button class="btn ghost" data-sh="tbCancel">${esc(ui("tbLater"))}</button><button class="btn grow" data-sh="tbSendForce">${esc(ui("tbSendAnyway"))}</button>`
+    : `${readyBtn}<button class="btn grow pulse" data-sh="tbSend">${esc(ui("tbSend"))} · ${esc(fmtPrice(cartTotal()))}</button>`;
+}
+async function tbSendNow(btn){
+  btn.disabled = true; btn.textContent = ui("sending");
+  const j = await tbPost("send", {note: ($("#orderNote") || {}).value || ""});
+  if (!j) { btn.disabled = false; btn.textContent = ui("tbSend"); toast(meM(), ui("sendError")); }
+}
+function tbAction(a, b){
+  if (a === "tbJoin") {
+    const name = ($("#tbName") || {}).value || ""; ss.set("mado-name", name.trim()); ss.set("mado-joined", "1");
+    tbPost("join", {name: name.trim()}); closeSheet();
+  } else if (a === "tbReady") { const r = !meM().ready; meM().ready = r; tbPost("ready", {ready: r}); drawTableCart(); }
+  else if (a === "tbYes") { meM().ready = true; tbPost("ready", {ready: true}); closeSheet(); }
+  else if (a === "tbContinue") { lastActivity = Date.now(); closeSheet(); }
+  else if (a === "tbCancel") { sendConfirm = false; drawTableCart(); }
+  else if (a === "tbSend") {
+    const waiting = tbOwners().filter(m => !m.ready && m.id !== ME);
+    if (waiting.length) { sendConfirm = true; drawTableCart(); $("#shScroll").scrollTop = 1e6; } else tbSendNow(b);
+  }
+  else if (a === "tbSendForce") tbSendNow(b);
+}
+// rappel : des plats dans le panier, pas « fini », rien ajouté depuis 1 minute
+setInterval(() => {
+  if (!SHARED() || $("#sheet").classList.contains("on") || $("#app").style.display !== "block") return;
+  const me = meM();
+  if (!CART.length || me.ready || Date.now() - lastActivity < 60000 || remindedAt > lastActivity) return;
+  remindedAt = Date.now(); CUR = null; STEP = "remind"; drawAsk(); showSheet();
+  if (navigator.vibrate) navigator.vibrate(80);
+}, 5000);
+
 /* ----- événements ----- */
 $("#menu").addEventListener("click", (e) => { const a = e.target.closest(".item[data-id]"); if (a) openItem(a.dataset.id); });
 $("#menu").addEventListener("keydown", (e) => { const a = e.target.closest(".item[data-id]"); if (a && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openItem(a.dataset.id); } });
@@ -767,18 +981,18 @@ $("#sheet").addEventListener("click", (e) => {
   else if (a === "sugAdd") {
     const card = b.closest(".sug"), x = visibleItem(card.dataset.id); if (!x) return;
     if (itemGroups(x).length) return openItem(x.id);
-    CART.push({key: Date.now() + Math.random(), id: x.id, sel: {}, price: unitPrice(x), qty: 1}); saveCart(); bumpPill();
+    cartAdd({key: newKey(), id: x.id, sel: {}, price: unitPrice(x), qty: 1}); bumpPill();
     card.classList.add("got"); b.textContent = "✓"; b.disabled = true; burst(card);
     $("#shBar [data-sh=cart]").textContent = `${ui("seeOrder")} (${cartCount()})`;
   }
   else if (a === "minus" || a === "plus") {
-    const l = CART[+b.closest(".clw").dataset.i]; l.qty += a === "plus" ? 1 : -1;
-    if (l.qty <= 0) CART.splice(CART.indexOf(l), 1);
-    saveCart(); drawCart(); drawPill();
+    const k = b.closest(".clw").dataset.k, l = CART.find(x => String(x.key) === k); if (!l) return;
+    cartSetQty(k, l.qty + (a === "plus" ? 1 : -1)); drawCart(); drawPill();
   }
   else if (a === "send") sendOrder(b);
   else if (a === "staffNext") { ORDERS = []; saveOrders(); TABLE = ""; closeSheet(); drawPill(); staffTables(); }
-  else if (a === "clear") { CART = []; saveCart(); drawCart(); drawPill(); }
+  else if (a === "clear") { cartClear(); drawCart(); drawPill(); }
+  else if (a.startsWith("tb")) tbAction(a, b);
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#sheet").classList.contains("on")) closeSheet(); });
 

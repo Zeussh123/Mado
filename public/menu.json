@@ -319,6 +319,180 @@
    "en": "Table ordering is closed right now. Show this screen at the counter.",
    "tr": "Masadan sipariş şu anda kapalı. Bu ekranı kasada gösterin.",
    "de": "Bestellen am Tisch ist gerade geschlossen. Zeigen Sie diesen Bildschirm an der Theke."
+  },
+  "tbJoinH": {
+   "fr": "On commande ensemble à la table {t}",
+   "en": "Let's order together at table {t}",
+   "tr": "{t} numaralı masada birlikte sipariş verelim",
+   "de": "Gemeinsam bestellen an Tisch {t}"
+  },
+  "tbJoinP": {
+   "fr": "Tout le monde ajoute ses plats dans le même panier. Une seule personne envoie la commande à la cuisine.",
+   "en": "Everyone adds their dishes to the same basket. One person sends the order to the kitchen.",
+   "tr": "Herkes yemeklerini aynı sepete ekler. Siparişi mutfağa tek bir kişi gönderir.",
+   "de": "Alle legen ihre Gerichte in denselben Warenkorb. Eine Person schickt die Bestellung an die Küche."
+  },
+  "tbAlready": {
+   "fr": "Déjà à la table :",
+   "en": "Already at the table:",
+   "tr": "Masada olanlar:",
+   "de": "Schon am Tisch:"
+  },
+  "tbNamePh": {
+   "fr": "Votre prénom (facultatif)",
+   "en": "Your first name (optional)",
+   "tr": "Adınız (isteğe bağlı)",
+   "de": "Ihr Vorname (optional)"
+  },
+  "tbGo": {
+   "fr": "C'est parti",
+   "en": "Let's go",
+   "tr": "Başlayalım",
+   "de": "Los geht's"
+  },
+  "tbBasket": {
+   "fr": "Panier de la table",
+   "en": "Table basket",
+   "tr": "Masa sepeti",
+   "de": "Tisch-Warenkorb"
+  },
+  "tbItems": {
+   "fr": "{n} article(s)",
+   "en": "{n} item(s)",
+   "tr": "{n} ürün",
+   "de": "{n} Artikel"
+  },
+  "tbPeople": {
+   "fr": "{n} pers. · touchez pour voir",
+   "en": "{n} people · tap to see",
+   "tr": "{n} kişi · görmek için dokunun",
+   "de": "{n} Pers. · zum Ansehen tippen"
+  },
+  "tbAdded": {
+   "fr": "{name} a ajouté {item}",
+   "en": "{name} added {item}",
+   "tr": "{name}, {item} ekledi",
+   "de": "{name} hat {item} hinzugefügt"
+  },
+  "tbYou": {
+   "fr": "vous",
+   "en": "you",
+   "tr": "siz",
+   "de": "Sie"
+  },
+  "tbGuest": {
+   "fr": "Invité",
+   "en": "Guest",
+   "tr": "Misafir",
+   "de": "Gast"
+  },
+  "tbDone": {
+   "fr": "✓ Fini",
+   "en": "✓ Done",
+   "tr": "✓ Bitti",
+   "de": "✓ Fertig"
+  },
+  "tbChoosing": {
+   "fr": "Choisit encore…",
+   "en": "Still choosing…",
+   "tr": "Hâlâ seçiyor…",
+   "de": "Wählt noch…"
+  },
+  "tbImDone": {
+   "fr": "✓ J'ai fini",
+   "en": "✓ I'm done",
+   "tr": "✓ Bitirdim",
+   "de": "✓ Ich bin fertig"
+  },
+  "tbNotDone": {
+   "fr": "Je n'ai pas fini",
+   "en": "I'm not done yet",
+   "tr": "Henüz bitirmedim",
+   "de": "Ich bin noch nicht fertig"
+  },
+  "tbSend": {
+   "fr": "Envoyer pour toute la table",
+   "en": "Send for the whole table",
+   "tr": "Tüm masa için gönder",
+   "de": "Für den ganzen Tisch senden"
+  },
+  "tbWait": {
+   "fr": "{names} choisit encore. Envoyer quand même ?",
+   "en": "{names} is still choosing. Send anyway?",
+   "tr": "{names} hâlâ seçiyor. Yine de gönderilsin mi?",
+   "de": "{names} wählt noch. Trotzdem senden?"
+  },
+  "tbSendAnyway": {
+   "fr": "Envoyer quand même",
+   "en": "Send anyway",
+   "tr": "Yine de gönder",
+   "de": "Trotzdem senden"
+  },
+  "tbRemindH": {
+   "fr": "Vous avez fini ?",
+   "en": "Are you done?",
+   "tr": "Bitirdiniz mi?",
+   "de": "Sind Sie fertig?"
+  },
+  "tbRemindP": {
+   "fr": "Vous avez {n} plat(s) dans le panier de la table.",
+   "en": "You have {n} dish(es) in the table basket.",
+   "tr": "Masa sepetinde {n} yemeğiniz var.",
+   "de": "Sie haben {n} Gericht(e) im Tisch-Warenkorb."
+  },
+  "tbYes": {
+   "fr": "✓ Oui, j'ai fini",
+   "en": "✓ Yes, I'm done",
+   "tr": "✓ Evet, bitirdim",
+   "de": "✓ Ja, ich bin fertig"
+  },
+  "tbContinue": {
+   "fr": "Je continue de choisir",
+   "en": "I'm still choosing",
+   "tr": "Seçmeye devam ediyorum",
+   "de": "Ich wähle noch"
+  },
+  "tbAllH": {
+   "fr": "Tout le monde a fini !",
+   "en": "Everyone is done!",
+   "tr": "Herkes bitirdi!",
+   "de": "Alle sind fertig!"
+  },
+  "tbAllP": {
+   "fr": "Envoyer la commande de la table à la cuisine ?",
+   "en": "Send the table order to the kitchen?",
+   "tr": "Masanın siparişi mutfağa gönderilsin mi?",
+   "de": "Bestellung des Tisches an die Küche senden?"
+  },
+  "tbSentH": {
+   "fr": "Commande de la table envoyée !",
+   "en": "Table order sent!",
+   "tr": "Masanın siparişi gönderildi!",
+   "de": "Bestellung des Tisches gesendet!"
+  },
+  "tbSentBy": {
+   "fr": "Envoyée par {name}",
+   "en": "Sent by {name}",
+   "tr": "Gönderen: {name}",
+   "de": "Gesendet von {name}"
+  },
+  "tbSwipe": {
+   "fr": "Glissez un de vos plats pour le retirer.",
+   "en": "Swipe one of your dishes to remove it.",
+   "tr": "Kaldırmak için yemeğinizi kaydırın.",
+   "de": "Wischen Sie eines Ihrer Gerichte zum Entfernen."
+  },
+  "tbTotal": {
+   "fr": "Total de la table",
+   "en": "Table total",
+   "tr": "Masa toplamı",
+   "de": "Summe des Tisches"
+  },
+  "tbLater": {
+   "fr": "Plus tard",
+   "en": "Later",
+   "tr": "Sonra",
+   "de": "Später"
   }
  },
  "categories": [

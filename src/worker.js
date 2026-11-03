@@ -25,7 +25,7 @@ export default {
       if (path === "/api/staff/login" && request.method === "POST") return staffLogin(request, env);
       if (path === "/api/staff/code" && request.method === "GET") return withAuth(request, env, async () => json({ code: (await env.MADO.get(STAFF_KEY)) || "" }));
       if (path === "/api/staff/code" && request.method === "PUT") return withAuth(request, env, () => putStaffCode(request, env));
-      if (path.startsWith("/api/orders")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth });
+      if (path.startsWith("/api/orders") || path.startsWith("/api/table/")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth });
       if (path === "/serveur") return env.ASSETS.fetch(new Request(new URL("/", url), request));
       if (path === "/cuisine") return env.ASSETS.fetch(new Request(new URL("/cuisine.html", url), request));
       if (path === "/admin") return env.ASSETS.fetch(new Request(new URL("/admin.html", url), request));
