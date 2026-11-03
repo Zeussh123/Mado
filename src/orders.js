@@ -35,8 +35,8 @@ function promoActive(p, now) {
 
 // ---------- calcul d'une ligne ----------
 function priceLine(menu, line, promos) {
-  let item = null;
-  for (const c of menu.categories) for (const it of c.items) if (it.id === line.id && !it.hidden && !c.hidden) item = it;
+  let item = null, cat = null, catOrder = 0;
+  menu.categories.forEach((c, ci) => { for (const it of c.items) if (it.id === line.id && !it.hidden && !c.hidden) { item = it; cat = c; catOrder = ci; } });
   if (!item) return null;
   let unit = +item.price || 0;
   for (const p of promos) for (const x of p.items || []) if (x.id === item.id && x.price !== null && x.price !== "" && +x.price < unit) unit = +x.price;
@@ -56,7 +56,7 @@ function priceLine(menu, line, promos) {
   }
   const qty = Math.max(1, Math.min(20, parseInt(line.qty) || 1));
   unit = Math.round(unit * 100) / 100;
-  return { id: item.id, name: item.name.fr, qty, unit, details };
+  return { id: item.id, name: item.name.fr, qty, unit, details, cat: cat.name.fr, catOrder };
 }
 
 function randomToken() {

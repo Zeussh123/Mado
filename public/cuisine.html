@@ -113,6 +113,7 @@ input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
   #ticket .big{font-size:28pt;font-weight:900;text-align:center;line-height:1.1;margin:1mm 0}
   #ticket .sep{border-top:1.2mm solid #000;margin:2.5mm 0}
   #ticket .dash{border-top:.5mm dashed #000;margin:2.5mm 0}
+  #ticket .cat{text-align:center;font-size:10.5pt;letter-spacing:.15em;margin:3.5mm 0 1.5mm;border-top:.5mm solid #000;border-bottom:.5mm solid #000;padding:.6mm 0}
   #ticket .prod{background:#000;color:#fff;font-size:14pt;font-weight:900;padding:1mm 2mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   #ticket .g{margin-top:1.3mm;padding-left:1mm}
   #ticket .g.meat{font-size:14pt;font-weight:900}
@@ -350,11 +351,27 @@ function ticketDetails(l){
     + by("other").map(d => `<div class="g">▸ ${esc(d.group)} : ${list(d)}</div>`).join("")
     + by("frites").map(d => `<div class="g sub">Frites ▸ ${list(d)}</div>`).join("");
 }
+// Ticket trié par catégorie (ordre du menu), produits identiques regroupés
+function byCategory(lines){
+  const merged = [];
+  for (const l of lines) {
+    const key = l.id + "|" + JSON.stringify(l.details);
+    const m = merged.find(x => x._k === key);
+    if (m) m.qty += l.qty; else merged.push({...l, _k: key});
+  }
+  const cats = [];
+  for (const l of merged) {
+    const name = l.cat || "Autres", order = l.cat ? l.catOrder : 999;
+    let c = cats.find(x => x.name === name); if (!c) cats.push(c = {name, order, lines: []});
+    c.lines.push(l);
+  }
+  return cats.sort((a, b) => a.order - b.order);
+}
 const row = (a, b) => `<tr><td>${a}</td><td class="r">${b}</td></tr>`;
 function ticketHtml(o){
   return `<div class="resto">MADO</div><div class="big"${isEmp(o.table_no) ? ' style="font-size:22pt"' : ""}>${esc(tName(o.table_no).toUpperCase())}</div>
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>
-    ${o.lines.map(l => `<div class="dash"></div><div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}
+    ${byCategory(o.lines).map(c => `<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("")}
     ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}<div class="sep"></div>
     ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}`;
 }
