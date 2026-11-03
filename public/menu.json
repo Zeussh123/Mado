@@ -1784,7 +1784,7 @@
      "bestseller": true,
      "id": "pizzas-pizza-margherita",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-margherita.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -3747,6 +3747,7 @@
   "tables": 10
  },
  "applied": [
-  "piment-2026-11"
+  "piment-2026-11",
+  "photo-margherita-2026-11"
  ]
 }

@@ -167,6 +167,11 @@ function applyMigrations(m){
       sa.choices.push({ id: "piment-poudre", name: { fr: "Piment en poudre", en: "Spicy (chili powder)", tr: "Pul biber", de: "Chilipulver (scharf)" }, icon: "piment-poudre", photo: "", price: 0, hidden: false, apart: true });
     m.applied.push("piment-2026-11");
   }
+  // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
+  if (!m.applied.includes("photo-margherita-2026-11")) {
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-margherita" && !it.photo) it.photo = "/img/produits/pizza-margherita.jpg";
+    m.applied.push("photo-margherita-2026-11");
+  }
   return m;
 }
 
