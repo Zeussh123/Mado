@@ -52,7 +52,7 @@ function priceLine(menu, line, promos) {
     if (+g.free && +g.extraPrice) unit += Math.max(0, counted - g.free) * g.extraPrice;
     const all = chosen.find((c) => c.all);
     const names = [all ? all.name.fr : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price))).map((c) => c.name.fr)].filter(Boolean);
-    if (names.length) details.push({ group: g.name.fr, choices: names });
+    if (names.length) details.push({ gid: g.id, group: g.name.fr, choices: names });
   }
   const qty = Math.max(1, Math.min(20, parseInt(line.qty) || 1));
   unit = Math.round(unit * 100) / 100;

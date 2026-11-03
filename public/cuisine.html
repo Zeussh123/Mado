@@ -107,15 +107,21 @@ input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
   @page{size:80mm auto;margin:0}
   body{background:#fff;color:#000}
   #app,#login,#tableSheet{display:none!important}
-  #ticket{display:block;width:72mm;margin:0 auto;padding:2mm 0 6mm;font-family:"Courier New",monospace;font-size:12pt;color:#000}
+  #ticket{display:block;width:64mm;margin:0 0 0 3mm;padding:2mm 0 8mm;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:12pt;line-height:1.25;color:#000}
   #ticket .c{text-align:center}
-  #ticket .big{font-size:26pt;font-weight:900;text-align:center;margin:2mm 0}
-  #ticket hr{border:0;border-top:1px dashed #000;margin:2mm 0}
-  #ticket .l{font-weight:900;font-size:13pt;margin-top:2mm}
-  #ticket .lp{display:flex;justify-content:space-between;gap:2mm;margin-top:1mm}
-  #ticket .d{font-size:11pt;padding-left:3mm}
-  #ticket .nt{border:2px solid #000;padding:1.5mm;font-weight:900;margin-top:2mm}
-  #ticket .tot{display:flex;justify-content:space-between;font-weight:900;font-size:13pt}
+  #ticket .resto{text-align:center;font-size:11pt;letter-spacing:.2em}
+  #ticket .big{font-size:28pt;font-weight:900;text-align:center;line-height:1.1;margin:1mm 0}
+  #ticket .sep{border-top:1.2mm solid #000;margin:2.5mm 0}
+  #ticket .dash{border-top:.5mm dashed #000;margin:2.5mm 0}
+  #ticket .prod{background:#000;color:#fff;font-size:14pt;font-weight:900;padding:1mm 2mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #ticket .g{margin-top:1.3mm;padding-left:1mm}
+  #ticket .g.meat{font-size:14pt;font-weight:900}
+  #ticket .g.sub{margin-top:2mm;border-top:.4mm solid #000;padding-top:1.2mm}
+  #ticket .nt{border:.6mm solid #000;padding:1.5mm;font-weight:900;margin-top:2.5mm}
+  #ticket table{width:100%;border-collapse:collapse;font-weight:700}
+  #ticket td{padding:.6mm 0;vertical-align:top}
+  #ticket td.r{text-align:right;white-space:nowrap;padding-left:2mm}
+  #ticket table.tot{font-size:14pt;font-weight:900}
 }
 </style>
 </head>
@@ -273,7 +279,8 @@ function bindSettings(){
   $("#tSound").onclick = () => { unlockAudio(); playSound(); };
   $("#tVoice").onclick = () => say("Nouvelle commande, table 4");
   $("#tPrint").onclick = () => printOrder({id: 0, num: 0, table_no: "TEST", created_at: new Date().toISOString(), total: 9.5,
-    lines: [{qty: 1, name: "Kebab", unit: 9.5, details: [{group: "Viande", choices: ["Kebab bœuf"]}, {group: "Sauces", choices: ["Blanche", "Samouraï"]}]}], note: "Ticket de test"}, 1);
+    lines: [{qty: 1, name: "Menu Kebab", unit: 9.5, details: [{gid: "viande", group: "Viande kebab", choices: ["Kebab bœuf"]}, {gid: "crudites", group: "Crudités", choices: ["Salade", "Tomate", "Oignons"]},
+      {gid: "sauces", group: "Sauces", choices: ["Blanche", "Samouraï"]}, {gid: "sauce-frites", group: "Sauce pour les frites", choices: ["Ketchup"]}]}, {qty: 1, name: "Nuggets (6 pièces)", unit: 0, details: []}], note: "Ticket de test"}, 1);
   $("#logout").onclick = () => { ls.del("mado-kitchen"); try { sessionStorage.removeItem("mado-admin"); } catch {} location.reload(); };
   pills();
 }
@@ -322,27 +329,44 @@ $("#ackAll").onclick = () => markSeen(unseen().map(o => o.id));
 /* ---------- impression du ticket 80 mm ---------- */
 const queue = []; let printing = false;
 const detailsHtml = (l) => l.details.map(d => `<div class="d">${esc(d.group)} : ${esc(d.choices.join(", "))}</div>`).join("");
+// Ticket cuisine (modèle C) : viande en gros, crudités, sauces, autres options, puis sauces des frites à part
+const kind = (d) => {
+  const id = d.gid || "", g = (d.group || "").toLowerCase();
+  if (id === "sauce-frites" || g.includes("frite")) return "frites";
+  if (["viande", "viande-tacos", "bowl"].includes(id) || (!id && (g.startsWith("viande") || g.includes("bowl")))) return "meat";
+  if (id === "crudites" || g.startsWith("crudit")) return "crud";
+  if (id === "sauces" || g.startsWith("sauce")) return "sauce";
+  return "other";
+};
+function ticketDetails(l){
+  const by = (k) => l.details.filter(d => kind(d) === k);
+  const list = (d) => esc(d.choices.join(", "));
+  return by("meat").map(d => `<div class="g meat">▸ ${list(d).toUpperCase()}</div>`).join("")
+    + by("crud").map(d => `<div class="g">▸ ${list(d)}</div>`).join("")
+    + by("sauce").map(d => `<div class="g">▸ Sauces : ${list(d)}</div>`).join("")
+    + by("other").map(d => `<div class="g">▸ ${esc(d.group)} : ${list(d)}</div>`).join("")
+    + by("frites").map(d => `<div class="g sub">Frites ▸ ${list(d)}</div>`).join("");
+}
+const row = (a, b) => `<tr><td>${a}</td><td class="r">${b}</td></tr>`;
 function ticketHtml(o){
-  return `<div class="c">MADO</div><div class="big">TABLE ${esc(o.table_no)}</div>
-    <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div><hr>
-    ${o.lines.map(l => `<div class="l">${l.qty} x ${esc(l.name)}</div>${detailsHtml(l)}`).join("")}
-    ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}<hr>
-    ${S.printPrice ? `<div class="tot"><span>TOTAL</span><span>${eur(o.total)}</span></div><div class="c" style="margin-top:2mm">À payer au comptoir</div>` : ""}`;
+  return `<div class="resto">MADO</div><div class="big">TABLE ${esc(o.table_no)}</div>
+    <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>
+    ${o.lines.map(l => `<div class="dash"></div><div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}
+    ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}<div class="sep"></div>
+    ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}`;
 }
 function billHtml(t, list){
   const total = list.reduce((n, o) => n + o.total, 0);
-  return `<div class="c">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big">TABLE ${esc(t)}</div>
-    <div class="c">Addition · ${new Date().toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"})}</div><hr>
-    ${list.flatMap(o => o.lines).map(l => `<div class="lp"><span>${l.qty} x ${esc(l.name)}</span><span>${eur(l.unit * l.qty)}</span></div>`).join("")}<hr>
-    <div class="tot"><span>TOTAL TTC</span><span>${eur(total)}</span></div><div class="c" style="margin-top:3mm">Merci de votre visite !</div>`;
+  return `<div class="resto">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big">TABLE ${esc(t)}</div>
+    <div class="c">Addition · ${new Date().toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"})}</div><div class="sep"></div>
+    <table>${list.flatMap(o => o.lines).map(l => row(`${l.qty} x ${esc(l.name)}`, eur(l.unit * l.qty))).join("")}</table><div class="sep"></div>
+    <table class="tot">${row("TOTAL TTC", eur(total))}</table><div class="c" style="margin-top:3mm">Merci de votre visite !</div>`;
 }
 function reportHtml(day, st){
-  return `<div class="c">MADO</div><div class="big" style="font-size:16pt">RAPPORT DU ${esc(day.split("-").reverse().join("/"))}</div><hr>
-    <div class="lp"><span>Commandes</span><span>${st.count}</span></div>
-    <div class="lp"><span>Panier moyen</span><span>${eur(st.avg)}</span></div>
-    <div class="lp"><span>Annulées</span><span>${st.cancelled}</span></div><hr>
-    ${st.top.map(p => `<div class="lp"><span>${p.qty} x ${esc(p.name)}</span><span>${eur(p.amount)}</span></div>`).join("")}<hr>
-    <div class="tot"><span>TOTAL</span><span>${eur(st.total)}</span></div>`;
+  return `<div class="resto">MADO</div><div class="big" style="font-size:16pt">RAPPORT DU ${esc(day.split("-").reverse().join("/"))}</div><div class="sep"></div>
+    <table>${row("Commandes", st.count)}${row("Panier moyen", eur(st.avg))}${row("Annulées", st.cancelled)}</table><div class="dash"></div>
+    <table>${st.top.map(p => row(`${p.qty} x ${esc(p.name)}`, eur(p.amount))).join("")}</table><div class="sep"></div>
+    <table class="tot">${row("TOTAL", eur(st.total))}</table>`;
 }
 function printHtml(html, copies = 1){ for (let i = 0; i < copies; i++) queue.push(html); runQueue(); }
 function printOrder(o, copies = S.copies){
