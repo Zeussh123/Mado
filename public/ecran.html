@@ -270,9 +270,9 @@ async function load(){
     if (s !== sig) {
       // une promo vient d'être créée ou modifiée : on l'affiche tout de suite
       const firstNewPromo = slides.findIndex(x => x.kind === "promo" && !sig.includes(`"${x.p.id}"`));
-      sig = s; SLIDES = slides;
-      show(firstNewPromo >= 0 && sig ? firstNewPromo : 0);
-    }
+      const had = !!sig; sig = s; SLIDES = slides;
+      show(firstNewPromo >= 0 && had ? firstNewPromo : (had ? cur : 0));
+    } else SLIDES = slides; // noms, photos, descriptions : pris en compte au prochain écran
     $("#info").textContent = t(TXT.order);
   } catch {}
 }
