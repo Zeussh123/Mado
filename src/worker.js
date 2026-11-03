@@ -156,6 +156,12 @@ export async function menuText(request, env) {
   return body;
 }
 
+// Photos retouchées ajoutées pour le gérant (fichiers dans public/img/produits)
+const PRODUCT_PHOTOS = {
+  "pizzas-pizza-margherita": "/img/produits/pizza-margherita.jpg",
+  "pizzas-pizza-kebab": "/img/produits/pizza-kebab.jpg",
+};
+
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
 function applyMigrations(m){
   m.applied = m.applied || [];
@@ -168,10 +174,13 @@ function applyMigrations(m){
     m.applied.push("piment-2026-11");
   }
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
-  if (!m.applied.includes("photo-margherita-2026-11")) {
-    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-margherita" && !it.photo) it.photo = "/img/produits/pizza-margherita.jpg";
-    m.applied.push("photo-margherita-2026-11");
+  if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");
+  for (const [id, url] of Object.entries(PRODUCT_PHOTOS)) {
+    if (m.applied.includes("photo:" + id)) continue;
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === id && !it.photo) it.photo = url;
+    m.applied.push("photo:" + id);
   }
+  m.applied = [...new Set(m.applied)];
   return m;
 }
 

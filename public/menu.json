@@ -1763,7 +1763,7 @@
      "id": "pizzas-pizza-kebab",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-kebab.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -3748,6 +3748,8 @@
  },
  "applied": [
   "piment-2026-11",
-  "photo-margherita-2026-11"
+  "photo-margherita-2026-11",
+  "photo:pizzas-pizza-margherita",
+  "photo:pizzas-pizza-kebab"
  ]
 }
