@@ -11,6 +11,8 @@ async function ensureSchema(db) {
     "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT NOT NULL, num INTEGER NOT NULL, table_no TEXT NOT NULL, status TEXT NOT NULL, total REAL NOT NULL, lines TEXT NOT NULL, note TEXT, token TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)"
   );
   await db.exec("CREATE INDEX IF NOT EXISTS orders_day ON orders(day)");
+  // « grp » = numéro d'addition : les commandes d'un même client à une table partagent le même grp
+  try { await db.exec("ALTER TABLE orders ADD COLUMN grp INTEGER"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS table_baskets (table_no TEXT PRIMARY KEY, data TEXT NOT NULL, version INTEGER NOT NULL, updated_at TEXT NOT NULL)");
   schemaReady = true;
 }
@@ -72,7 +74,12 @@ async function createOrder(env, menu, table, rawLines, rawNote) {
   const res = await env.DB.prepare(
     "INSERT INTO orders (day,num,table_no,status,total,lines,note,token,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)"
   ).bind(now.date, row.n, table, "new", total, JSON.stringify(priced), note, token, iso, iso).run();
-  return { id: res.meta.last_row_id, num: row.n, token, total };
+  const id = res.meta.last_row_id;
+  // même addition que la commande précédente de la table seulement si elle n'est pas encore servie (mêmes clients) ;
+  // sinon c'est une nouvelle addition (nouveau client), regroupable à la main sur le PC
+  const prev = table === "EMP" ? null : await env.DB.prepare("SELECT COALESCE(grp,id) AS g FROM orders WHERE table_no=? AND id<? AND status IN ('new','ready') ORDER BY id DESC LIMIT 1").bind(table, id).first();
+  await env.DB.prepare("UPDATE orders SET grp=? WHERE id=?").bind(prev ? prev.g : id, id).run();
+  return { id, num: row.n, token, total };
 }
 
 // ---------- panier commun ----------
@@ -233,8 +240,8 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const q = new URL(request.url).searchParams.get("day");
       const day = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? q : parisNow().date;
       const stmt = q
-        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
-        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
+        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
+        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
       const { results } = await stmt.all();
       return json({ orders: results.map((o) => ({ ...o, lines: JSON.parse(o.lines) })) }, 200, { "cache-control": "no-store" });
     });
@@ -247,6 +254,33 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const { status } = await request.json().catch(() => ({}));
       if (!STATUSES.includes(status)) return json({ error: "statut inconnu" }, 400);
       await env.DB.prepare("UPDATE orders SET status=?, updated_at=? WHERE id=?").bind(status, new Date().toISOString(), +mSet[1]).run();
+      return json({ ok: true });
+    });
+  }
+
+  // Plan des tables : encaisser une addition
+  const mGrp = path.match(/^\/api\/orders\/group\/(\d+)\/paid$/);
+  if (mGrp && m === "POST") {
+    return withAuth(request, env, async () => {
+      const o = await env.DB.prepare("SELECT table_no FROM orders WHERE COALESCE(grp,id)=? LIMIT 1").bind(+mGrp[1]).first();
+      await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE COALESCE(grp,id)=? AND status IN ('new','ready','done')").bind(new Date().toISOString(), +mGrp[1]).run();
+      // plus rien en cours sur la table : le panier commun repart à zéro
+      if (o) { const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready')").bind(o.table_no).first();
+        if (!left.n) await env.DB.prepare("DELETE FROM table_baskets WHERE table_no=?").bind(o.table_no).run(); }
+      return json({ ok: true });
+    });
+  }
+  // Regrouper une commande avec une autre addition / la séparer
+  const mMerge = path.match(/^\/api\/orders\/(\d+)\/(merge|split)$/);
+  if (mMerge && m === "POST") {
+    return withAuth(request, env, async () => {
+      const id = +mMerge[1];
+      if (mMerge[2] === "split") { await env.DB.prepare("UPDATE orders SET grp=id WHERE id=?").bind(id).run(); return json({ ok: true }); }
+      const { into } = await request.json().catch(() => ({}));
+      const a = await env.DB.prepare("SELECT table_no, COALESCE(grp,id) AS g FROM orders WHERE id=?").bind(id).first();
+      const b = await env.DB.prepare("SELECT table_no FROM orders WHERE COALESCE(grp,id)=? LIMIT 1").bind(+into).first();
+      if (!a || !b || a.table_no !== b.table_no) return json({ error: "Même table seulement" }, 400);
+      await env.DB.prepare("UPDATE orders SET grp=? WHERE COALESCE(grp,id)=?").bind(+into, a.g).run();
       return json({ ok: true });
     });
   }

@@ -78,6 +78,11 @@ label.sw input{width:20px;height:20px;accent-color:var(--accent)}
 .tbl .num{font-size:2.2rem;font-weight:900;line-height:1}
 .tbl .lab{font-size:.85rem;font-weight:800}
 .tbl .amt{font-size:1.05rem;font-weight:900}
+.tbl .older{font-size:.75rem;font-weight:800;color:#ffd38a}
+.addition{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:14px}
+.addition.old{border-style:dashed;opacity:.85}
+.ah{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.ah .time{margin-left:auto;color:var(--muted);font-size:.9rem}
 .tbl .since{font-size:.8rem;color:var(--muted)}
 .tbl.free{color:var(--muted);border-style:dashed}
 .tbl.new{border-color:var(--accent);background:#2e1f08}.tbl.new .lab{color:#ffc46b}
@@ -413,6 +418,7 @@ function orderCard(o, opts = {}){
       ${o.status === "new" || o.status === "ready" ? `<button class="ok" data-a="done">Servie ✓</button>` : ""}
       ${o.status === "done" ? `<button class="blue" data-a="paid">Encaissée €</button>` : ""}
       ${opts.reopen && o.status !== "new" ? `<button data-a="new">Remettre en cours</button>` : ""}
+      ${opts.split ? `<button data-a="split" title="Ce n'est pas le même client">Séparer</button>` : ""}
       ${opts.cancel && o.status !== "cancelled" && o.status !== "paid" ? `<button class="danger" data-a="cancelled">Annuler</button>` : ""}
     </div></div>`;
 }
@@ -430,12 +436,25 @@ function render(){
 
 /* ---------- onglet Plan des tables ---------- */
 const OPEN = ["new", "ready", "done"];
-function tableState(t){
-  const list = ORDERS.filter(o => o.table_no === String(t) && OPEN.includes(o.status));
-  const state = !list.length ? "free" : list.some(o => o.status === "new") ? "new" : list.some(o => o.status === "ready") ? "ready" : "done";
-  return {list, state, total: list.reduce((n, o) => n + o.total, 0), since: list.length ? list.map(o => o.created_at).sort()[0] : null};
+// Additions d'une table : les commandes d'un même client partagent le même « grp ».
+// Une commande servie reste dans son addition ; si la table recommande ensuite, c'est une nouvelle addition (nouveau client).
+function groupsOf(t){
+  const by = {};
+  ORDERS.filter(o => o.table_no === String(t) && OPEN.includes(o.status)).forEach(o => (by[o.grp || o.id] ||= []).push(o));
+  return Object.entries(by).map(([g, os]) => {
+    os.sort((a, b) => a.id - b.id);
+    const state = os.some(o => o.status === "new") ? "new" : os.some(o => o.status === "ready") ? "ready" : "done";
+    return {g: +g, orders: os, state, total: os.reduce((n, o) => n + o.total, 0), since: os[0].created_at, last: os.map(o => o.updated_at).sort().pop()};
+  })
+  // addition servie mais pas encaissée depuis plus de 3 h : sûrement payée à la caisse, on ne l'affiche plus sur le plan
+  .filter(x => x.state !== "done" || Date.now() - Date.parse(x.last) < 3 * 3600e3)
+  .sort((a, b) => b.g - a.g);
 }
-const LAB = {free: "Libre", new: "En préparation", ready: "Prête à servir", done: "À encaisser"};
+function tableState(t){
+  const groups = groupsOf(t), cur = groups[0];
+  return {groups, state: cur ? cur.state : "free", total: cur ? cur.total : 0, since: cur ? cur.since : null, older: Math.max(0, groups.length - 1), list: groups.flatMap(x => x.orders)};
+}
+const LAB = {free: "Libre", new: "En préparation", ready: "Prête à servir", done: "Servie, à encaisser"};
 function minutes(iso){ const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0"); }
 function renderTables(){
   const extra = [...new Set(ORDERS.filter(o => OPEN.includes(o.status)).map(o => +o.table_no))].filter(n => n > TABLES);  // « à emporter » n'a pas de table
@@ -444,29 +463,34 @@ function renderTables(){
   $("#tables").innerHTML = nums.map(t => {
     const s = tableState(t); if (s.state !== "free") busy++;
     return `<button class="tbl ${s.state}" data-t="${t}"><span class="num">${t}</span><span class="lab">${LAB[s.state]}</span>
-      ${s.list.length ? `<span class="amt">${eur(s.total)}</span><span class="since">depuis ${minutes(s.since)}</span>` : ""}</button>`;
+      ${s.groups.length ? `<span class="amt">${eur(s.total)}</span><span class="since">depuis ${minutes(s.since)}</span>` : ""}
+      ${s.older ? `<span class="older">+ ${s.older} addition${s.older > 1 ? "s" : ""} d'avant</span>` : ""}</button>`;
   }).join("");
   $("#bTables").hidden = !busy; $("#bTables").textContent = busy;
   if (openTable !== null) renderTableSheet();
 }
 function renderTableSheet(){
-  const t = openTable, s = tableState(t);
+  const t = openTable, s = tableState(t), n = s.groups.length;
   $("#tableBox").innerHTML = `<div class="oh" style="margin-bottom:12px"><span class="t">Table ${t}</span><span class="st ${s.state === "free" ? "paid" : s.state}">${LAB[s.state]}</span><button id="tClose" style="margin-left:auto">Fermer</button></div>
-    ${s.list.length ? `<div class="cols" style="grid-template-columns:1fr">${s.list.slice().reverse().map(o => orderCard(o, {cancel: true})).join("")}</div>
-      <div class="of" style="margin-top:16px"><span class="tot" style="font-size:1.4rem">Total table : ${eur(s.total)}</span>
-        <button id="tBill">🖨 Imprimer l'addition</button>
-        <button class="blue" id="tPaid">€ Encaissée · libérer la table</button></div>`
+    ${n ? s.groups.map((g, i) => `<div class="addition ${i ? "old" : ""}" data-g="${g.g}">
+        <div class="ah"><b>${i === 0 ? (n > 1 ? "Addition actuelle" : "Addition") : "Addition d'avant"}</b><span class="st ${g.state}">${LAB[g.state]}</span><span class="time">depuis ${hm(g.since)}</span></div>
+        <div class="cols" style="grid-template-columns:1fr">${g.orders.slice().reverse().map((o, k) => orderCard(o, {cancel: true, split: g.orders.length > 1 && o.id !== g.orders[0].id})).join("")}</div>
+        <div class="of" style="margin-top:12px"><span class="tot" style="font-size:1.3rem">Total : ${eur(g.total)}</span>
+          ${s.groups[i + 1] ? `<button data-ga="merge" title="Même client qui a recommandé">⤵ Regrouper avec l'addition d'avant</button>` : ""}
+          <button data-ga="bill">🖨 Imprimer l'addition</button>
+          <button class="blue" data-ga="paid">€ Encaissée</button></div></div>`).join("")
       : `<p class="empty">Aucune commande en cours sur cette table.</p>`}`;
   $("#tClose").onclick = () => { openTable = null; $("#tableSheet").classList.remove("on"); };
-  if (s.list.length) {
-    $("#tBill").onclick = () => printHtml(billHtml(t, s.list));
-    $("#tPaid").onclick = async (e) => {
-      e.target.disabled = true;
-      await api(`/api/orders/table/${t}/paid`, {method: "POST"});
-      markSeen(s.list.map(o => o.id)); openTable = null; $("#tableSheet").classList.remove("on"); load();
-    };
-  }
 }
+$("#tableBox").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-ga]"); if (!b) return;
+  const s = tableState(openTable), i = s.groups.findIndex(x => x.g === +b.closest(".addition").dataset.g), g = s.groups[i]; if (!g) return;
+  if (b.dataset.ga === "bill") return printHtml(billHtml(openTable, g.orders));
+  b.disabled = true;
+  if (b.dataset.ga === "merge") await api(`/api/orders/${g.orders[0].id}/merge`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({into: s.groups[i + 1].g})});
+  if (b.dataset.ga === "paid") { await api(`/api/orders/group/${g.g}/paid`, {method: "POST"}); markSeen(g.orders.map(o => o.id)); if (s.groups.length === 1) { openTable = null; $("#tableSheet").classList.remove("on"); } }
+  load();
+});
 $("#tables").addEventListener("click", (e) => { const b = e.target.closest("[data-t]"); if (!b) return; openTable = +b.dataset.t; renderTableSheet(); $("#tableSheet").classList.add("on"); });
 $("#tableSheet").addEventListener("click", (e) => { if (e.target.id === "tableSheet") { openTable = null; e.currentTarget.classList.remove("on"); } });
 
@@ -479,6 +503,7 @@ async function orderAction(e){
   const a = b.dataset.a;
   if (a === "print") return printOrder(o, 1);
   if (a === "seen") return markSeen([id]);
+  if (a === "split") { b.disabled = true; await api(`/api/orders/${id}/split`, {method: "POST"}); return load(); }
   b.disabled = true;
   markSeen([id]);
   await api(`/api/orders/${id}/status`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({status: a})});
