@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mado · Écran</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+/* Écran TV (16:9) : promos en cours en grand, puis la carte. Tout est en vw pour s'adapter à n'importe quelle TV. */
+:root{--bg:#120d08;--text:#fff8ec;--muted:#d9c9b0;--accent:#f39200;--hot:#e63946;--green:#b9d76a;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;cursor:none}
+.bg{position:fixed;inset:-20%;filter:blur(80px);opacity:.55;z-index:0}
+.bg i{position:absolute;border-radius:50%;animation:float 18s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:55vw;height:55vw;left:-5vw;top:-10vw;background:#f39200}
+.bg i:nth-child(2){width:45vw;height:45vw;right:-5vw;bottom:-10vw;background:#e63946;animation-duration:22s}
+.bg i:nth-child(3){width:35vw;height:35vw;left:40vw;top:30vw;background:#6b3a00;animation-duration:26s}
+@keyframes float{to{transform:translate(8vw,6vw) scale(1.15)}}
+header{position:fixed;z-index:3;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:2vw 3vw}
+header img{height:6vw}
+#clock{font-size:2.4vw;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+#stage{position:relative;z-index:1;height:100%}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:9vw 5vw 6vw;opacity:0;transition:opacity .9s ease}
+.slide.on{opacity:1}
+/* --- promo --- */
+.promo{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center;width:100%;max-width:92vw}
+.pv{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.pv .disc{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffb347,#f39200 45%,#a85a00);box-shadow:0 3vw 8vw rgba(0,0,0,.5)}
+.pv img{position:relative;width:88%;height:88%;object-fit:cover;border-radius:50%;box-shadow:0 2vw 6vw rgba(0,0,0,.6)}
+.pv .emo{position:relative;font-size:22vw;line-height:1;filter:drop-shadow(0 2vw 3vw rgba(0,0,0,.5))}
+.on .pv{animation:zoomin 1.2s cubic-bezier(.2,1.3,.4,1) both}
+.on .pv img,.on .pv .emo{animation:bob 4s ease-in-out 1.2s infinite alternate}
+@keyframes zoomin{from{transform:scale(.4) rotate(-12deg);opacity:0}}
+@keyframes bob{to{transform:translateY(-1.2vw) rotate(2deg)}}
+.badge{position:absolute;top:2%;right:2%;width:13vw;height:13vw;border-radius:50%;background:var(--hot);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;transform:rotate(12deg);box-shadow:0 1vw 3vw rgba(0,0,0,.5)}
+.badge b{font-size:4.2vw;line-height:1}.badge small{font-size:1.4vw;letter-spacing:.1em}
+.on .badge{animation:stamp .6s cubic-bezier(.3,1.8,.5,1) .9s both}
+@keyframes stamp{from{transform:scale(3) rotate(40deg);opacity:0}}
+.pt{display:grid;gap:1.4vw}
+.kicker{display:inline-flex;align-items:center;gap:1vw;justify-self:start;background:var(--accent);color:#1a1100;font-weight:900;font-size:2vw;padding:.6vw 1.8vw;border-radius:99vw;text-transform:uppercase;letter-spacing:.06em}
+.on .kicker{animation:slidein .7s ease .2s both}
+.name{font-size:6.2vw;font-weight:900;line-height:1;text-wrap:balance}
+.on .name{animation:slidein .7s ease .35s both}
+.desc{font-size:2vw;color:var(--muted)}
+.prices{display:flex;align-items:baseline;gap:2.5vw;margin-top:1vw}
+.old{font-size:4vw;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--hot);text-decoration-thickness:.5vw}
+.new{font-size:11vw;font-weight:900;line-height:.9;color:var(--accent);text-shadow:0 .6vw 0 #6b3a00}
+.on .old{animation:slidein .7s ease .5s both}
+.on .new{animation:pricepop .9s cubic-bezier(.2,1.6,.4,1) .7s both,pulse 1.6s ease-in-out 2s infinite}
+@keyframes slidein{from{transform:translateX(6vw);opacity:0}}
+@keyframes pricepop{from{transform:scale(.2);opacity:0}}
+@keyframes pulse{50%{transform:scale(1.05)}}
+.count{display:inline-flex;align-items:center;gap:1vw;font-size:2.4vw;font-weight:800;background:rgba(0,0,0,.35);border:.15vw solid rgba(255,255,255,.2);padding:.8vw 1.8vw;border-radius:99vw;justify-self:start;font-variant-numeric:tabular-nums}
+.count .dot{width:1.2vw;height:1.2vw;border-radius:50%;background:var(--hot);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.ptext{font-size:2.2vw;font-weight:700}
+/* --- carte --- */
+.board{width:100%;max-width:92vw}
+.board h2{font-size:4.5vw;margin:0 0 2vw;display:flex;align-items:center;gap:1.5vw}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2vw 4vw}
+.row{display:flex;align-items:baseline;gap:1vw;font-size:2.5vw;font-weight:700;padding:.6vw 0;border-bottom:.12vw dashed rgba(255,255,255,.18)}
+.row .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .p{color:var(--accent);font-weight:900;font-variant-numeric:tabular-nums}
+.row .p s{color:var(--muted);font-size:1.8vw;margin-right:.8vw}
+.on .row{animation:slidein .5s ease both}
+footer{position:fixed;z-index:3;left:0;right:0;bottom:0;padding:1.4vw 3vw;display:flex;justify-content:space-between;font-size:1.6vw;color:var(--muted)}
+#dots{display:flex;gap:.6vw}#dots i{width:.9vw;height:.9vw;border-radius:50%;background:rgba(255,255,255,.25)}#dots i.on{background:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i></div>
+<header><img src="img/logo.png" alt="Mado"><span id="clock"></span></header>
+<div id="stage"></div>
+<footer><span id="info"></span><span id="dots"></span></footer>
+
+<script>
+// Paramètres possibles dans l'adresse : ?lang=en  ?duree=12 (secondes par écran)  ?promos=1 (seulement les promos)
+const Q = new URLSearchParams(location.search);
+const LANG = ["fr", "en", "tr", "de"].includes(Q.get("lang")) ? Q.get("lang") : "fr";
+const DUR = Math.max(5, Math.min(60, parseInt(Q.get("duree")) || 10)) * 1000;
+const ONLY_PROMOS = Q.get("promos") === "1";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const t = (o) => o ? (o[LANG] || o.fr || "") : "";
+const eur = (n) => new Intl.NumberFormat(LANG === "en" ? "en-IE" : LANG + "-" + LANG.toUpperCase(), {style: "currency", currency: "EUR", minimumFractionDigits: n % 1 ? 2 : 0}).format(n);
+const TXT = {
+  promo: {fr: "Promo", en: "Deal", tr: "Kampanya", de: "Angebot"},
+  left: {fr: "Encore", en: "Only", tr: "Son", de: "Noch"},
+  leftEnd: {fr: "", en: "left", tr: "", de: ""},
+  menu: {fr: "Notre carte", en: "Our menu", tr: "Menümüz", de: "Unsere Karte"},
+  order: {fr: "Commandez en scannant le QR code de votre table", en: "Order by scanning the QR code on your table", tr: "Masanızdaki QR kodu okutarak sipariş verin", de: "Bestellen Sie über den QR-Code auf Ihrem Tisch"},
+};
+const ICONS = {menus:"🍱",pokebowl:"🥗",sandwichs:"🥙",assiettes:"🍽️",pides:"🫓",pizzas:"🍕",accompagnements:"🍟",boissons:"🥤",alcools:"🍺",desserts:"🍰"};
+
+/* ---------- heure de Paris et promos (même règle que le site) ---------- */
+function parisNow(){
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {timeZone: "Europe/Paris", weekday: "short", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"}).formatToParts(new Date()).map(x => [x.type, x.value]));
+  return {day: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].indexOf(p.weekday) + 1, min: +p.hour * 60 + +p.minute, sec: +p.hour * 3600 + +p.minute * 60 + +p.second, date: `${p.year}-${p.month}-${p.day}`, hm: `${p.hour}:${p.minute}`};
+}
+const toMin = (hm) => { if (!hm) return null; const [h, m] = hm.split(":").map(Number); return h * 60 + (m || 0); };
+function promoActive(p, now){
+  if (!p.active) return false;
+  if (p.startDate && now.date < p.startDate) return false;
+  if (p.endDate && now.date > p.endDate) return false;
+  const f = toMin(p.from), to = toMin(p.to); let day = now.day;
+  if (f !== null && to !== null && to <= f) { if (now.min >= f) {} else if (now.min < to) day = day === 1 ? 7 : day - 1; else return false; }
+  else { if (f !== null && now.min < f) return false; if (to !== null && now.min >= to) return false; }
+  return !p.days || !p.days.length || p.days.includes(day);
+}
+// secondes restantes avant la fin du créneau du jour (null si pas d'heure de fin)
+function secondsLeft(p, now){
+  const to = toMin(p.to); if (to === null) return null;
+  let s = to * 60 - now.sec; if (s <= 0) s += 86400;
+  return s;
+}
+const fmtLeft = (s) => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60; return h ? `${h} h ${String(m).padStart(2, "0")}` : `${m}:${String(sec).padStart(2, "0")}`; };
+
+/* ---------- construction des écrans ---------- */
+let MENU = null, SLIDES = [], cur = -1, sig = "";
+const findItem = (id) => { for (const c of MENU.categories) for (const it of c.items) if (it.id === id) return [it, c]; return [null, null]; };
+function visual(it, cat){ return it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="emo">${ICONS[cat && cat.id] || "🍴"}</span>`; }
+function build(){
+  const now = parisNow(), promos = (MENU.promos || []).filter(p => promoActive(p, now));
+  const slides = [];
+  for (const p of promos) {
+    const items = (p.items || []).map(x => { const [it, c] = findItem(x.id); return it && !it.hidden && x.price !== "" && x.price !== null && +x.price < +it.price ? {it, c, price: +x.price} : null; }).filter(Boolean);
+    if (!items.length) slides.push({kind: "text", p});
+    for (const x of items) slides.push({kind: "promo", p, ...x});
+  }
+  if (!ONLY_PROMOS || !slides.length) {
+    const cats = MENU.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden));
+    for (const c of cats) {
+      const items = c.items.filter(i => !i.hidden);
+      for (let i = 0; i < items.length; i += 12) slides.push({kind: "board", c, items: items.slice(i, i + 12), promos});
+    }
+  }
+  return slides;
+}
+function promoPriceOf(it, promos){
+  let best = null;
+  for (const p of promos) for (const x of p.items || []) if (x.id === it.id && x.price !== "" && x.price !== null && +x.price < +it.price && (best === null || +x.price < best)) best = +x.price;
+  return best;
+}
+function slideHtml(s){
+  if (s.kind === "promo") {
+    const pct = Math.round((1 - s.price / +s.it.price) * 100);
+    return `<div class="promo"><div class="pv"><div class="disc"></div>${visual(s.it, s.c)}<div class="badge"><b>-${pct}%</b><small>${esc(t(TXT.promo).toUpperCase())}</small></div></div>
+      <div class="pt"><span class="kicker">🔥 ${esc(t(s.p.title) || t(TXT.promo))}</span>
+        <div class="name">${esc(t(s.it.name))}</div>${t(s.it.description) ? `<div class="desc">${esc(t(s.it.description))}</div>` : ""}
+        <div class="prices"><span class="old">${eur(+s.it.price)}</span><span class="new">${eur(s.price)}</span></div>
+        ${t(s.p.text) ? `<div class="ptext">${esc(t(s.p.text))}</div>` : ""}
+        <span class="count" data-left="${esc(s.p.id)}" ${secondsLeft(s.p, parisNow()) === null ? "hidden" : ""}><span class="dot"></span><span></span></span></div></div>`;
+  }
+  if (s.kind === "text") return `<div class="pt" style="text-align:center;justify-items:center"><span class="kicker">🔥 ${esc(t(TXT.promo))}</span><div class="name">${esc(t(s.p.title))}</div><div class="ptext" style="font-size:3vw">${esc(t(s.p.text))}</div></div>`;
+  return `<div class="board"><h2>${ICONS[s.c.id] || "🍴"} ${esc(t(s.c.name))}</h2><div class="grid">${s.items.map((it, i) => {
+    const pp = promoPriceOf(it, s.promos);
+    return `<div class="row" style="animation-delay:${i * 60}ms"><span class="n">${esc(t(it.name))}</span><span class="p">${pp !== null ? `<s>${eur(+it.price)}</s>${eur(pp)}` : eur(+it.price)}</span></div>`;
+  }).join("")}</div></div>`;
+}
+function show(i){
+  if (!SLIDES.length) return;
+  cur = i % SLIDES.length;
+  const stage = $("#stage"), el = document.createElement("div");
+  el.className = "slide"; el.innerHTML = slideHtml(SLIDES[cur]); stage.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("on")));
+  [...stage.children].slice(0, -1).forEach(o => { o.classList.remove("on"); setTimeout(() => o.remove(), 1000); });
+  $("#dots").innerHTML = SLIDES.length > 1 ? SLIDES.map((_, k) => `<i class="${k === cur ? "on" : ""}"></i>`).join("") : "";
+  tick();
+}
+function tick(){
+  const now = parisNow();
+  $("#clock").textContent = now.hm;
+  document.querySelectorAll("[data-left]").forEach(el => {
+    const p = (MENU.promos || []).find(x => x.id === el.dataset.left); if (!p) return;
+    const s = secondsLeft(p, now); if (s === null) return;
+    el.lastElementChild.textContent = `${t(TXT.left)} ${fmtLeft(s)} ${t(TXT.leftEnd)}`.trim();
+  });
+}
+async function load(){
+  try {
+    const m = await (await fetch("/api/menu", {cache: "no-store"})).json();
+    MENU = m;
+    const slides = build(), s = JSON.stringify(slides.map(x => [x.kind, x.p && x.p.id, x.it && x.it.id, x.price, x.c && x.c.id, x.items && x.items.map(i => i.id + i.price)]));
+    if (s !== sig) {
+      // une promo vient d'être créée ou modifiée : on l'affiche tout de suite
+      const firstNewPromo = slides.findIndex(x => x.kind === "promo" && !sig.includes(`"${x.p.id}"`));
+      sig = s; SLIDES = slides;
+      show(firstNewPromo >= 0 && sig ? firstNewPromo : 0);
+    }
+    $("#info").textContent = t(TXT.order);
+  } catch {}
+}
+setInterval(() => show(cur + 1), DUR);
+setInterval(tick, 1000);
+setInterval(load, 20000);
+load();
+// garde l'écran allumé si le navigateur le permet
+(async () => { try { await navigator.wakeLock.request("screen"); } catch {} })();
+document.addEventListener("visibilitychange", async () => { if (document.visibilityState === "visible") try { await navigator.wakeLock.request("screen"); } catch {} });
+</script>
+</body>
+</html>

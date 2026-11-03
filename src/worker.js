@@ -31,6 +31,7 @@ export default {
       if (mReset && request.method === "POST") return withAuth(request, env, () => resetTableKey(env, mReset[1]));
       if (path.startsWith("/api/orders") || path.startsWith("/api/table/")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey });
       if (path === "/serveur") return env.ASSETS.fetch(new Request(new URL("/", url), request));
+      if (path === "/ecran") return env.ASSETS.fetch(new Request(new URL("/ecran.html", url), request));
       if (path === "/cuisine") return env.ASSETS.fetch(new Request(new URL("/cuisine.html", url), request));
       if (path === "/admin") return env.ASSETS.fetch(new Request(new URL("/admin.html", url), request));
     } catch (e) {
