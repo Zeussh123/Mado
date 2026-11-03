@@ -6,16 +6,17 @@
 <title>Mado · Écran</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* Écran TV (16:9) : promos en cours en grand, puis la carte. Tout est en vw pour s'adapter à n'importe quelle TV. */
-:root{--bg:#120d08;--text:#fff8ec;--muted:#d9c9b0;--accent:#f39200;--hot:#e63946;--green:#b9d76a;color-scheme:dark}
+:root{--bg:#0d1633;--text:#fff8ec;--muted:#c9cbe0;--accent:#f39200;--hot:#e63946;--mint:#7fe3c6;--peach:#f3b9a3;--peach2:#e79a8a;--ink:#1d1a3a;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;cursor:none}
 .bg{position:fixed;inset:-20%;filter:blur(80px);opacity:.55;z-index:0}
 .bg i{position:absolute;border-radius:50%;animation:float 18s ease-in-out infinite alternate}
-.bg i:nth-child(1){width:55vw;height:55vw;left:-5vw;top:-10vw;background:#f39200}
+.bg i:nth-child(1){width:55vw;height:55vw;left:-5vw;top:-10vw;background:#1f3c8f}
 .bg i:nth-child(2){width:45vw;height:45vw;right:-5vw;bottom:-10vw;background:#e63946;animation-duration:22s}
-.bg i:nth-child(3){width:35vw;height:35vw;left:40vw;top:30vw;background:#6b3a00;animation-duration:26s}
+.bg i:nth-child(3){width:35vw;height:35vw;left:40vw;top:30vw;background:#0f6e6a;animation-duration:26s}
 @keyframes float{to{transform:translate(8vw,6vw) scale(1.15)}}
 header{position:fixed;z-index:3;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:2vw 3vw}
 header img{height:6vw}
@@ -55,15 +56,42 @@ header img{height:6vw}
 .count .dot{width:1.2vw;height:1.2vw;border-radius:50%;background:var(--hot);animation:blink 1s infinite}
 @keyframes blink{50%{opacity:.2}}
 .ptext{font-size:2.2vw;font-weight:700}
-/* --- carte --- */
-.board{width:100%;max-width:92vw}
-.board h2{font-size:4.5vw;margin:0 0 2vw;display:flex;align-items:center;gap:1.5vw}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2vw 4vw}
-.row{display:flex;align-items:baseline;gap:1vw;font-size:2.5vw;font-weight:700;padding:.6vw 0;border-bottom:.12vw dashed rgba(255,255,255,.18)}
-.row .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .p{color:var(--accent);font-weight:900;font-variant-numeric:tabular-nums}
-.row .p s{color:var(--muted);font-size:1.8vw;margin-right:.8vw}
-.on .row{animation:slidein .5s ease both}
+/* --- panneau carte (style tableau menu) --- */
+.slide.full{padding:0}
+body.panelmode header{opacity:0}
+body.panelmode footer{left:24vw}
+.panel{position:absolute;inset:0;display:grid;grid-template-columns:24vw 1fr;--fs:1.55vw}
+.feat{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--peach),var(--peach2));color:var(--ink);display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;padding:7.5vw 1.5vw 1.5vw;text-align:center}
+.feat .ghost{position:absolute;inset:-2vw -4vw;font:700 4.6vw/0.95 Philosopher,Georgia,serif;color:rgba(255,255,255,.22);word-break:break-all;transform:rotate(-8deg);pointer-events:none;text-transform:uppercase}
+.feat .logo{position:absolute;top:1.6vw;left:0;right:0;margin:auto;height:4.6vw}
+.fi{position:relative;display:grid;justify-items:center;gap:.15vw}
+.fimg{width:8.6vw;height:8.6vw;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#fff6ee,#f7cdb9 60%,#e5917c);box-shadow:0 1vw 2.4vw rgba(60,20,40,.35)}
+.fimg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.fimg .emo{font-size:5vw;line-height:1}
+.on .fimg{animation:zoomin 1s cubic-bezier(.2,1.3,.4,1) both,bob 4s ease-in-out 1s infinite alternate}
+.fi b{font:700 1.75vw/1.05 Philosopher,Georgia,serif;text-transform:uppercase;color:#2b3f9e;margin-top:.5vw}
+.fi small{font-size:1.05vw;font-weight:600;color:#3a3150;max-width:20vw;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fi .fp{font:700 1.7vw/1 Philosopher,Georgia,serif;color:#2b3f9e}
+.fi .fp s{font-size:1.2vw;color:#6a5a70;margin-right:.5vw}
+.fi .tag{position:absolute;z-index:2;top:0;right:-1.6vw;background:var(--hot);color:#fff;font:800 1vw/1 system-ui,sans-serif;padding:.4vw .7vw;border-radius:99vw;transform:rotate(10deg);animation:pulse 1.6s ease-in-out infinite}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3.2vw;padding:2.4vw 3vw 4vw;min-height:0;font-size:var(--fs)}
+.col{display:flex;flex-direction:column;gap:1.6em;min-height:0}
+.sec h2{margin:0 0 .45em;font:700 2.35em/1 Philosopher,Georgia,serif;color:var(--mint);text-transform:uppercase;letter-spacing:.02em;text-shadow:0 .12em 0 rgba(0,0,0,.35)}
+.on .sec h2{animation:slidein .6s ease both}
+.li{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;column-gap:.4em;padding:.16em 0;font:700 1em/1.2 Philosopher,Georgia,serif;text-transform:uppercase;letter-spacing:.01em}
+.li .n{min-width:0}
+.li>small{grid-column:1/-1;text-transform:none;font:600 .62em/1.2 system-ui,sans-serif;color:var(--muted);letter-spacing:0}
+.li .d{flex:1;min-width:1em;border-bottom:.14em dotted rgba(255,255,255,.55);transform:translateY(-.25em)}
+.li .p{white-space:nowrap;font-variant-numeric:tabular-nums}
+.li .p s{color:var(--muted);font-size:.75em;margin-right:.35em;text-decoration-color:var(--hot);text-decoration-thickness:.12em}
+.li.promo .p b{color:#ffcf4a}
+.li.promo .n::after{content:"PROMO";margin-left:.5em;background:var(--hot);color:#fff;font:800 .55em/1 system-ui,sans-serif;padding:.25em .5em;border-radius:99em;vertical-align:.25em}
+.on .li{animation:slidein .5s ease both}
+.box{border:.22em solid var(--peach);padding:1em 1.2em;background:rgba(10,14,40,.45)}
+.box hr{border:0;border-top:.12em solid rgba(255,255,255,.6);margin:.9em 0 .8em}
+.tags{display:grid;grid-template-columns:repeat(3,1fr);gap:.25em .8em}
+.tags span{display:flex;align-items:center;gap:.35em;font:700 .85em/1.1 Philosopher,Georgia,serif;text-transform:uppercase;white-space:nowrap}
+.tags svg,.tags img{width:1.5em;height:1.5em;flex:none;border-radius:50%;object-fit:cover}
 footer{position:fixed;z-index:3;left:0;right:0;bottom:0;padding:1.4vw 3vw;display:flex;justify-content:space-between;font-size:1.6vw;color:var(--muted)}
 #dots{display:flex;gap:.6vw}#dots i{width:.9vw;height:.9vw;border-radius:50%;background:rgba(255,255,255,.25)}#dots i.on{background:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
@@ -75,6 +103,7 @@ footer{position:fixed;z-index:3;left:0;right:0;bottom:0;padding:1.4vw 3vw;displa
 <div id="stage"></div>
 <footer><span id="info"></span><span id="dots"></span></footer>
 
+<script src="icons.js"></script>
 <script>
 // Paramètres possibles dans l'adresse : ?lang=en  ?duree=12 (secondes par écran)  ?promos=1 (seulement les promos)
 const Q = new URLSearchParams(location.search);
@@ -129,14 +158,69 @@ function build(){
     if (!items.length) slides.push({kind: "text", p});
     for (const x of items) slides.push({kind: "promo", p, ...x});
   }
-  if (!ONLY_PROMOS || !slides.length) {
-    const cats = MENU.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden));
-    for (const c of cats) {
-      const items = c.items.filter(i => !i.hidden);
-      for (let i = 0; i < items.length; i += 12) slides.push({kind: "board", c, items: items.slice(i, i + 12), promos});
-    }
-  }
+  if (!ONLY_PROMOS || !slides.length) for (const pg of pages()) slides.push({kind: "panel", ...pg, promos});
   return slides;
+}
+/* Panneaux : chaque écran = une colonne « vedettes » + deux colonnes de rubriques (comme le tableau du resto).
+   "@box" = encadré crudités + sauces. Les rubriques inconnues sont ajoutées à la fin, deux par écran. */
+const PLAN = [
+  [["sandwichs", "pokebowl"], ["assiettes", "@box"]],
+  [["menus"], ["accompagnements", "desserts"]],
+  [["pizzas"], ["pides"]],
+  [["boissons"], ["alcools"]],
+];
+const TXT2 = {
+  meats: {fr: "Bœuf, poulet ou mixte", en: "Beef, chicken or mixed", tr: "Dana, tavuk veya karışık", de: "Rind, Hähnchen oder gemischt"},
+};
+function pages(){
+  const cats = MENU.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden));
+  const byId = Object.fromEntries(cats.map(c => [c.id, c])), used = new Set(["@box"]);
+  const plan = PLAN.map(pg => pg.map(col => col.filter(id => byId[id] || id === "@box"))).filter(pg => pg.some(col => col.some(id => id !== "@box")));
+  plan.flat(2).forEach(id => used.add(id));
+  const rest = cats.filter(c => !used.has(c.id)).map(c => c.id);
+  for (let i = 0; i < rest.length; i += 2) plan.push([[rest[i]], rest[i + 1] ? [rest[i + 1]] : []]);
+  return plan.map(pg => {
+    const first = pg.flat().find(id => id !== "@box"), fc = byId[first];
+    const vis = fc.items.filter(i => !i.hidden);
+    // vedettes : d'abord les produits avec photo, puis les meilleures ventes, puis l'ordre de la carte
+    const rank = (i) => (i.photo ? 0 : 2) + (i.bestseller ? 0 : 1);
+    const feat = vis.length > 4 ? [...vis].sort((a, b) => rank(a) - rank(b) || vis.indexOf(a) - vis.indexOf(b)).slice(0, 3) : [];
+    const fid = new Set(feat.map(i => i.id));
+    const cols = pg.map(col => col.map(id => id === "@box" ? {box: true} : {c: byId[id], items: byId[id].items.filter(i => !i.hidden && !fid.has(i.id))}).filter(x => x.box || x.items.length));
+    return {fc, feat, cols};
+  });
+}
+function sub(it){
+  if (t(it.description)) return t(it.description);
+  if ((it.options || []).includes("viande")) return t(TXT2.meats);
+  return "";
+}
+function priceHtml(it, promos, tag){
+  const pp = promoPriceOf(it, promos);
+  return pp !== null ? `<s>${eur(+it.price)}</s><${tag}>${eur(pp)}</${tag}>` : eur(+it.price);
+}
+function choiceIcon(c){ return c.photo ? `<img src="${esc(c.photo)}" alt="">` : ((window.MADO_ICONS || {})[c.icon] || ""); }
+function boxHtml(){
+  const g = (id) => (MENU.optionGroups || []).find(x => x.id === id);
+  const part = (gr) => gr ? `<h2>${esc(t(gr.name))}</h2><div class="tags">${gr.choices.filter(c => !c.hidden && c.id !== "tout" && c.id !== "aucune").map(c => `<span>${choiceIcon(c)}${esc(t(c.name))}${+c.price ? " " + eur(+c.price) : ""}</span>`).join("")}</div>` : "";
+  return `<div class="sec box">${part(g("crudites"))}<hr>${part(g("sauces"))}</div>`;
+}
+function panelHtml(s){
+  const ghost = (esc(t(s.fc.name)) + " ").repeat(40);
+  const feat = s.feat.map((it, i) => `<div class="fi" style="animation-delay:${i * 150}ms">${promoPriceOf(it, s.promos) !== null ? `<span class="tag">PROMO</span>` : ""}<div class="fimg" style="animation-delay:${i * 150}ms,${1000 + i * 400}ms">${it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="emo">${ICONS[s.fc.id] || "🍴"}</span>`}</div><b>${esc(t(it.name))}</b>${sub(it) ? `<small>${esc(sub(it))}</small>` : ""}<span class="fp">${priceHtml(it, s.promos, "span")}</span></div>`).join("");
+  let n = 0;
+  const cols = s.cols.map(col => `<div class="col">${col.map(x => x.box ? boxHtml() : `<div class="sec"><h2>${esc(t(x.c.name))}</h2>${x.items.map(it => {
+    const promo = promoPriceOf(it, s.promos) !== null, d = sub(it);
+    return `<div class="li${promo ? " promo" : ""}" style="animation-delay:${n++ * 40}ms"><span class="n">${esc(t(it.name))}</span><span class="d"></span><span class="p">${priceHtml(it, s.promos, "b")}</span>${d ? `<small>${esc(d)}</small>` : ""}</div>`;
+  }).join("")}</div>`).join("")}</div>`).join("");
+  return `<div class="panel"><aside class="feat"><div class="ghost">${ghost}</div><img class="logo" src="img/logo.png" alt="Mado">${feat}</aside><div class="cols">${cols}</div></div>`;
+}
+// réduit la taille du texte jusqu'à ce que tout rentre dans l'écran
+function fit(el){
+  const cols = el.querySelector(".cols"); if (!cols) return;
+  let fs = 1.55;
+  const over = () => [...cols.children].some(c => c.scrollHeight > c.clientHeight + 1) || cols.scrollWidth > cols.clientWidth + 1;
+  while (fs > .8 && over()) { fs -= .05; cols.style.setProperty("--fs", fs + "vw"); }
 }
 function promoPriceOf(it, promos){
   let best = null;
@@ -154,16 +238,16 @@ function slideHtml(s){
         <span class="count" data-left="${esc(s.p.id)}" ${secondsLeft(s.p, parisNow()) === null ? "hidden" : ""}><span class="dot"></span><span></span></span></div></div>`;
   }
   if (s.kind === "text") return `<div class="pt" style="text-align:center;justify-items:center"><span class="kicker">🔥 ${esc(t(TXT.promo))}</span><div class="name">${esc(t(s.p.title))}</div><div class="ptext" style="font-size:3vw">${esc(t(s.p.text))}</div></div>`;
-  return `<div class="board"><h2>${ICONS[s.c.id] || "🍴"} ${esc(t(s.c.name))}</h2><div class="grid">${s.items.map((it, i) => {
-    const pp = promoPriceOf(it, s.promos);
-    return `<div class="row" style="animation-delay:${i * 60}ms"><span class="n">${esc(t(it.name))}</span><span class="p">${pp !== null ? `<s>${eur(+it.price)}</s>${eur(pp)}` : eur(+it.price)}</span></div>`;
-  }).join("")}</div></div>`;
+  return panelHtml(s);
 }
 function show(i){
   if (!SLIDES.length) return;
   cur = i % SLIDES.length;
   const stage = $("#stage"), el = document.createElement("div");
-  el.className = "slide"; el.innerHTML = slideHtml(SLIDES[cur]); stage.appendChild(el);
+  const sl = SLIDES[cur];
+  el.className = "slide" + (sl.kind === "panel" ? " full" : ""); el.innerHTML = slideHtml(sl); stage.appendChild(el);
+  document.body.classList.toggle("panelmode", sl.kind === "panel");
+  fit(el); document.fonts.ready.then(() => fit(el));
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("on")));
   [...stage.children].slice(0, -1).forEach(o => { o.classList.remove("on"); setTimeout(() => o.remove(), 1000); });
   $("#dots").innerHTML = SLIDES.length > 1 ? SLIDES.map((_, k) => `<i class="${k === cur ? "on" : ""}"></i>`).join("") : "";
@@ -182,7 +266,7 @@ async function load(){
   try {
     const m = await (await fetch("/api/menu", {cache: "no-store"})).json();
     MENU = m;
-    const slides = build(), s = JSON.stringify(slides.map(x => [x.kind, x.p && x.p.id, x.it && x.it.id, x.price, x.c && x.c.id, x.items && x.items.map(i => i.id + i.price)]));
+    const slides = build(), s = JSON.stringify(slides.map(x => [x.kind, x.p && x.p.id, x.it && x.it.id, x.price, x.c && x.c.id, x.cols && x.cols.flat().map(y => y.items ? y.items.map(i => i.id + i.price).join() : "box"), x.feat && x.feat.map(i => i.id + i.price + i.photo)]));
     if (s !== sig) {
       // une promo vient d'être créée ou modifiée : on l'affiche tout de suite
       const firstNewPromo = slides.findIndex(x => x.kind === "promo" && !sig.includes(`"${x.p.id}"`));
