@@ -167,7 +167,12 @@ main{padding-bottom:96px}
 .cart-h h2{flex:1;margin:0;font-size:1.5rem}
 .sh-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-2)}
 .cart .hint{color:var(--muted);margin:4px 0 14px}
-.cl{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.clw{position:relative;border-bottom:1px dashed var(--line);overflow:hidden;transition:height .25s ease,opacity .25s}
+.cl{position:relative;display:flex;gap:10px;align-items:center;padding:12px 0;background:var(--bg);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.cl.back{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.cl-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#5a1f1c;color:#ffd7d4;font-weight:800;opacity:0;transition:background .15s}
+.cl-bg.armed{background:#d63b33;color:#fff}
+.cart .hint small{color:var(--muted);font-size:.8rem}
 .cq{display:flex;align-items:center;gap:6px}
 .cq button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);font-weight:800}
 .cq b{min-width:16px;text-align:center}
@@ -405,7 +410,12 @@ function extras(it, sel){
 }
 const groupHint = (g) => (+g.free && +g.extraPrice) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) : ui(g.multi ? "severalChoices" : "oneChoice");
 function choiceSummary(it, sel){
-  return itemGroups(it).map(g => g.choices.filter(c => (sel[g.id] || []).includes(c.id) && !c.all).map(c => t(c.name)).join(", ")).filter(Boolean).join(" · ");
+  return itemGroups(it).map(g => {
+    const ids = sel[g.id] || [], all = g.choices.find(c => c.all && ids.includes(c.id));
+    // « Tout » coché : on l'écrit au lieu de lister chaque crudité (les suppléments payants restent affichés)
+    const shown = g.choices.filter(c => ids.includes(c.id) && !c.all && !(all && !(+c.price)));
+    return [all ? t(all.name) : "", ...shown.map(c => t(c.name))].filter(Boolean).join(", ");
+  }).filter(Boolean).join(" · ");
 }
 const cartCount = () => CART.reduce((n, l) => n + l.qty, 0);
 const cartTotal = () => CART.reduce((n, l) => n + l.qty * l.price, 0);
@@ -513,15 +523,62 @@ function drawBar(){
 function drawCart(){
   $("#shScroll").innerHTML = `<div class="cart">
     <div class="cart-h"><h2>${esc(ui("myOrder"))}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
-    <p class="hint">${esc(ui("orderHint"))}</p>
-    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="cl" data-i="${i}">
+    <p class="hint">${esc(ui("orderHint"))}${CART.length ? `<br><small>↔ ${esc(ui("swipeHint"))}</small>` : ""}</p>
+    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-i="${i}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl">
       <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>
       <div class="ct"><div class="cn">${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div>
-      <div class="cp">${esc(fmtPrice(l.price * l.qty))}</div></div>`; }).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
+      <div class="cp">${esc(fmtPrice(l.price * l.qty))}</div></div></div>`; }).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
     ${CART.length ? `<div class="big-total"><span>${esc(ui("total"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>` : ""}
   </div>`;
   $("#shBar").innerHTML = CART.length ? `<button class="btn ghost" data-sh="clear">${esc(ui("clearOrder"))}</button><button class="btn grow" data-sh="close">OK</button>` : `<button class="btn grow" data-sh="close">OK</button>`;
 }
+
+/* ----- glisser pour retirer une ligne du panier ----- */
+// Il faut glisser au-delà de 45 % de la largeur pour retirer : un petit geste revient en place.
+(function(){
+  let sw = null;
+  const root = () => $("#shScroll");
+  document.addEventListener("pointerdown", (e) => {
+    const row = e.target.closest && e.target.closest(".clw .cl"); if (!row || STEP !== "cart") return;
+    sw = {row, wrap: row.parentElement, x: e.clientX, y: e.clientY, dx: 0, on: false, id: e.pointerId};
+  });
+  document.addEventListener("pointermove", (e) => {
+    if (!sw || e.pointerId !== sw.id) return;
+    const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+    if (!sw.on) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; }   // c'est un défilement vertical
+      if (Math.abs(dx) < 12) return;
+      sw.on = true; sw.row.classList.remove("back"); try { sw.row.setPointerCapture(e.pointerId); } catch {}
+    }
+    sw.dx = dx;
+    const w = sw.row.offsetWidth, armed = Math.abs(dx) > w * 0.45;
+    sw.row.style.transform = `translateX(${dx}px)`;
+    const bg = sw.wrap.querySelector(".cl-bg");
+    bg.style.opacity = Math.min(1, Math.abs(dx) / 60);
+    bg.style.justifyContent = dx > 0 ? "flex-start" : "flex-end";
+    bg.querySelectorAll("span")[0].style.display = dx > 0 ? "" : "none";
+    bg.querySelectorAll("span")[1].style.display = dx > 0 ? "none" : "";
+    if (armed !== bg.classList.contains("armed")) { bg.classList.toggle("armed", armed); if (armed && navigator.vibrate) navigator.vibrate(15); }
+  });
+  const end = (e) => {
+    if (!sw || (e.pointerId !== undefined && e.pointerId !== sw.id)) return;
+    const s = sw; sw = null; if (!s.on) return;
+    const w = s.row.offsetWidth;
+    // évite le « clic » sur + / − à la fin du geste
+    s.wrap.addEventListener("click", (ev) => { ev.stopPropagation(); ev.preventDefault(); }, {capture: true, once: true});
+    if (Math.abs(s.dx) > w * 0.45) {
+      s.row.classList.add("back"); s.row.style.transform = `translateX(${s.dx > 0 ? w : -w}px)`;
+      s.wrap.style.height = s.wrap.offsetHeight + "px";
+      setTimeout(() => { s.wrap.style.height = "0px"; s.wrap.style.opacity = "0"; }, 180);
+      setTimeout(() => { CART.splice(+s.wrap.dataset.i, 1); saveCart(); drawCart(); drawPill(); }, 430);
+    } else {
+      s.row.classList.add("back"); s.row.style.transform = "";
+      const bg = s.wrap.querySelector(".cl-bg"); bg.style.opacity = 0; bg.classList.remove("armed");
+    }
+  };
+  document.addEventListener("pointerup", end);
+  document.addEventListener("pointercancel", end);
+})();
 
 /* ----- bouton panier flottant ----- */
 function drawPill(){
@@ -590,7 +647,7 @@ $("#sheet").addEventListener("click", (e) => {
     $("#shBar [data-sh=cart]").textContent = `${ui("seeOrder")} (${cartCount()})`;
   }
   else if (a === "minus" || a === "plus") {
-    const l = CART[+b.closest(".cl").dataset.i]; l.qty += a === "plus" ? 1 : -1;
+    const l = CART[+b.closest(".clw").dataset.i]; l.qty += a === "plus" ? 1 : -1;
     if (l.qty <= 0) CART.splice(CART.indexOf(l), 1);
     saveCart(); drawCart(); drawPill();
   }

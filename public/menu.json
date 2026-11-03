@@ -223,6 +223,18 @@
    "en": "{n} included, +{p} each extra",
    "tr": "{n} dahil, fazlası +{p}",
    "de": "{n} inklusive, jede weitere +{p}"
+  },
+  "remove": {
+   "fr": "Retirer",
+   "en": "Remove",
+   "tr": "Kaldır",
+   "de": "Entfernen"
+  },
+  "swipeHint": {
+   "fr": "Glissez un produit vers la gauche ou la droite pour le retirer.",
+   "en": "Swipe an item left or right to remove it.",
+   "tr": "Kaldırmak için ürünü sola veya sağa kaydırın.",
+   "de": "Zum Entfernen einen Artikel nach links oder rechts wischen."
   }
  },
  "categories": [
