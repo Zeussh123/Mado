@@ -1,0 +1,1977 @@
+{
+ "restaurant": "Mado",
+ "currency": "EUR",
+ "languages": [
+  "fr",
+  "en",
+  "tr",
+  "de"
+ ],
+ "ui": {
+  "bestseller": {
+   "fr": "Meilleure vente",
+   "en": "Best seller",
+   "tr": "En çok satan",
+   "de": "Bestseller"
+  },
+  "menu": {
+   "fr": "Menu",
+   "en": "Menu",
+   "tr": "Menü",
+   "de": "Speisekarte"
+  },
+  "welcome": {
+   "fr": "Bienvenue",
+   "en": "Welcome",
+   "tr": "Hoş geldiniz",
+   "de": "Willkommen"
+  },
+  "chooseLanguage": {
+   "fr": "Choisissez votre langue",
+   "en": "Choose your language",
+   "tr": "Dilinizi seçin",
+   "de": "Sprache wählen"
+  },
+  "search": {
+   "fr": "Rechercher un plat…",
+   "en": "Search a dish…",
+   "tr": "Yemek ara…",
+   "de": "Gericht suchen…"
+  },
+  "bestsellers": {
+   "fr": "Meilleures ventes",
+   "en": "Best sellers",
+   "tr": "Çok satanlar",
+   "de": "Bestseller"
+  },
+  "seeMenu": {
+   "fr": "Voir le menu",
+   "en": "See the menu",
+   "tr": "Menüyü gör",
+   "de": "Speisekarte ansehen"
+  },
+  "priceOnRequest": {
+   "fr": "Prix sur demande",
+   "en": "Ask for price",
+   "tr": "Fiyat için sorunuz",
+   "de": "Preis auf Anfrage"
+  },
+  "noResult": {
+   "fr": "Aucun plat trouvé",
+   "en": "No dish found",
+   "tr": "Sonuç bulunamadı",
+   "de": "Kein Gericht gefunden"
+  },
+  "allergens": {
+   "fr": "Allergènes : demandez à notre équipe.",
+   "en": "Allergens: please ask our staff.",
+   "tr": "Alerjenler için lütfen personelimize danışın.",
+   "de": "Allergene: Bitte fragen Sie unser Personal."
+  },
+  "promo": {
+   "fr": "Promo",
+   "en": "Deal",
+   "tr": "Kampanya",
+   "de": "Angebot"
+  },
+  "promosNow": {
+   "fr": "Promos du moment",
+   "en": "Today's deals",
+   "tr": "Güncel kampanyalar",
+   "de": "Aktuelle Angebote"
+  }
+ },
+ "categories": [
+  {
+   "id": "menus",
+   "name": {
+    "fr": "Menus avantageux",
+    "en": "Value meals",
+    "tr": "Avantajlı menüler",
+    "de": "Spar-Menüs"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Menu Kebab",
+      "en": "Kebab meal",
+      "tr": "Kebap menü",
+      "de": "Kebab-Menü"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Kebab, frites, boisson 33 cl",
+      "en": "Kebab, fries, 33 cl drink",
+      "tr": "Kebab, patates kızartması, 33 cl içecek",
+      "de": "Kebab, Pommes, Getränk 33 cl"
+     },
+     "bestseller": true,
+     "id": "menus-menu-kebab",
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Tacos",
+      "en": "Tacos meal",
+      "tr": "Tacos menü",
+      "de": "Tacos-Menü"
+     },
+     "price": 12,
+     "description": {
+      "fr": "Tacos, frites, boisson 33 cl",
+      "en": "Tacos, fries, 33 cl drink",
+      "tr": "Tacos, patates kızartması, 33 cl içecek",
+      "de": "Tacos, Pommes, Getränk 33 cl"
+     },
+     "bestseller": true,
+     "id": "menus-menu-tacos",
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Yufka",
+      "en": "Yufka meal",
+      "tr": "Dürüm menü",
+      "de": "Yufka-Menü"
+     },
+     "price": 11.5,
+     "description": {
+      "fr": "Yufka kebab, frites, boisson 33 cl",
+      "en": "Yufka kebab, fries, 33 cl drink",
+      "tr": "Yufka kebab, patates kızartması, 33 cl içecek",
+      "de": "Yufka kebab, Pommes, Getränk 33 cl"
+     },
+     "id": "menus-menu-yufka",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Hamburger",
+      "en": "Burger meal",
+      "tr": "Hamburger menü",
+      "de": "Hamburger-Menü"
+     },
+     "price": 9.5,
+     "description": {
+      "fr": "Hamburger, frites, boisson 33 cl",
+      "en": "Hamburger, fries, 33 cl drink",
+      "tr": "Hamburger, patates kızartması, 33 cl içecek",
+      "de": "Hamburger, Pommes, Getränk 33 cl"
+     },
+     "id": "menus-menu-hamburger",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Assiette",
+      "en": "Plate meal",
+      "tr": "Tabak menü",
+      "de": "Teller-Menü"
+     },
+     "price": 15,
+     "description": {
+      "fr": "Assiette kebab bœuf, poulet ou mixte, boisson 33 cl, thé",
+      "en": "Beef, chicken or mixed kebab plate, 33 cl drink, tea",
+      "tr": "Dana, tavuk veya karışık döner tabağı, 33 cl içecek, çay",
+      "de": "Kebab-Teller Rind, Hähnchen oder gemischt, Getränk 33 cl, Tee"
+     },
+     "id": "menus-menu-assiette",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Lahmacun",
+      "en": "Lahmacun meal",
+      "tr": "Lahmacun menü",
+      "de": "Lahmacun-Menü"
+     },
+     "price": 12,
+     "description": {
+      "fr": "Lahmacun, frites, boisson 33 cl",
+      "en": "Lahmacun, fries, 33 cl drink",
+      "tr": "Lahmacun, patates kızartması, 33 cl içecek",
+      "de": "Lahmacun, Pommes, Getränk 33 cl"
+     },
+     "id": "menus-menu-lahmacun",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Maxi Tacos",
+      "en": "Maxi tacos meal",
+      "tr": "Maxi tacos menü",
+      "de": "Maxi-Tacos-Menü"
+     },
+     "price": 15,
+     "description": {
+      "fr": "Maxi tacos, frites, boisson 33 cl",
+      "en": "Maxi tacos, fries, 33 cl drink",
+      "tr": "Maxi tacos, patates kızartması, 33 cl içecek",
+      "de": "Maxi tacos, Pommes, Getränk 33 cl"
+     },
+     "id": "menus-menu-maxi-tacos",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Falafel",
+      "en": "Falafel meal",
+      "tr": "Falafel menü",
+      "de": "Falafel-Menü"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Falafel, frites, boisson 33 cl",
+      "en": "Falafel, fries, 33 cl drink",
+      "tr": "Falafel, patates kızartması, 33 cl içecek",
+      "de": "Falafel, Pommes, Getränk 33 cl"
+     },
+     "id": "menus-menu-falafel",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Bowl",
+      "en": "Bowl meal",
+      "tr": "Bowl menü",
+      "de": "Bowl-Menü"
+     },
+     "price": 13,
+     "description": {
+      "fr": "PokeBowl, boisson 33 cl",
+      "en": "Poke bowl, 33 cl drink",
+      "tr": "Poke bowl, 33 cl içecek",
+      "de": "Poke Bowl, Getränk 33 cl"
+     },
+     "id": "menus-menu-bowl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Enfant",
+      "en": "Kids' meal",
+      "tr": "Çocuk menüsü",
+      "de": "Kindermenü"
+     },
+     "price": 8,
+     "description": {
+      "fr": "Nuggets, frites, Capri-Sun",
+      "en": "Nuggets, fries, Capri-Sun",
+      "tr": "Nugget, patates kızartması, Capri-Sun",
+      "de": "Nuggets, Pommes, Capri-Sun"
+     },
+     "id": "menus-menu-enfant",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "pokebowl",
+   "name": {
+    "fr": "Pokebowl",
+    "en": "Pokebowl",
+    "tr": "Pokebowl",
+    "de": "Pokebowl"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Pokebowl",
+      "en": "Pokebowl",
+      "tr": "Pokebowl",
+      "de": "Pokebowl"
+     },
+     "price": 12,
+     "bestseller": true,
+     "id": "pokebowl-pokebowl",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "sandwichs",
+   "name": {
+    "fr": "Sandwichs",
+    "en": "Sandwiches",
+    "tr": "Sandviçler",
+    "de": "Sandwiches"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Kebab",
+      "en": "Kebab",
+      "tr": "Kebab",
+      "de": "Kebab"
+     },
+     "price": 7.5,
+     "bestseller": true,
+     "id": "sandwichs-kebab",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Yufka Kebab",
+      "en": "Yufka kebab (wrap)",
+      "tr": "Dürüm",
+      "de": "Yufka-Kebab"
+     },
+     "price": 8,
+     "id": "sandwichs-yufka-kebab",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Tacos",
+      "en": "Tacos",
+      "tr": "Tacos",
+      "de": "Tacos"
+     },
+     "price": 8.5,
+     "id": "sandwichs-tacos",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Escalope de poulet",
+      "en": "Chicken breast",
+      "tr": "Tavuk göğsü",
+      "de": "Hähnchenschnitzel"
+     },
+     "price": 8,
+     "id": "sandwichs-escalope-de-poulet",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Köfte",
+      "en": "Köfte",
+      "tr": "Köfte",
+      "de": "Köfte"
+     },
+     "price": 8,
+     "id": "sandwichs-kofte",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Lahmacun (roulé)",
+      "en": "Lahmacun (wrap)",
+      "tr": "Lahmacun dürüm",
+      "de": "Lahmacun (gerollt)"
+     },
+     "price": 8.5,
+     "id": "sandwichs-lahmacun-roule",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Maxi Tacos",
+      "en": "Maxi Tacos",
+      "tr": "Maxi Tacos",
+      "de": "Maxi Tacos"
+     },
+     "price": 12,
+     "id": "sandwichs-maxi-tacos",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Végétarien",
+      "en": "Vegetarian",
+      "tr": "Vejetaryen",
+      "de": "Vegetarisch"
+     },
+     "price": 6,
+     "id": "sandwichs-vegetarien",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Falafel",
+      "en": "Falafel",
+      "tr": "Falafel",
+      "de": "Falafel"
+     },
+     "price": 6.5,
+     "id": "sandwichs-falafel",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Hamburger",
+      "en": "Hamburger",
+      "tr": "Hamburger",
+      "de": "Hamburger"
+     },
+     "price": 6,
+     "id": "sandwichs-hamburger",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Hamburger double",
+      "en": "Double burger",
+      "tr": "Duble hamburger",
+      "de": "Doppel-Hamburger"
+     },
+     "price": 8.5,
+     "id": "sandwichs-hamburger-double",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Box Kebab",
+      "en": "Box Kebab",
+      "tr": "Box Kebab",
+      "de": "Box Kebab"
+     },
+     "price": 8,
+     "id": "sandwichs-box-kebab",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "assiettes",
+   "name": {
+    "fr": "Assiettes",
+    "en": "Plates",
+    "tr": "Tabaklar",
+    "de": "Teller"
+   },
+   "note": {
+    "fr": "Toutes nos assiettes sont accompagnées de crudités et de frites ou de boulgour, au choix.",
+    "en": "All our plates come with salad and your choice of fries or bulgur.",
+    "tr": "Tüm tabaklarımız salata ve seçiminize göre patates kızartması veya bulgur ile servis edilir.",
+    "de": "Alle Teller werden mit Salat und wahlweise Pommes oder Bulgur serviert."
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Lahmacun",
+      "en": "Lahmacun",
+      "tr": "Lahmacun",
+      "de": "Lahmacun"
+     },
+     "price": 11,
+     "id": "assiettes-lahmacun",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Döner bœuf",
+      "en": "Beef döner plate",
+      "tr": "Dana döner tabağı",
+      "de": "Rinder-Döner-Teller"
+     },
+     "price": 14,
+     "id": "assiettes-assiette-doner-buf",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Döner poulet",
+      "en": "Chicken döner plate",
+      "tr": "Tavuk döner tabağı",
+      "de": "Hähnchen-Döner-Teller"
+     },
+     "price": 14,
+     "id": "assiettes-assiette-doner-poulet",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Döner mix (bœuf/poulet)",
+      "en": "Mixed döner plate (beef/chicken)",
+      "tr": "Karışık döner tabağı (dana/tavuk)",
+      "de": "Gemischter Döner-Teller (Rind/Hähnchen)"
+     },
+     "price": 14,
+     "bestseller": true,
+     "id": "assiettes-assiette-doner-mix-buf-poulet",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Köfte",
+      "en": "Köfte plate",
+      "tr": "Köfte tabağı",
+      "de": "Köfte-Teller"
+     },
+     "price": 15,
+     "id": "assiettes-assiette-kofte",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Escalope de poulet",
+      "en": "Chicken breast plate",
+      "tr": "Tavuk göğsü tabağı",
+      "de": "Hähnchenschnitzel-Teller"
+     },
+     "price": 15,
+     "id": "assiettes-assiette-escalope-de-poulet",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Sucuk",
+      "en": "Sucuk plate",
+      "tr": "Sucuk tabağı",
+      "de": "Sucuk-Teller"
+     },
+     "price": 11,
+     "id": "assiettes-assiette-sucuk",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Assiette Falafel",
+      "en": "Falafel plate",
+      "tr": "Falafel tabağı",
+      "de": "Falafel-Teller"
+     },
+     "price": 11,
+     "id": "assiettes-assiette-falafel",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ]
+  },
+  {
+   "id": "pides",
+   "name": {
+    "fr": "Pides",
+    "en": "Pides",
+    "tr": "Pideler",
+    "de": "Pides"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Pide Champignons",
+      "en": "Mushroom pide",
+      "tr": "Mantarlı pide",
+      "de": "Pide mit Champignons"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, champignons, olives, tomates fraîches",
+      "en": "Mozzarella, mushrooms, olives, fresh tomatoes",
+      "tr": "Mozzarella, mantar, zeytin, taze domates",
+      "de": "Mozzarella, Champignons, Oliven, frische Tomaten"
+     },
+     "id": "pides-pide-champignons",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Chèvre miel",
+      "en": "Goat cheese & honey pide",
+      "tr": "Keçi peynirli ballı pide",
+      "de": "Pide Ziegenkäse-Honig"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, fromage de chèvre, feta, miel",
+      "en": "Mozzarella, goat cheese, feta, honey",
+      "tr": "Mozzarella, keçi peyniri, beyaz peynir, bal",
+      "de": "Mozzarella, Ziegenkäse, Feta, Honig"
+     },
+     "id": "pides-pide-chevre-miel",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Döner",
+      "en": "Döner pide",
+      "tr": "Dönerli pide",
+      "de": "Döner-Pide"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, döner poulet, oignons, tomates fraîches",
+      "en": "Mozzarella, chicken döner, onions, fresh tomatoes",
+      "tr": "Mozzarella, tavuk döner, soğan, taze domates",
+      "de": "Mozzarella, Hähnchen-Döner, Zwiebeln, frische Tomaten"
+     },
+     "bestseller": true,
+     "id": "pides-pide-doner",
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Fromage",
+      "en": "Cheese pide",
+      "tr": "Peynirli pide",
+      "de": "Käse-Pide"
+     },
+     "price": 8,
+     "description": {
+      "fr": "Mozzarella, feta, persil",
+      "en": "Mozzarella, feta, parsley",
+      "tr": "Mozzarella, beyaz peynir, maydanoz",
+      "de": "Mozzarella, Feta, Petersilie"
+     },
+     "id": "pides-pide-fromage",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Mado",
+      "en": "Pide Mado",
+      "tr": "Pide Mado",
+      "de": "Pide Mado"
+     },
+     "price": 13,
+     "description": {
+      "fr": "Mozzarella, sucuk, pastirma, salami, champignons, tomates fraîches, persil",
+      "en": "Mozzarella, sucuk, pastirma, salami, mushrooms, fresh tomatoes, parsley",
+      "tr": "Mozzarella, sucuk, pastırma, salam, mantar, taze domates, maydanoz",
+      "de": "Mozzarella, Sucuk, Pastirma, Salami, Champignons, frische Tomaten, Petersilie"
+     },
+     "id": "pides-pide-mado",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Pastirma",
+      "en": "Pastirma pide",
+      "tr": "Pastırmalı pide",
+      "de": "Pastirma-Pide"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, pastirma, tomates fraîches, persil",
+      "en": "Mozzarella, pastirma, fresh tomatoes, parsley",
+      "tr": "Mozzarella, pastırma, taze domates, maydanoz",
+      "de": "Mozzarella, Pastirma, frische Tomaten, Petersilie"
+     },
+     "id": "pides-pide-pastirma",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Sucuk",
+      "en": "Sucuk pide",
+      "tr": "Sucuklu pide",
+      "de": "Sucuk-Pide"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, sucuk, tomates fraîches, champignons, olives",
+      "en": "Mozzarella, sucuk, fresh tomatoes, mushrooms, olives",
+      "tr": "Mozzarella, sucuk, taze domates, mantar, zeytin",
+      "de": "Mozzarella, Sucuk, frische Tomaten, Champignons, Oliven"
+     },
+     "id": "pides-pide-sucuk",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Thon",
+      "en": "Tuna pide",
+      "tr": "Ton balıklı pide",
+      "de": "Thunfisch-Pide"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, thon, oignons",
+      "en": "Mozzarella, tuna, onions",
+      "tr": "Mozzarella, ton balığı, soğan",
+      "de": "Mozzarella, Thunfisch, Zwiebeln"
+     },
+     "id": "pides-pide-thon",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Viande hachée",
+      "en": "Minced meat pide",
+      "tr": "Kıymalı pide",
+      "de": "Hackfleisch-Pide"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, viande hachée, emmental, tomates fraîches",
+      "en": "Mozzarella, minced meat, Emmental, fresh tomatoes",
+      "tr": "Mozzarella, kıyma, emmental peyniri, taze domates",
+      "de": "Mozzarella, Hackfleisch, Emmentaler, frische Tomaten"
+     },
+     "id": "pides-pide-viande-hachee",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Végétarien",
+      "en": "Vegetarian pide",
+      "tr": "Vejetaryen pide",
+      "de": "Vegetarische Pide"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, champignons, aubergines, poivrons, olives, tomates fraîches, oignons, maïs",
+      "en": "Mozzarella, mushrooms, aubergines, peppers, olives, fresh tomatoes, onions, corn",
+      "tr": "Mozzarella, mantar, patlıcan, biber, zeytin, taze domates, soğan, mısır",
+      "de": "Mozzarella, Champignons, Auberginen, Paprika, Oliven, frische Tomaten, Zwiebeln, Mais"
+     },
+     "id": "pides-pide-vegetarien",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pide Épinards",
+      "en": "Spinach pide",
+      "tr": "Ispanaklı pide",
+      "de": "Spinat-Pide"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Épinards, oignons, feta",
+      "en": "Spinach, onions, feta",
+      "tr": "Ispanak, soğan, beyaz peynir",
+      "de": "Spinat, Zwiebeln, Feta"
+     },
+     "id": "pides-pide-epinards",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "pizzas",
+   "name": {
+    "fr": "Pizzas",
+    "en": "Pizzas",
+    "tr": "Pizzalar",
+    "de": "Pizzen"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Pizza 4 Fromages",
+      "en": "Four cheese pizza",
+      "tr": "Dört peynirli pizza",
+      "de": "Pizza Vier Käse"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, emmental, roquefort, fromage de chèvre, fines herbes",
+      "en": "Mozzarella, tomato sauce, Emmental, Roquefort, goat cheese, fine herbs",
+      "tr": "Mozzarella, domates sosu, emmental peyniri, rokfor peyniri, keçi peyniri, ince otlar",
+      "de": "Mozzarella, Tomatensauce, Emmentaler, Roquefort, Ziegenkäse, Kräuter"
+     },
+     "id": "pizzas-pizza-4-fromages",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza 4 Saisons",
+      "en": "Four seasons pizza",
+      "tr": "Dört mevsim pizza",
+      "de": "Pizza Vier Jahreszeiten"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, champignons, olives, poivrons, tomate, oignons, aubergines, fines herbes",
+      "en": "Mozzarella, tomato sauce, mushrooms, olives, peppers, tomato, onions, aubergines, fine herbs",
+      "tr": "Mozzarella, domates sosu, mantar, zeytin, biber, domates, soğan, patlıcan, ince otlar",
+      "de": "Mozzarella, Tomatensauce, Champignons, Oliven, Paprika, Tomate, Zwiebeln, Auberginen, Kräuter"
+     },
+     "id": "pizzas-pizza-4-saisons",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Champignons",
+      "en": "Mushroom pizza",
+      "tr": "Mantarlı pizza",
+      "de": "Pizza Champignons"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, champignons, olives",
+      "en": "Mozzarella, tomato sauce, mushrooms, olives",
+      "tr": "Mozzarella, domates sosu, mantar, zeytin",
+      "de": "Mozzarella, Tomatensauce, Champignons, Oliven"
+     },
+     "id": "pizzas-pizza-champignons",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Chèvre miel",
+      "en": "Goat cheese & honey pizza",
+      "tr": "Keçi peynirli ballı pizza",
+      "de": "Pizza Ziegenkäse-Honig"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce crème, fromage de chèvre, miel",
+      "en": "Mozzarella, cream sauce, goat cheese, honey",
+      "tr": "Mozzarella, krema sosu, keçi peyniri, bal",
+      "de": "Mozzarella, Sahnesauce, Ziegenkäse, Honig"
+     },
+     "id": "pizzas-pizza-chevre-miel",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Kebab",
+      "en": "Pizza Kebab",
+      "tr": "Pizza Kebab",
+      "de": "Pizza Kebab"
+     },
+     "price": 12,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, kebab poulet, oignons, poivrons",
+      "en": "Mozzarella, tomato sauce, chicken kebab, onions, peppers",
+      "tr": "Mozzarella, domates sosu, tavuk döner, soğan, biber",
+      "de": "Mozzarella, Tomatensauce, Hähnchen-Kebab, Zwiebeln, Paprika"
+     },
+     "id": "pizzas-pizza-kebab",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Margherita",
+      "en": "Pizza Margherita",
+      "tr": "Pizza Margherita",
+      "de": "Pizza Margherita"
+     },
+     "price": 8,
+     "description": {
+      "fr": "Mozzarella, sauce tomate",
+      "en": "Mozzarella, tomato sauce",
+      "tr": "Mozzarella, domates sosu",
+      "de": "Mozzarella, Tomatensauce"
+     },
+     "bestseller": true,
+     "id": "pizzas-pizza-margherita",
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Olive",
+      "en": "Olive pizza",
+      "tr": "Zeytinli pizza",
+      "de": "Pizza Oliven"
+     },
+     "price": 9,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, olives",
+      "en": "Mozzarella, tomato sauce, olives",
+      "tr": "Mozzarella, domates sosu, zeytin",
+      "de": "Mozzarella, Tomatensauce, Oliven"
+     },
+     "id": "pizzas-pizza-olive",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Orientale",
+      "en": "Oriental pizza",
+      "tr": "Oryantal pizza",
+      "de": "Pizza Orientale"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, merguez, olives, poivrons, oignons",
+      "en": "Mozzarella, tomato sauce, merguez, olives, peppers, onions",
+      "tr": "Mozzarella, domates sosu, merguez sucuğu, zeytin, biber, soğan",
+      "de": "Mozzarella, Tomatensauce, Merguez, Oliven, Paprika, Zwiebeln"
+     },
+     "id": "pizzas-pizza-orientale",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Pastirma",
+      "en": "Pizza Pastirma",
+      "tr": "Pizza Pastirma",
+      "de": "Pizza Pastirma"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, pastirma, olives, oignons, tomate",
+      "en": "Mozzarella, tomato sauce, pastirma, olives, onions, tomato",
+      "tr": "Mozzarella, domates sosu, pastırma, zeytin, soğan, domates",
+      "de": "Mozzarella, Tomatensauce, Pastirma, Oliven, Zwiebeln, Tomate"
+     },
+     "id": "pizzas-pizza-pastirma",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Reine",
+      "en": "Pizza Regina",
+      "tr": "Regina pizza",
+      "de": "Pizza Regina"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, lardon de dinde, olives, champignons",
+      "en": "Mozzarella, tomato sauce, turkey bacon, olives, mushrooms",
+      "tr": "Mozzarella, domates sosu, hindi füme, zeytin, mantar",
+      "de": "Mozzarella, Tomatensauce, Putenspeck, Oliven, Champignons"
+     },
+     "id": "pizzas-pizza-reine",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Salami",
+      "en": "Pizza Salami",
+      "tr": "Pizza Salami",
+      "de": "Pizza Salami"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, salami, olives",
+      "en": "Mozzarella, tomato sauce, salami, olives",
+      "tr": "Mozzarella, domates sosu, salam, zeytin",
+      "de": "Mozzarella, Tomatensauce, Salami, Oliven"
+     },
+     "id": "pizzas-pizza-salami",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Sucuk",
+      "en": "Pizza Sucuk",
+      "tr": "Pizza Sucuk",
+      "de": "Pizza Sucuk"
+     },
+     "price": 11,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, sucuk, olives, champignons, poivrons",
+      "en": "Mozzarella, tomato sauce, sucuk, olives, mushrooms, peppers",
+      "tr": "Mozzarella, domates sosu, sucuk, zeytin, mantar, biber",
+      "de": "Mozzarella, Tomatensauce, Sucuk, Oliven, Champignons, Paprika"
+     },
+     "id": "pizzas-pizza-sucuk",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Thon",
+      "en": "Tuna pizza",
+      "tr": "Ton balıklı pizza",
+      "de": "Pizza Thunfisch"
+     },
+     "price": 10,
+     "description": {
+      "fr": "Mozzarella, sauce tomate, thon, oignons, olives",
+      "en": "Mozzarella, tomato sauce, tuna, onions, olives",
+      "tr": "Mozzarella, domates sosu, ton balığı, soğan, zeytin",
+      "de": "Mozzarella, Tomatensauce, Thunfisch, Zwiebeln, Oliven"
+     },
+     "id": "pizzas-pizza-thon",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Texane",
+      "en": "Texan pizza",
+      "tr": "Teksas pizza",
+      "de": "Pizza Texas"
+     },
+     "price": 12,
+     "description": {
+      "fr": "Sauce tomate BBQ, mozzarella, escalope de poulet, oignons, poivrons",
+      "en": "BBQ tomato sauce, mozzarella, chicken breast, onions, peppers",
+      "tr": "Barbekü domates sosu, mozzarella, tavuk göğsü, soğan, biber",
+      "de": "BBQ-Tomatensauce, Mozzarella, Hähnchenschnitzel, Zwiebeln, Paprika"
+     },
+     "id": "pizzas-pizza-texane",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Poulet crème",
+      "en": "Chicken & cream pizza",
+      "tr": "Kremalı tavuklu pizza",
+      "de": "Pizza Hähnchen-Sahne"
+     },
+     "price": 12,
+     "description": {
+      "fr": "Base crème, mozzarella, escalope de poulet, oignons, olives, champignons",
+      "en": "Cream base, mozzarella, chicken breast, onions, olives, mushrooms",
+      "tr": "Krema tabanı, mozzarella, tavuk göğsü, soğan, zeytin, mantar",
+      "de": "Sahnebasis, Mozzarella, Hähnchenschnitzel, Zwiebeln, Oliven, Champignons"
+     },
+     "id": "pizzas-pizza-poulet-creme",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    },
+    {
+     "name": {
+      "fr": "Pizza Mado",
+      "en": "Pizza Mado",
+      "tr": "Pizza Mado",
+      "de": "Pizza Mado"
+     },
+     "price": 13,
+     "description": {
+      "fr": "Sauce tomate, mozzarella, sucuk, pastirma, champignons, olives, poivrons",
+      "en": "Tomato sauce, mozzarella, sucuk, pastirma, mushrooms, olives, peppers",
+      "tr": "Domates sosu, mozzarella, sucuk, pastırma, mantar, zeytin, biber",
+      "de": "Tomatensauce, Mozzarella, Sucuk, Pastirma, Champignons, Oliven, Paprika"
+     },
+     "id": "pizzas-pizza-mado",
+     "bestseller": false,
+     "hidden": false,
+     "photo": ""
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "accompagnements",
+   "name": {
+    "fr": "Accompagnements",
+    "en": "Sides",
+    "tr": "Yan ürünler",
+    "de": "Beilagen"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Grande frites",
+      "en": "Large fries",
+      "tr": "Büyük patates",
+      "de": "Große Pommes"
+     },
+     "price": 6.5,
+     "id": "accompagnements-grande-frites",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Moyenne frites",
+      "en": "Medium fries",
+      "tr": "Orta patates",
+      "de": "Mittlere Pommes"
+     },
+     "price": 4,
+     "bestseller": true,
+     "id": "accompagnements-moyenne-frites",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Petite frites",
+      "en": "Small fries",
+      "tr": "Küçük patates",
+      "de": "Kleine Pommes"
+     },
+     "price": 3,
+     "id": "accompagnements-petite-frites",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Nuggets (6 pièces)",
+      "en": "Nuggets (6 pcs)",
+      "tr": "Nugget (6 adet)",
+      "de": "Nuggets (6 Stück)"
+     },
+     "price": 4.5,
+     "id": "accompagnements-nuggets-6-pieces",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Nuggets (12 pièces)",
+      "en": "Nuggets (12 pcs)",
+      "tr": "Nugget (12 adet)",
+      "de": "Nuggets (12 Stück)"
+     },
+     "price": 8,
+     "id": "accompagnements-nuggets-12-pieces",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Nuggets (20 pièces)",
+      "en": "Nuggets (20 pcs)",
+      "tr": "Nugget (20 adet)",
+      "de": "Nuggets (20 Stück)"
+     },
+     "price": 12,
+     "id": "accompagnements-nuggets-20-pieces",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Tenders (2 pièces)",
+      "en": "Tenders (2 pcs)",
+      "tr": "Tenders (2 adet)",
+      "de": "Tenders (2 Stück)"
+     },
+     "price": 4,
+     "id": "accompagnements-tenders-2-pieces",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Tenders (5 pièces)",
+      "en": "Tenders (5 pcs)",
+      "tr": "Tenders (5 adet)",
+      "de": "Tenders (5 Stück)"
+     },
+     "price": 8,
+     "id": "accompagnements-tenders-5-pieces",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Supplément feta",
+      "en": "Extra feta",
+      "tr": "Ekstra beyaz peynir",
+      "de": "Extra Feta"
+     },
+     "price": 1,
+     "id": "accompagnements-supplement-feta",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Supplément viande",
+      "en": "Extra meat",
+      "tr": "Ekstra et",
+      "de": "Extra Fleisch"
+     },
+     "price": 2,
+     "id": "accompagnements-supplement-viande",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "boissons",
+   "name": {
+    "fr": "Boissons",
+    "en": "Drinks",
+    "tr": "İçecekler",
+    "de": "Getränke"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Carola",
+      "en": "Carola",
+      "tr": "Carola",
+      "de": "Carola"
+     },
+     "price": 2,
+     "bestseller": true,
+     "id": "boissons-carola",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Cristaline",
+      "en": "Cristaline",
+      "tr": "Cristaline",
+      "de": "Cristaline"
+     },
+     "price": 1.5,
+     "id": "boissons-cristaline",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Canette 33 cl (Coca-Cola, Fanta, Lipton…)",
+      "en": "Can 33 cl (Coca-Cola, Fanta, Lipton…)",
+      "tr": "Kutu 33 cl (Coca-Cola, Fanta, Lipton…)",
+      "de": "Dose 33 cl (Coca-Cola, Fanta, Lipton…)"
+     },
+     "price": 2,
+     "id": "boissons-canette-33-cl-coca-cola-fanta-lipton",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bouteille 50 cl (Coca-Cola, Oasis, San Pellegrino…)",
+      "en": "Bottle 50 cl (Coca-Cola, Oasis, San Pellegrino…)",
+      "tr": "Şişe 50 cl (Coca-Cola, Oasis, San Pellegrino…)",
+      "de": "Flasche 50 cl (Coca-Cola, Oasis, San Pellegrino…)"
+     },
+     "price": 2.5,
+     "id": "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Coca-Cola 1,25 L",
+      "en": "Coca-Cola 1,25 L",
+      "tr": "Coca-Cola 1,25 L",
+      "de": "Coca-Cola 1,25 L"
+     },
+     "price": 4,
+     "id": "boissons-coca-cola-1-25-l",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Coca-Cola 1,5 L",
+      "en": "Coca-Cola 1,5 L",
+      "tr": "Coca-Cola 1,5 L",
+      "de": "Coca-Cola 1,5 L"
+     },
+     "price": 4,
+     "id": "boissons-coca-cola-1-5-l",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Red Bull",
+      "en": "Red Bull",
+      "tr": "Red Bull",
+      "de": "Red Bull"
+     },
+     "price": 3,
+     "id": "boissons-red-bull",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "alcools",
+   "name": {
+    "fr": "Boissons alcoolisées",
+    "en": "Alcoholic drinks",
+    "tr": "Alkollü içecekler",
+    "de": "Alkoholische Getränke"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Bière 1664 / Kronenbourg 75 cl",
+      "en": "1664 / Kronenbourg beer 75 cl",
+      "tr": "1664 / Kronenbourg bira 75 cl",
+      "de": "Bier 1664 / Kronenbourg 75 cl"
+     },
+     "price": 5,
+     "id": "alcools-biere-1664-kronenbourg-75-cl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bière 1664 50 cl",
+      "en": "1664 beer 50 cl",
+      "tr": "1664 bira 50 cl",
+      "de": "Bier 1664 50 cl"
+     },
+     "price": 3.5,
+     "id": "alcools-biere-1664-50-cl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bière Bavaria 50 cl",
+      "en": "Bavaria beer 50 cl",
+      "tr": "Bavaria bira 50 cl",
+      "de": "Bier Bavaria 50 cl"
+     },
+     "price": 4,
+     "bestseller": true,
+     "id": "alcools-biere-bavaria-50-cl",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bière Desperados 50 cl",
+      "en": "Desperados beer 50 cl",
+      "tr": "Desperados bira 50 cl",
+      "de": "Bier Desperados 50 cl"
+     },
+     "price": 4.5,
+     "id": "alcools-biere-desperados-50-cl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bière Efes 50 cl",
+      "en": "Efes beer 50 cl",
+      "tr": "Efes bira 50 cl",
+      "de": "Bier Efes 50 cl"
+     },
+     "price": 4,
+     "id": "alcools-biere-efes-50-cl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bière Heineken 50 cl",
+      "en": "Heineken beer 50 cl",
+      "tr": "Heineken bira 50 cl",
+      "de": "Bier Heineken 50 cl"
+     },
+     "price": 3.5,
+     "id": "alcools-biere-heineken-50-cl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bière Kronenbourg 50 cl",
+      "en": "Kronenbourg beer 50 cl",
+      "tr": "Kronenbourg bira 50 cl",
+      "de": "Bier Kronenbourg 50 cl"
+     },
+     "price": 3.5,
+     "id": "alcools-biere-kronenbourg-50-cl",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Verre de vin",
+      "en": "Glass of wine",
+      "tr": "Kadeh şarap",
+      "de": "Glas Wein"
+     },
+     "price": 2.5,
+     "id": "alcools-verre-de-vin",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Carafe de vin 1/4",
+      "en": "Carafe of wine 1/4",
+      "tr": "Sürahi şarap 1/4",
+      "de": "Karaffe Wein 1/4"
+     },
+     "price": 6,
+     "id": "alcools-carafe-de-vin-1-4",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Carafe de vin 1/2",
+      "en": "Carafe of wine 1/2",
+      "tr": "Sürahi şarap 1/2",
+      "de": "Karaffe Wein 1/2"
+     },
+     "price": 9,
+     "id": "alcools-carafe-de-vin-1-2",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Bouteille de vin",
+      "en": "Bottle of wine",
+      "tr": "Şişe şarap",
+      "de": "Flasche Wein"
+     },
+     "price": 16,
+     "id": "alcools-bouteille-de-vin",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  },
+  {
+   "id": "desserts",
+   "name": {
+    "fr": "Desserts",
+    "en": "Desserts",
+    "tr": "Tatlılar",
+    "de": "Desserts"
+   },
+   "items": [
+    {
+     "name": {
+      "fr": "Baklava (pièce)",
+      "en": "Baklava (per piece)",
+      "tr": "Baklava (adet)",
+      "de": "Baklava (Stück)"
+     },
+     "price": 2,
+     "bestseller": true,
+     "id": "desserts-baklava-piece",
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Künefe",
+      "en": "Künefe",
+      "tr": "Künefe",
+      "de": "Künefe"
+     },
+     "price": 6,
+     "id": "desserts-kunefe",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Künefe avec glace",
+      "en": "Künefe with ice cream",
+      "tr": "Dondurmalı künefe",
+      "de": "Künefe mit Eis"
+     },
+     "price": 7.5,
+     "id": "desserts-kunefe-avec-glace",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    },
+    {
+     "name": {
+      "fr": "Tiramisu",
+      "en": "Tiramisu",
+      "tr": "Tiramisu",
+      "de": "Tiramisu"
+     },
+     "price": 3.5,
+     "id": "desserts-tiramisu",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     }
+    }
+   ],
+   "note": {
+    "fr": "",
+    "en": "",
+    "tr": "",
+    "de": ""
+   }
+  }
+ ],
+ "info": {
+  "address": "",
+  "phone": "",
+  "hours": {
+   "fr": "",
+   "en": "",
+   "tr": "",
+   "de": ""
+  }
+ },
+ "promos": []
+}

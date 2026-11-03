@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mado · Menu</title>
+<meta name="description" content="Restaurant Mado : kebab, pides, pizzas, assiettes. Menu en français, English, Türkçe, Deutsch.">
+<meta name="theme-color" content="#1c1c1c">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#161616; --surface:#222; --surface-2:#2b2b2b; --line:#333;
+  --text:#f4f1ec; --muted:#a9a39a; --accent:#f39200; --accent-ink:#1a1100; --green:#5cb85c;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.4}
+button{font:inherit;color:inherit;cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ---------- Écran d'accueil / choix de langue ---------- */
+#splash{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:28px;text-align:center;
+  background:radial-gradient(120% 70% at 50% 0%,#2a2a2a 0%,var(--bg) 70%)}
+#splash .logo{width:min(300px,78vw);border-radius:22px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#splash h1{margin:0;font-size:1.05rem;font-weight:500;color:var(--muted);letter-spacing:.02em}
+.langs{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:min(420px,100%)}
+.langs button{display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface);font-size:1.05rem;font-weight:600;text-align:left;transition:border-color .15s,transform .1s}
+.langs button:hover,.langs button:focus-visible{border-color:var(--accent);outline:none}
+.langs button:active{transform:scale(.98)}
+.langs .flag{font-size:1.6rem;line-height:1}
+.langs small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
+
+/* ---------- Menu ---------- */
+#app{display:none}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(22,22,22,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.bar .logo{height:40px;border-radius:8px;cursor:pointer}
+.bar .spacer{flex:1}
+.lang-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.9rem}
+.search{max-width:760px;margin:0 auto;padding:0 16px 10px}
+.search input{width:100%;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.search input:focus{outline:none;border-color:var(--accent)}
+nav.cats{max-width:760px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:0 16px 10px;scrollbar-width:none}
+nav.cats::-webkit-scrollbar{display:none}
+nav.cats a{flex:none;padding:7px 14px;border-radius:999px;background:var(--surface-2);color:var(--text);text-decoration:none;font-size:.88rem;font-weight:600;white-space:nowrap;border:1px solid transparent}
+nav.cats a.active{background:var(--accent);color:var(--accent-ink)}
+main{max-width:760px;margin:0 auto;padding:8px 16px 48px}
+section.cat{scroll-margin-top:150px;padding-top:18px}
+section.cat h2{font-size:1.25rem;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+section.cat h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--accent),transparent);border-radius:2px}
+.note{color:var(--muted);font-size:.88rem;margin:0 0 8px}
+.items{display:grid;gap:10px;margin-top:10px}
+@media (min-width:640px){.items{grid-template-columns:1fr 1fr}}
+.item{display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px;min-height:96px}
+.item .ph{flex:none;width:92px;height:92px;border-radius:10px;overflow:hidden;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:2.2rem}
+.item .ph img{width:100%;height:100%;object-fit:cover}
+.item .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.item h3{margin:0;font-size:1rem;font-weight:650}
+.item p{margin:3px 0 0;color:var(--muted);font-size:.84rem}
+.item .meta{margin-top:auto;padding-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.price{font-weight:800;color:var(--accent);font-size:1.05rem}
+.badge{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(92,184,92,.15);color:#8fd88f;border:1px solid rgba(92,184,92,.35)}
+.old{color:var(--muted);text-decoration:line-through;font-size:.85rem}
+.badge.promo{background:rgba(243,146,0,.15);color:#ffb54d;border-color:rgba(243,146,0,.45)}
+.promos{display:grid;gap:10px;margin-top:14px}
+.promo-card{border-radius:var(--radius);padding:14px 16px;background:linear-gradient(135deg,#3a2400,#2a1a00);border:1px solid rgba(243,146,0,.5)}
+.promo-card strong{display:block;color:var(--accent);font-size:1.05rem}
+.promo-card span{color:var(--text);font-size:.9rem}
+.promo-card small{display:block;color:var(--muted);margin-top:4px;font-size:.78rem}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+footer{max-width:760px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.82rem;text-align:center}
+footer .info{margin-bottom:8px;color:var(--text)}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <img class="logo" src="img/logo.svg" alt="Mado">
+  <h1>Bienvenue · Welcome · Hoş geldiniz · Willkommen</h1>
+  <div class="langs" id="langs"></div>
+</div>
+
+<div id="app">
+  <header class="top">
+    <div class="bar">
+      <img class="logo" src="img/logo.svg" alt="Mado" id="homeLogo">
+      <div class="spacer"></div>
+      <button class="lang-btn" id="langBtn"></button>
+    </div>
+    <div class="search"><input id="q" type="search" autocomplete="off"></div>
+    <nav class="cats" id="cats"></nav>
+  </header>
+  <main id="menu"></main>
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const LANGS = [
+  {code:"fr", flag:"🇫🇷", label:"Français", sub:"Menu en français"},
+  {code:"en", flag:"🇬🇧", label:"English", sub:"Menu in English"},
+  {code:"tr", flag:"🇹🇷", label:"Türkçe", sub:"Türkçe menü"},
+  {code:"de", flag:"🇩🇪", label:"Deutsch", sub:"Speisekarte auf Deutsch"},
+];
+const LOCALES = {fr:"fr-FR", en:"en-IE", tr:"tr-TR", de:"de-DE"};
+const ICONS = {menus:"🍱",pokebowl:"🥗",sandwichs:"🥙",assiettes:"🍽️",pides:"🫓",pizzas:"🍕",accompagnements:"🍟",boissons:"🥤",alcools:"🍺",desserts:"🍰"};
+let MENU = null, lang = "fr", PROMOS = [];
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const t = (obj) => obj ? (obj[lang] || obj.fr || "") : "";
+const ui = (k) => t(MENU.ui[k]);
+const store = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(k,v){try{localStorage.setItem(k,v)}catch{}} };
+
+function fmtPrice(p){
+  if (p === null || p === undefined || p === "") return ui("priceOnRequest");
+  return new Intl.NumberFormat(LOCALES[lang], {style:"currency", currency:"EUR", minimumFractionDigits: Number.isInteger(+p) ? 0 : 2}).format(+p);
+}
+
+async function loadMenu(){
+  if (window.MENU_EMBED) return window.MENU_EMBED;
+  for (const u of ["/api/menu", "menu.json"]) {
+    try { const r = await fetch(u, {cache:"no-store"}); if (r.ok) return await r.json(); } catch {}
+  }
+  throw new Error("menu indisponible");
+}
+
+function renderSplash(){
+  const last = store.get("mado-lang");
+  $("#langs").innerHTML = LANGS.map(l =>
+    `<button data-lang="${l.code}" ${l.code===last?'style="border-color:var(--accent)"':''}><span class="flag">${l.flag}</span><span>${l.label}<small>${l.sub}</small></span></button>`).join("");
+  $("#langs").onclick = (e) => { const b = e.target.closest("button"); if (b) openMenu(b.dataset.lang); };
+}
+
+function showSplash(){
+  $("#app").style.display = "none"; $("#splash").style.display = "flex";
+  history.replaceState(null, "", location.pathname);
+  renderSplash(); window.scrollTo(0,0);
+}
+
+function openMenu(code){
+  lang = code; store.set("mado-lang", code);
+  document.documentElement.lang = code;
+  $("#splash").style.display = "none"; $("#app").style.display = "block";
+  history.replaceState(null, "", "?lang=" + code);
+  const L = LANGS.find(l => l.code === code);
+  $("#langBtn").innerHTML = `<span>${L.flag}</span><span>${code.toUpperCase()}</span>`;
+  $("#q").placeholder = ui("search"); $("#q").value = "";
+  renderMenu(); window.scrollTo(0,0);
+}
+
+/* ---------- Promos (heure de Paris) ---------- */
+const DAYS = {fr:["lun","mar","mer","jeu","ven","sam","dim"],en:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],tr:["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"],de:["Mo","Di","Mi","Do","Fr","Sa","So"]};
+function parisNow(){
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Paris",weekday:"short",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+  return { day: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].indexOf(parts.weekday)+1, min: (+parts.hour)*60 + (+parts.minute), date: `${parts.year}-${parts.month}-${parts.day}` };
+}
+const toMin = (hm) => { if (!hm) return null; const [h,m] = hm.split(":").map(Number); return h*60+(m||0); };
+function promoActive(p, now){
+  if (!p.active) return false;
+  if (p.startDate && now.date < p.startDate) return false;
+  if (p.endDate && now.date > p.endDate) return false;
+  const f = toMin(p.from), to = toMin(p.to);
+  let day = now.day;
+  if (f !== null && to !== null && to <= f) { // plage qui passe minuit (ex. 22:00 → 02:00)
+    if (now.min >= f) {} else if (now.min < to) { day = day === 1 ? 7 : day - 1; } else return false;
+  } else {
+    if (f !== null && now.min < f) return false;
+    if (to !== null && now.min >= to) return false;
+  }
+  return !p.days || !p.days.length || p.days.includes(day);
+}
+function activePromos(){ const now = parisNow(); return (MENU.promos || []).filter(p => promoActive(p, now)); }
+function promoPrice(it, promos){
+  let best = null;
+  for (const p of promos) for (const x of (p.items || [])) if (x.id === it.id && x.price !== null && x.price !== "" && (best === null || +x.price < best)) best = +x.price;
+  return best;
+}
+function promoWhen(p){
+  const d = (p.days && p.days.length && p.days.length < 7) ? p.days.map(n => DAYS[lang][n-1]).join(", ") : "";
+  const h = (p.from || p.to) ? `${p.from || "00:00"}–${p.to || "24:00"}` : "";
+  return [d, h].filter(Boolean).join(" · ");
+}
+
+function itemCard(it, catId){
+  const ph = it.photo ? `<img src="${esc(it.photo)}" alt="" loading="lazy">` : (ICONS[catId] || "🍴");
+  const desc = t(it.description);
+  const pp = promoPrice(it, PROMOS);
+  return `<article class="item">
+    <div class="ph">${ph}</div>
+    <div class="tx">
+      <h3>${esc(t(it.name))}</h3>
+      ${desc ? `<p>${esc(desc)}</p>` : ""}
+      <div class="meta">${pp !== null && pp < +it.price ? `<span class="old">${esc(fmtPrice(it.price))}</span><span class="price">${esc(fmtPrice(pp))}</span><span class="badge promo">${esc(ui("promo"))}</span>` : `<span class="price">${esc(fmtPrice(it.price))}</span>`}${it.bestseller ? `<span class="badge">★ ${esc(ui("bestseller"))}</span>` : ""}</div>
+    </div>
+  </article>`;
+}
+
+function renderMenu(){
+  PROMOS = activePromos();
+  const norm = (x) => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const q = norm($("#q").value.trim());
+  const match = (it) => !q || norm(t(it.name) + " " + t(it.description) + " " + (it.name.fr || "")).includes(q);
+  const cats = MENU.categories.filter(c => !c.hidden).map(c => ({...c, items: c.items.filter(it => !it.hidden && match(it))})).filter(c => c.items.length);
+  const best = q ? [] : MENU.categories.filter(c=>!c.hidden).flatMap(c => c.items.filter(it => !it.hidden && it.bestseller).map(it => [it, c.id]));
+  const sections = [];
+  if (best.length) sections.push({id:"best", title:"★ " + ui("bestsellers"), html: best.map(([it,cid]) => itemCard(it,cid)).join("")});
+  for (const c of cats) sections.push({id:c.id, title:t(c.name), note:t(c.note), html:c.items.map(it => itemCard(it,c.id)).join("")});
+
+  $("#cats").innerHTML = sections.map(s => `<a href="#${s.id}" data-id="${s.id}">${esc(s.title)}</a>`).join("");
+  const promoHtml = (!q && PROMOS.length) ? `<div class="promos">${PROMOS.map(p => `<div class="promo-card"><strong>🔥 ${esc(t(p.title))}</strong>${t(p.text)?`<span>${esc(t(p.text))}</span>`:""}${promoWhen(p)?`<small>${esc(promoWhen(p))}</small>`:""}</div>`).join("")}</div>` : "";
+  $("#menu").innerHTML = promoHtml + (sections.length ? sections.map(s =>
+    `<section class="cat" id="${s.id}"><h2>${esc(s.title)}</h2>${s.note?`<p class="note">${esc(s.note)}</p>`:""}<div class="items">${s.html}</div></section>`).join("")
+    : `<p class="empty">${esc(ui("noResult"))}</p>`);
+  const info = MENU.info || {};
+  const lines = [info.address, info.phone, t(info.hours)].filter(Boolean).map(esc).join(" · ");
+  $("#footer").innerHTML = `${lines?`<div class="info">${lines}</div>`:""}<div>${esc(ui("allergens"))}</div><div style="margin-top:6px">© Mado</div>`;
+  spy();
+}
+
+let obs;
+function spy(){
+  if (obs) obs.disconnect();
+  obs = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) {
+      document.querySelectorAll("#cats a").forEach(a => a.classList.toggle("active", a.dataset.id === e.target.id));
+      const a = document.querySelector(`#cats a[data-id="${e.target.id}"]`);
+      if (a) a.scrollIntoView({block:"nearest", inline:"center", behavior:"smooth"});
+    }
+  }, {rootMargin:"-160px 0px -60% 0px"});
+  document.querySelectorAll("section.cat").forEach(s => obs.observe(s));
+}
+
+$("#langBtn").onclick = showSplash;
+$("#homeLogo").onclick = showSplash;
+$("#q").oninput = renderMenu;
+// les promos changent selon l'heure : on vérifie chaque minute
+setInterval(() => { if (MENU && $("#app").style.display === "block") { const ids = activePromos().map(p=>p.id).join(); if (ids !== PROMOS.map(p=>p.id).join()) { const y = scrollY; renderMenu(); scrollTo(0, y); } } }, 60000);
+
+(async () => {
+  try { MENU = await loadMenu(); } catch (e) { document.body.innerHTML = '<p style="padding:40px;text-align:center">Menu indisponible, réessayez plus tard.</p>'; return; }
+  const p = new URLSearchParams(location.search).get("lang");
+  if (p && LANGS.some(l => l.code === p)) openMenu(p); else showSplash();
+})();
+</script>
+</body>
+</html>
