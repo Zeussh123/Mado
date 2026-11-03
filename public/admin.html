@@ -30,7 +30,8 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rg
 header .wrap{display:flex;align-items:center;gap:10px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
 header img{height:36px;border-radius:8px}
 header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
-.tabs{display:flex;gap:6px;padding:10px 0;overflow-x:auto}
+.tabs{display:flex;gap:6px;padding-top:0!important;padding-bottom:10px!important;overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none}
+@media (max-width:520px){header h1{display:none}header .wrap{justify-content:flex-end}header img{margin-right:auto}.linkbtn,#logout{padding:7px 10px;font-size:.85rem}}
 .tabs button{flex:none;border-radius:999px;padding:7px 14px;font-size:.9rem}
 .tabs button.on{background:var(--accent);color:var(--ink);border-color:var(--accent)}
 .status{font-size:.85rem;color:var(--muted)}
@@ -86,6 +87,13 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 #modal[hidden]{display:none}
 .mbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;width:min(420px,100%);display:grid;gap:12px}
 .mbox p{margin:0;white-space:pre-line}
+.gchoice{display:grid;grid-template-columns:56px 1fr 96px auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.gchoice.off{opacity:.5}
+.gchoice .gi{width:56px;height:56px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;border:1px dashed #555}
+.gchoice .gi svg,.gchoice .gi img{width:46px;height:46px;object-fit:cover;border-radius:8px}
+.gchoice .gi.busy{opacity:.4}
+.gchoice details{grid-column:2/-1}
+@media (max-width:520px){.gchoice{grid-template-columns:56px 1fr 84px}.gchoice .gx{grid-column:2/-1}}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:10px;z-index:50;display:none;max-width:90vw}
 </style>
 </head>
@@ -111,6 +119,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
     </div>
     <div class="wrap tabs" id="tabs">
       <button data-tab="menu" class="on">Produits</button>
+      <button data-tab="options">Options</button>
       <button data-tab="promos">Promos</button>
       <button data-tab="info">Infos du restaurant</button>
       <button data-tab="qr">QR code</button>
@@ -124,6 +133,12 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <p class="small">Touchez une catégorie pour l'ouvrir. Décochez « Visible » pour retirer un produit de la carte sans le perdre, ou supprimez-le définitivement avec « Plus ». N'oubliez pas d'enregistrer en bas de l'écran.</p>
       <div id="cats"></div>
       <button id="addCat" type="button" style="margin-top:8px">+ Ajouter une catégorie</button>
+    </section>
+
+    <section id="tab-options" style="display:none">
+      <p class="small">Les options sont les choix proposés au client quand il touche un produit (viande, crudités, sauces…). Ici vous changez les choix, les suppléments et les images. Pour choisir quels produits proposent quelles options, ouvrez le produit dans « Produits » puis « Plus ».</p>
+      <div id="groups"></div>
+      <button id="addGroup" type="button" style="margin-top:8px">+ Nouveau groupe d'options</button>
     </section>
 
     <section id="tab-promos" style="display:none">
@@ -165,6 +180,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 <div id="modal" hidden><div class="mbox"><p id="mMsg"></p><input id="mInput" hidden><div class="actions" style="justify-content:flex-end"><button id="mNo" type="button">Annuler</button><button id="mYes" class="primary" type="button">OK</button></div></div></div>
 
 <script src="vendor/qrcode.min.js"></script>
+<script src="icons.js"></script>
 <script>
 const LANGS = ["fr","en","tr","de"];
 const LNAME = {fr:"Français",en:"English",tr:"Türkçe",de:"Deutsch"};
@@ -192,10 +208,21 @@ async function login(pw){
   token = ""; return false;
 }
 
+
+async function withDefaults(m){
+  if (m.optionGroups) return m;
+  try {
+    const def = await (await fetch("menu.json", {cache:"no-store"})).json();
+    m.optionGroups = def.optionGroups || []; m.ui = {...def.ui, ...m.ui};
+    const o = {}; for (const c of def.categories) for (const it of c.items) o[it.id] = it.options || [];
+    for (const c of m.categories) for (const it of c.items) if (!it.options) it.options = o[it.id] || [];
+  } catch {}
+  return m;
+}
 async function loadMenu(){
   if (DEMO) {
     const local = ls.get("mado-demo-menu");
-    if (local) return JSON.parse(local);
+    if (local) return withDefaults(JSON.parse(local));
     const r = await fetch("menu.json", {cache:"no-store"}); return r.json();
   }
   const r = await fetch("/api/menu", {cache:"no-store"}); return r.json();
@@ -244,6 +271,7 @@ function render(){
   }).join("");
   renderInfo();
   renderPromos();
+  renderGroups();
   updateStatus();
 }
 
@@ -266,6 +294,8 @@ function itemHtml(c, ci, it, ii){
     <div class="more">
       <div class="lbl">Nom dans les autres langues (si vide, le nom français est affiché)</div>
       <div class="grid4">${["en","tr","de"].map(l=>`<input data-f="name.${l}" placeholder="${LNAME[l]}" value="${esc(it.name[l])}">`).join("")}</div>
+      <div class="lbl">Options proposées au client</div>
+      <div class="toggles">${(menu.optionGroups||[]).map(g=>`<label><input type="checkbox" data-opt="${esc(g.id)}" ${(it.options||[]).includes(g.id)?"checked":""}> ${esc(g.name.fr)}</label>`).join("") || '<span class="small">Aucun groupe d\'options</span>'}</div>
       <div class="lbl">Description / composition</div>
       <div class="grid4">${LANGS.map(l=>`<textarea data-f="description.${l}" rows="2" placeholder="${LNAME[l]}">${esc((it.description||{})[l])}</textarea>`).join("")}</div>
       <div class="actions">
@@ -300,7 +330,12 @@ function parsePrice(v){ v = v.trim().replace(",", ".").replace("€",""); if (v 
 /* ---------- Événements ---------- */
 $("#cats").addEventListener("input", (e) => {
   const el = e.target, itemEl = el.closest(".item"), catEl = el.closest(".cat");
-  if (itemEl && el.dataset.f) {
+  if (itemEl && el.dataset.opt) {
+    const it = menu.categories[itemEl.dataset.ci].items[itemEl.dataset.ii];
+    const order = (menu.optionGroups||[]).map(g => g.id);
+    const set = new Set(it.options || []); el.checked ? set.add(el.dataset.opt) : set.delete(el.dataset.opt);
+    it.options = order.filter(id => set.has(id));
+  } else if (itemEl && el.dataset.f) {
     const it = menu.categories[itemEl.dataset.ci].items[itemEl.dataset.ii];
     const f = el.dataset.f;
     if (f === "price") { const p = parsePrice(el.value); if (p !== undefined) it.price = p; el.style.borderColor = p===undefined ? "var(--red)" : ""; }
@@ -447,8 +482,84 @@ $("#addPromo").onclick = () => {
   $("#promos .panel:last-child input[data-pf='title.fr']").focus();
 };
 
+/* ---------- Groupes d'options ---------- */
+const ICON_KEYS = Object.keys(window.MADO_ICONS || {});
+const choiceIcon = (c) => c.photo ? `<img src="${esc(c.photo)}" alt="">` : ((window.MADO_ICONS||{})[c.icon] || (window.MADO_ICONS||{}).sauce || "");
+function renderGroups(){
+  menu.optionGroups = menu.optionGroups || [];
+  $("#groups").innerHTML = menu.optionGroups.length ? menu.optionGroups.map((g, gi) => {
+    const used = menu.categories.reduce((n, c) => n + c.items.filter(it => (it.options||[]).includes(g.id)).length, 0);
+    return `<div class="panel" data-gi="${gi}">
+      <div class="row" style="justify-content:space-between"><b style="font-size:1.05rem">${esc(g.name.fr || "(sans nom)")}</b><span class="small">proposé sur ${used} produit${used>1?"s":""}</span></div>
+      <div class="lbl">Nom du groupe</div>
+      <div class="grid4">${LANGS.map(l=>`<input data-gf="name.${l}" placeholder="${LNAME[l]}" value="${esc(g.name[l])}">`).join("")}</div>
+      <div class="toggles"><label><input type="radio" name="gm${gi}" data-gf="single" ${g.multi?"":"checked"}> 1 seul choix</label><label><input type="radio" name="gm${gi}" data-gf="multi" ${g.multi?"checked":""}> Plusieurs choix</label></div>
+      <div class="lbl" style="margin-top:14px">Choix (touchez l'image pour mettre votre photo)</div>
+      ${g.choices.map((c, ci) => `<div class="gchoice ${c.hidden?"off":""}" data-ci="${ci}">
+        <div class="gi" data-gact="photo" title="Changer l'image">${choiceIcon(c)}</div>
+        <input data-cf="name.fr" value="${esc(c.name.fr)}" placeholder="Nom">
+        <div class="pr" style="position:relative"><input data-cf="price" inputmode="decimal" placeholder="Supplément" value="${+c.price ? String(c.price).replace(".",",") : ""}"><span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted)">€</span></div>
+        <div class="toggles gx" style="margin:0"><label><input type="checkbox" data-cf="visible" ${c.hidden?"":"checked"}> Dispo</label></div>
+        <details><summary class="small" style="cursor:pointer">Traductions, image, ordre, supprimer</summary>
+          <div class="grid4" style="margin-top:6px">${["en","tr","de"].map(l=>`<input data-cf="name.${l}" placeholder="${LNAME[l]}" value="${esc(c.name[l])}">`).join("")}</div>
+          <div class="lbl">Image dessinée</div>
+          <select data-cf="icon" style="width:auto">${ICON_KEYS.map(k=>`<option ${k===c.icon?"selected":""}>${k}</option>`).join("")}</select>
+          ${g.multi ? `<div class="toggles"><label><input type="checkbox" data-cf="all" ${c.all?"checked":""}> Ce choix sélectionne tout (ex. « Tout »)</label></div>` : ""}
+          <div class="actions">
+            ${c.photo?`<button data-gact="rmPhoto">Remettre l'image dessinée</button>`:""}
+            <button data-gact="up" ${ci===0?"disabled":""}>↑</button><button data-gact="down" ${ci===g.choices.length-1?"disabled":""}>↓</button>
+            <button class="danger" data-gact="delChoice">Supprimer ce choix</button>
+          </div>
+        </details>
+      </div>`).join("")}
+      <div class="actions">
+        <button data-gact="addChoice">+ Ajouter un choix</button>
+        <button class="danger" data-gact="delGroup">Supprimer le groupe</button>
+      </div>
+    </div>`;
+  }).join("") : `<p class="small">Aucun groupe d'options.</p>`;
+}
+$("#groups").addEventListener("input", (e) => {
+  const el = e.target, panel = el.closest("[data-gi]"); if (!panel) return;
+  const g = menu.optionGroups[panel.dataset.gi], row = el.closest(".gchoice");
+  if (row && el.dataset.cf) {
+    const c = g.choices[row.dataset.ci], f = el.dataset.cf;
+    if (f === "price") { const v = parsePrice(el.value); if (v !== undefined) c.price = v || 0; el.style.borderColor = v===undefined ? "var(--red)" : ""; }
+    else if (f === "visible") { c.hidden = !el.checked; row.classList.toggle("off", c.hidden); }
+    else if (f === "all") c.all = el.checked;
+    else if (f === "icon") { c.icon = el.value; if (!c.photo) $(".gi", row).innerHTML = choiceIcon(c); }
+    else setPath(c, f, el.value);
+  } else if (el.dataset.gf === "single" || el.dataset.gf === "multi") { g.multi = el.dataset.gf === "multi"; g.max = g.multi ? 0 : 1; renderGroups(); }
+  else if (el.dataset.gf) setPath(g, el.dataset.gf, el.value);
+  updateStatus();
+});
+$("#groups").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-gact]"); if (!b) return;
+  const panel = b.closest("[data-gi]"), gi = +panel.dataset.gi, g = menu.optionGroups[gi];
+  const row = b.closest(".gchoice"), ci = row ? +row.dataset.ci : -1, c = row && g.choices[ci];
+  const swap = (a, i, j) => { [a[i], a[j]] = [a[j], a[i]]; };
+  switch (b.dataset.gact) {
+    case "photo": pickPhoto(c, b, renderGroups); return;
+    case "rmPhoto": c.photo = ""; break;
+    case "up": swap(g.choices, ci, ci-1); break;
+    case "down": swap(g.choices, ci, ci+1); break;
+    case "delChoice": if (!(await ask(`Supprimer « ${c.name.fr} » ?`, {yes:"Supprimer", danger:true}))) return; g.choices.splice(ci, 1); break;
+    case "addChoice": g.choices.push({id:uid(), name:blankL(), icon:"sauce", photo:"", price:0, hidden:false}); break;
+    case "delGroup": if (!(await ask(`Supprimer le groupe « ${g.name.fr} » ? Il sera retiré de tous les produits.`, {yes:"Supprimer", danger:true}))) return;
+      menu.optionGroups.splice(gi, 1); for (const cat of menu.categories) for (const it of cat.items) if (it.options) it.options = it.options.filter(id => id !== g.id); break;
+    default: return;
+  }
+  renderGroups(); updateStatus();
+});
+$("#addGroup").onclick = async () => {
+  const name = await ask("Nom du nouveau groupe (ex. « Boisson ») :", {input:true, yes:"Ajouter"}); if (!name) return;
+  menu.optionGroups = menu.optionGroups || [];
+  menu.optionGroups.push({id:"g"+uid(), name:{...blankL(), fr:name}, multi:true, max:0, choices:[]});
+  renderGroups(); updateStatus();
+};
+
 /* ---------- Photos ---------- */
-function pickPhoto(it, phEl){
+function pickPhoto(it, phEl, after = render){
   const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
   inp.onchange = async () => {
     const f = inp.files[0]; if (!f) return;
@@ -462,7 +573,7 @@ function pickPhoto(it, phEl){
         const j = await r.json(); if (!r.ok) throw new Error(j.error || "Erreur");
         it.photo = j.url;
       }
-      render(); toast("Photo ajoutée. Pensez à enregistrer.");
+      after(); updateStatus(); toast("Photo ajoutée. Pensez à enregistrer.");
     } catch (err) { toast("Échec de l'envoi de la photo : " + err.message); phEl.classList.remove("busy"); }
   };
   inp.click();
@@ -505,7 +616,7 @@ window.addEventListener("beforeunload", (e) => { if (menu && dirty()) { e.preven
 $("#tabs").onclick = (e) => {
   const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
-  for (const t of ["menu","promos","info","qr"]) $("#tab-"+t).style.display = t === b.dataset.tab ? "block" : "none";
+  for (const t of ["menu","options","promos","info","qr"]) $("#tab-"+t).style.display = t === b.dataset.tab ? "block" : "none";
   if (b.dataset.tab === "qr") drawQr();
 };
 function drawQr(){

@@ -59,10 +59,22 @@ async function safeEqual(a, b) {
 
 async function getMenu(request, env) {
   let body = await env.MADO.get(MENU_KEY);
+  const loadDefault = async () => (await env.ASSETS.fetch(new Request(new URL("/menu.json", request.url)))).text();
   if (!body) {
     // Premier lancement : on part du menu livré avec le site
-    const res = await env.ASSETS.fetch(new Request(new URL("/menu.json", request.url)));
-    body = await res.text();
+    body = await loadDefault();
+  } else {
+    // Menu enregistré avant l'arrivée des options : on ajoute celles par défaut
+    const saved = JSON.parse(body);
+    if (!saved.optionGroups) {
+      const def = JSON.parse(await loadDefault());
+      saved.optionGroups = def.optionGroups || [];
+      const opts = {};
+      for (const c of def.categories) for (const it of c.items) opts[it.id] = it.options || [];
+      for (const c of saved.categories) for (const it of c.items) if (!it.options) it.options = opts[it.id] || [];
+      saved.ui = { ...def.ui, ...saved.ui };
+      body = JSON.stringify(saved);
+    }
   }
   return new Response(body, {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },

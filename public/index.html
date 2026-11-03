@@ -71,6 +71,55 @@ section.cat h2::after{content:"";flex:1;height:2px;background:linear-gradient(90
 .empty{color:var(--muted);text-align:center;padding:40px 0}
 footer{max-width:760px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.82rem;text-align:center}
 footer .info{margin-bottom:8px;color:var(--text)}
+
+/* ---------- Fiche produit personnalisable ---------- */
+.item.custom{cursor:pointer;transition:border-color .15s,transform .1s}
+.item.custom:hover{border-color:#555}
+.item.custom:active{transform:scale(.985)}
+.cust{font-size:.72rem;font-weight:700;color:var(--accent);margin-left:auto;white-space:nowrap}
+.item .picked{font-size:.76rem;color:#8fd88f;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .2s}
+#sheet.on{opacity:1;pointer-events:auto}
+.sh{width:min(640px,100%);max-height:94vh;max-height:94dvh;background:var(--bg);border-radius:22px 22px 0 0;display:flex;flex-direction:column;transform:translateY(40px);transition:transform .25s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+#sheet.on .sh{transform:none}
+.sh-scroll{overflow-y:auto;overscroll-behavior:contain;flex:1}
+.sh-hero{position:relative;height:190px;background:radial-gradient(80% 90% at 50% 30%,#3a2a12,#1a1a1a);display:flex;align-items:center;justify-content:center}
+.sh-hero img{width:100%;height:100%;object-fit:cover}
+.sh-hero .big{font-size:5rem}
+.sh-close{position:absolute;top:12px;left:12px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#111;font-size:1.3rem;display:flex;align-items:center;justify-content:center}
+.sh-body{padding:16px 16px 8px}
+.sh-body h2{margin:0;font-size:1.4rem}
+.sh-body .d{color:var(--muted);margin:4px 0 0;font-size:.92rem}
+.grp{margin-top:22px}
+.grp-h{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+.grp-h h3{margin:0;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em}
+.grp-h small{color:var(--muted);font-size:.78rem}
+.grp-h .cnt{margin-left:auto;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.grp-h .cnt.ok{background:rgba(92,184,92,.18);color:#8fd88f}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font-size:.8rem;font-weight:600;line-height:1.15;text-align:center;transition:border-color .12s,background .12s}
+.tile .ic{width:52px;height:52px;display:flex;align-items:center;justify-content:center}
+.tile .ic svg,.tile .ic img{width:52px;height:52px;object-fit:cover;border-radius:10px}
+.tile .sup{font-size:.7rem;color:var(--accent);font-weight:700}
+.tile.on{border-color:var(--accent);background:#2b2214}
+.tile.on::after{content:"✓";position:absolute;top:5px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center}
+.tile.pop .ic{animation:pop .28s ease}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.22) rotate(-6deg)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.tile.pop .ic{animation:none}.sh,#sheet{transition:none}}
+.sh-bar{border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;background:var(--bg)}
+.sh-bar .tot{flex:1;min-width:0}
+.sh-bar .tot small{display:block;color:var(--muted);font-size:.75rem}
+.sh-bar .tot b{font-size:1.25rem;color:var(--accent)}
+.btn{border:0;border-radius:999px;padding:13px 22px;font-weight:800;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--surface-2);color:var(--text)}
+.recap{padding:22px 16px}
+.recap h2{margin:0 0 4px;font-size:1.5rem}
+.recap .hint{color:var(--muted);margin:0 0 16px;font-size:.9rem}
+.recap .line{display:flex;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.recap .line b{flex:none;width:40%;color:var(--muted);font-weight:600;font-size:.9rem}
+.recap .line span{flex:1;font-weight:700;font-size:1.05rem}
+.recap .big-total{display:flex;justify-content:space-between;margin-top:14px;font-size:1.3rem;font-weight:800}
+.recap .big-total span:last-child{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -93,8 +142,10 @@ footer .info{margin-bottom:8px;color:var(--text)}
   </header>
   <main id="menu"></main>
   <footer id="footer"></footer>
+  <div id="sheet" aria-hidden="true"><div class="sh" role="dialog" aria-modal="true"><div class="sh-scroll" id="shScroll"></div><div class="sh-bar" id="shBar"></div></div></div>
 </div>
 
+<script src="icons.js"></script>
 <script>
 const LANGS = [
   {code:"fr", flag:"🇫🇷", label:"Français", sub:"Menu en français"},
@@ -117,11 +168,23 @@ function fmtPrice(p){
   return new Intl.NumberFormat(LOCALES[lang], {style:"currency", currency:"EUR", minimumFractionDigits: Number.isInteger(+p) ? 0 : 2}).format(+p);
 }
 
+async function withDefaults(m){
+  if (m.optionGroups) return m;
+  try {
+    const def = await (await fetch("menu.json", {cache:"no-store"})).json();
+    m.optionGroups = def.optionGroups || []; m.ui = {...def.ui, ...m.ui};
+    const o = {}; for (const c of def.categories) for (const it of c.items) o[it.id] = it.options || [];
+    for (const c of m.categories) for (const it of c.items) if (!it.options) it.options = o[it.id] || [];
+  } catch {}
+  return m;
+}
+
 async function loadMenu(){
   if (window.MENU_EMBED) return window.MENU_EMBED;
-  for (const u of ["/api/menu", "menu.json"]) {
-    try { const r = await fetch(u, {cache:"no-store"}); if (r.ok) return await r.json(); } catch {}
-  }
+  try { const r = await fetch("/api/menu", {cache:"no-store"}); if (r.ok && (r.headers.get("content-type")||"").includes("json")) return await r.json(); } catch {}
+  // Aperçu sans serveur : on reprend les changements faits dans l'admin de démonstration
+  try { const local = localStorage.getItem("mado-demo-menu"); if (local) return await withDefaults(JSON.parse(local)); } catch {}
+  const r = await fetch("menu.json", {cache:"no-store"}); if (r.ok) return await r.json();
   throw new Error("menu indisponible");
 }
 
@@ -186,12 +249,15 @@ function itemCard(it, catId){
   const ph = it.photo ? `<img src="${esc(it.photo)}" alt="" loading="lazy">` : (ICONS[catId] || "🍴");
   const desc = t(it.description);
   const pp = promoPrice(it, PROMOS);
-  return `<article class="item">
+  const groups = itemGroups(it);
+  const sel = SEL[it.id], pickedTxt = sel ? choiceSummary(it, sel) : "";
+  return `<article class="item${groups.length ? " custom" : ""}" data-id="${esc(it.id)}"${groups.length ? ' role="button" tabindex="0"' : ""}>
     <div class="ph">${ph}</div>
     <div class="tx">
       <h3>${esc(t(it.name))}</h3>
       ${desc ? `<p>${esc(desc)}</p>` : ""}
-      <div class="meta">${pp !== null && pp < +it.price ? `<span class="old">${esc(fmtPrice(it.price))}</span><span class="price">${esc(fmtPrice(pp))}</span><span class="badge promo">${esc(ui("promo"))}</span>` : `<span class="price">${esc(fmtPrice(it.price))}</span>`}${it.bestseller ? `<span class="badge">★ ${esc(ui("bestseller"))}</span>` : ""}</div>
+      ${pickedTxt ? `<div class="picked">✓ ${esc(pickedTxt)}</div>` : ""}
+      <div class="meta">${pp !== null && pp < +it.price ? `<span class="old">${esc(fmtPrice(it.price))}</span><span class="price">${esc(fmtPrice(pp))}</span><span class="badge promo">${esc(ui("promo"))}</span>` : `<span class="price">${esc(fmtPrice(it.price))}</span>`}${it.bestseller ? `<span class="badge">★ ${esc(ui("bestseller"))}</span>` : ""}${groups.length ? `<span class="cust">${esc(ui("customize"))} ›</span>` : ""}</div>
     </div>
   </article>`;
 }
@@ -230,6 +296,110 @@ function spy(){
   }, {rootMargin:"-160px 0px -60% 0px"});
   document.querySelectorAll("section.cat").forEach(s => obs.observe(s));
 }
+
+
+/* ---------- Personnalisation ---------- */
+const SEL = {};          // choix du client par produit : {groupId: [choiceId,…]}
+let CUR = null;          // produit ouvert
+const findItem = (id) => { for (const c of MENU.categories) for (const it of c.items) if (it.id === id) return [it, c]; return [null, null]; };
+function itemGroups(it){
+  const all = MENU.optionGroups || [];
+  return (it.options || []).map(id => all.find(g => g.id === id)).filter(g => g && g.choices.some(c => !c.hidden));
+}
+function iconHtml(c){
+  if (c.photo) return `<img src="${esc(c.photo)}" alt="" loading="lazy">`;
+  return (window.MADO_ICONS || {})[c.icon] || (window.MADO_ICONS || {}).sauce || "";
+}
+function unitPrice(it){ const pp = promoPrice(it, PROMOS); return pp !== null && pp < +it.price ? pp : (+it.price || 0); }
+function extras(it, sel){
+  let x = 0;
+  for (const g of itemGroups(it)) for (const id of (sel[g.id] || [])) { const c = g.choices.find(c => c.id === id); if (c) x += +c.price || 0; }
+  return x;
+}
+function choiceSummary(it, sel){
+  return itemGroups(it).map(g => {
+    const ids = sel[g.id] || []; if (!ids.length) return "";
+    const names = g.choices.filter(c => ids.includes(c.id) && !c.all).map(c => t(c.name));
+    return names.join(", ");
+  }).filter(Boolean).join(" · ");
+}
+function openSheet(id){
+  const [it, cat] = findItem(id); if (!it) return;
+  CUR = it; SEL[it.id] = SEL[it.id] || {};
+  drawSheet(false);
+  $("#sheet").classList.add("on"); $("#sheet").setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  $("#shScroll").scrollTop = 0;
+}
+function closeSheet(){
+  $("#sheet").classList.remove("on"); $("#sheet").setAttribute("aria-hidden", "true");
+  document.body.style.overflow = ""; CUR = null;
+  const y = scrollY; renderMenu(); scrollTo(0, y);
+}
+function drawSheet(recap){
+  const it = CUR, sel = SEL[it.id], groups = itemGroups(it);
+  const total = unitPrice(it) + extras(it, sel);
+  const cat = findItem(it.id)[1];
+  const hero = it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="big">${ICONS[cat.id] || "🍴"}</span>`;
+  if (recap) {
+    $("#shScroll").innerHTML = `<div class="recap">
+      <h2>${esc(t(it.name))}</h2><p class="hint">${esc(ui("showStaff"))}</p>
+      ${groups.map(g => { const names = g.choices.filter(c => (sel[g.id]||[]).includes(c.id) && !c.all).map(c => t(c.name)); return `<div class="line"><b>${esc(t(g.name))}</b><span>${names.length ? esc(names.join(", ")) : "–"}</span></div>`; }).join("")}
+      <div class="big-total"><span>${esc(ui("total"))}</span><span>${esc(fmtPrice(total))}</span></div></div>`;
+    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="edit">‹ ${esc(ui("customize"))}</button><span class="tot"></span><button class="btn" data-sh="close">OK</button>`;
+    return;
+  }
+  $("#shScroll").innerHTML = `<div class="sh-hero">${hero}<button class="sh-close" data-sh="close" aria-label="Fermer">←</button></div>
+    <div class="sh-body"><h2>${esc(t(it.name))}</h2>${t(it.description) ? `<p class="d">${esc(t(it.description))}</p>` : ""}
+    ${groups.map(g => {
+      const ids = sel[g.id] || [];
+      const n = ids.filter(id => !g.choices.find(c => c.id === id)?.all).length;
+      return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(ui(g.multi ? "severalChoices" : "oneChoice"))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
+        <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
+    }).join("")}</div>`;
+  drawBar();
+}
+function drawBar(){
+  const it = CUR, sel = SEL[it.id];
+  const total = unitPrice(it) + extras(it, sel);
+  $("#shBar").innerHTML = `<span class="tot"><small>${esc(ui("total"))}</small><b>${esc(fmtPrice(total))}</b></span>
+    ${Object.values(sel).some(a => a.length) ? `<button class="btn ghost" data-sh="reset">${esc(ui("reset"))}</button>` : ""}
+    <button class="btn" data-sh="done">${esc(ui("done"))}</button>`;
+}
+function toggleChoice(gid, cid, tileEl){
+  const g = (MENU.optionGroups || []).find(g => g.id === gid), c = g.choices.find(c => c.id === cid);
+  const sel = SEL[CUR.id]; let ids = sel[gid] || [];
+  const plain = g.choices.filter(x => !x.hidden && !x.all && !(+x.price));
+  if (!g.multi) ids = ids.includes(cid) ? [] : [cid];
+  else if (c.all) ids = ids.includes(cid) ? ids.filter(id => !plain.some(p => p.id === id) && id !== cid) : [...new Set([...ids, cid, ...plain.map(p => p.id)])];
+  else {
+    ids = ids.includes(cid) ? ids.filter(id => id !== cid) : [...ids, cid];
+    const allC = g.choices.find(x => x.all);
+    if (allC) { const full = plain.every(p => ids.includes(p.id)); ids = full ? [...new Set([...ids, allC.id])] : ids.filter(id => id !== allC.id); }
+    if (g.max && ids.length > g.max) ids = ids.slice(-g.max);
+  }
+  sel[gid] = ids;
+  // mise à jour sans tout redessiner (garde le défilement)
+  const box = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`);
+  box.querySelectorAll(".tile").forEach(b => { const on = ids.includes(b.dataset.c); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  const n = ids.filter(id => !g.choices.find(x => x.id === id)?.all).length;
+  const cnt = box.querySelector(".cnt"); cnt.textContent = n + (g.multi ? "" : "/1"); cnt.classList.toggle("ok", n > 0);
+  tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
+  drawBar();
+}
+$("#menu").addEventListener("click", (e) => { const a = e.target.closest(".item.custom"); if (a) openSheet(a.dataset.id); });
+$("#menu").addEventListener("keydown", (e) => { const a = e.target.closest(".item.custom"); if (a && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openSheet(a.dataset.id); } });
+$("#sheet").addEventListener("click", (e) => {
+  if (e.target.id === "sheet") return closeSheet();
+  const tile = e.target.closest(".tile"); if (tile) return toggleChoice(tile.closest(".grp").dataset.g, tile.dataset.c, tile);
+  const b = e.target.closest("[data-sh]"); if (!b) return;
+  const a = b.dataset.sh;
+  if (a === "close") closeSheet();
+  else if (a === "reset") { SEL[CUR.id] = {}; drawSheet(false); }
+  else if (a === "done") { drawSheet(true); $("#shScroll").scrollTop = 0; }
+  else if (a === "edit") drawSheet(false);
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && CUR) closeSheet(); });
 
 $("#langBtn").onclick = showSplash;
 $("#homeLogo").onclick = showSplash;

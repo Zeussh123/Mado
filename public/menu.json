@@ -79,6 +79,54 @@
    "en": "Today's deals",
    "tr": "Güncel kampanyalar",
    "de": "Aktuelle Angebote"
+  },
+  "customize": {
+   "fr": "Personnaliser",
+   "en": "Customize",
+   "tr": "Kişiselleştir",
+   "de": "Anpassen"
+  },
+  "yourChoice": {
+   "fr": "Votre choix",
+   "en": "Your choice",
+   "tr": "Seçiminiz",
+   "de": "Ihre Auswahl"
+  },
+  "done": {
+   "fr": "Terminé",
+   "en": "Done",
+   "tr": "Tamam",
+   "de": "Fertig"
+  },
+  "reset": {
+   "fr": "Effacer",
+   "en": "Clear",
+   "tr": "Temizle",
+   "de": "Zurücksetzen"
+  },
+  "oneChoice": {
+   "fr": "1 choix",
+   "en": "Pick 1",
+   "tr": "1 seçim",
+   "de": "1 Auswahl"
+  },
+  "severalChoices": {
+   "fr": "Plusieurs choix",
+   "en": "Pick several",
+   "tr": "Birden fazla seçim",
+   "de": "Mehrfachauswahl"
+  },
+  "showStaff": {
+   "fr": "Montrez cet écran au comptoir",
+   "en": "Show this screen at the counter",
+   "tr": "Bu ekranı kasada gösterin",
+   "de": "Zeigen Sie diesen Bildschirm an der Theke"
+  },
+  "total": {
+   "fr": "Total",
+   "en": "Total",
+   "tr": "Toplam",
+   "de": "Gesamt"
   }
  },
  "categories": [
@@ -108,7 +156,13 @@
      "bestseller": true,
      "id": "menus-menu-kebab",
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "viande",
+      "crudites",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -127,7 +181,12 @@
      "bestseller": true,
      "id": "menus-menu-tacos",
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "viande",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -146,7 +205,13 @@
      "id": "menus-menu-yufka",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "viande",
+      "crudites",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -165,7 +230,12 @@
      "id": "menus-menu-hamburger",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "crudites",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -184,7 +254,13 @@
      "id": "menus-menu-assiette",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "viande",
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -203,7 +279,12 @@
      "id": "menus-menu-lahmacun",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "crudites",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -222,7 +303,12 @@
      "id": "menus-menu-maxi-tacos",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "viande",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -241,7 +327,12 @@
      "id": "menus-menu-falafel",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "crudites",
+      "sauces",
+      "sauce-frites"
+     ]
     },
     {
      "name": {
@@ -260,7 +351,8 @@
      "id": "menus-menu-bowl",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -279,7 +371,10 @@
      "id": "menus-menu-enfant",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": [
+      "sauce-frites"
+     ]
     }
    ],
    "note": {
@@ -315,7 +410,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     }
    ],
    "note": {
@@ -351,7 +447,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "viande",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -370,7 +471,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "viande",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -389,7 +495,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "viande",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -408,7 +518,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -427,7 +541,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -446,7 +564,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -465,7 +587,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "viande",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -484,7 +610,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -503,7 +633,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -522,7 +656,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -541,7 +679,11 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -560,7 +702,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "viande",
+      "crudites",
+      "sauces"
+     ]
     }
    ],
    "note": {
@@ -602,7 +749,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -621,7 +773,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -640,7 +797,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -659,7 +821,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -678,7 +845,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -697,7 +869,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -716,7 +893,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     },
     {
      "name": {
@@ -735,7 +917,12 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": [
+      "accompagnement",
+      "crudites",
+      "sauces"
+     ]
     }
    ]
   },
@@ -765,7 +952,8 @@
      "id": "pides-pide-champignons",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -784,7 +972,8 @@
      "id": "pides-pide-chevre-miel",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -803,7 +992,8 @@
      "bestseller": true,
      "id": "pides-pide-doner",
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -822,7 +1012,8 @@
      "id": "pides-pide-fromage",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -841,7 +1032,8 @@
      "id": "pides-pide-mado",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -860,7 +1052,8 @@
      "id": "pides-pide-pastirma",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -879,7 +1072,8 @@
      "id": "pides-pide-sucuk",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -898,7 +1092,8 @@
      "id": "pides-pide-thon",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -917,7 +1112,8 @@
      "id": "pides-pide-viande-hachee",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -936,7 +1132,8 @@
      "id": "pides-pide-vegetarien",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -955,7 +1152,8 @@
      "id": "pides-pide-epinards",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     }
    ],
    "note": {
@@ -991,7 +1189,8 @@
      "id": "pizzas-pizza-4-fromages",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1010,7 +1209,8 @@
      "id": "pizzas-pizza-4-saisons",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1029,7 +1229,8 @@
      "id": "pizzas-pizza-champignons",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1048,7 +1249,8 @@
      "id": "pizzas-pizza-chevre-miel",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1067,7 +1269,8 @@
      "id": "pizzas-pizza-kebab",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1086,7 +1289,8 @@
      "bestseller": true,
      "id": "pizzas-pizza-margherita",
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1105,7 +1309,8 @@
      "id": "pizzas-pizza-olive",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1124,7 +1329,8 @@
      "id": "pizzas-pizza-orientale",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1143,7 +1349,8 @@
      "id": "pizzas-pizza-pastirma",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1162,7 +1369,8 @@
      "id": "pizzas-pizza-reine",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1181,7 +1389,8 @@
      "id": "pizzas-pizza-salami",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1200,7 +1409,8 @@
      "id": "pizzas-pizza-sucuk",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1219,7 +1429,8 @@
      "id": "pizzas-pizza-thon",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1238,7 +1449,8 @@
      "id": "pizzas-pizza-texane",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1257,7 +1469,8 @@
      "id": "pizzas-pizza-poulet-creme",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     },
     {
      "name": {
@@ -1276,7 +1489,8 @@
      "id": "pizzas-pizza-mado",
      "bestseller": false,
      "hidden": false,
-     "photo": ""
+     "photo": "",
+     "options": []
     }
    ],
    "note": {
@@ -1312,7 +1526,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1331,7 +1546,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1350,7 +1566,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1369,7 +1586,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1388,7 +1606,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1407,7 +1626,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1426,7 +1646,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1445,7 +1666,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1464,7 +1686,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1483,7 +1706,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     }
    ],
    "note": {
@@ -1519,7 +1743,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1538,7 +1763,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1557,7 +1783,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1576,7 +1803,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1595,7 +1823,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1614,7 +1843,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1633,7 +1863,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     }
    ],
    "note": {
@@ -1669,7 +1900,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1688,7 +1920,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1707,7 +1940,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1726,7 +1960,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1745,7 +1980,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1764,7 +2000,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1783,7 +2020,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1802,7 +2040,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1821,7 +2060,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1840,7 +2080,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1859,7 +2100,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     }
    ],
    "note": {
@@ -1895,7 +2137,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1914,7 +2157,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1933,7 +2177,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     },
     {
      "name": {
@@ -1952,7 +2197,8 @@
       "en": "",
       "tr": "",
       "de": ""
-     }
+     },
+     "options": []
     }
    ],
    "note": {
@@ -1973,5 +2219,645 @@
    "de": ""
   }
  },
- "promos": []
+ "promos": [],
+ "optionGroups": [
+  {
+   "id": "viande",
+   "name": {
+    "fr": "Viande",
+    "en": "Meat",
+    "tr": "Et",
+    "de": "Fleisch"
+   },
+   "multi": false,
+   "max": 1,
+   "choices": [
+    {
+     "id": "boeuf",
+     "name": {
+      "fr": "Bœuf",
+      "en": "Beef",
+      "tr": "Dana",
+      "de": "Rind"
+     },
+     "icon": "boeuf",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "poulet",
+     "name": {
+      "fr": "Poulet",
+      "en": "Chicken",
+      "tr": "Tavuk",
+      "de": "Hähnchen"
+     },
+     "icon": "poulet",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "mixte",
+     "name": {
+      "fr": "Mixte",
+      "en": "Mixed",
+      "tr": "Karışık",
+      "de": "Gemischt"
+     },
+     "icon": "mixte",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ]
+  },
+  {
+   "id": "accompagnement",
+   "name": {
+    "fr": "Accompagnement",
+    "en": "Side",
+    "tr": "Yanında",
+    "de": "Beilage"
+   },
+   "multi": false,
+   "max": 1,
+   "choices": [
+    {
+     "id": "frites",
+     "name": {
+      "fr": "Frites",
+      "en": "Fries",
+      "tr": "Patates kızartması",
+      "de": "Pommes"
+     },
+     "icon": "frites",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "boulgour",
+     "name": {
+      "fr": "Boulgour",
+      "en": "Bulgur",
+      "tr": "Bulgur pilavı",
+      "de": "Bulgur"
+     },
+     "icon": "boulgour",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ]
+  },
+  {
+   "id": "crudites",
+   "name": {
+    "fr": "Crudités",
+    "en": "Salad & veggies",
+    "tr": "Sebzeler",
+    "de": "Rohkost"
+   },
+   "multi": true,
+   "max": 0,
+   "choices": [
+    {
+     "id": "tout",
+     "name": {
+      "fr": "Tout",
+      "en": "Everything",
+      "tr": "Hepsi",
+      "de": "Alles"
+     },
+     "icon": "tout",
+     "photo": "",
+     "price": 0,
+     "hidden": false,
+     "all": true
+    },
+    {
+     "id": "salade",
+     "name": {
+      "fr": "Salade",
+      "en": "Lettuce",
+      "tr": "Marul",
+      "de": "Salat"
+     },
+     "icon": "salade",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "tomate",
+     "name": {
+      "fr": "Tomate",
+      "en": "Tomato",
+      "tr": "Domates",
+      "de": "Tomate"
+     },
+     "icon": "tomate",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "oignons",
+     "name": {
+      "fr": "Oignons",
+      "en": "Onions",
+      "tr": "Soğan",
+      "de": "Zwiebeln"
+     },
+     "icon": "oignons",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "chou-rouge",
+     "name": {
+      "fr": "Chou rouge",
+      "en": "Red cabbage",
+      "tr": "Kırmızı lahana",
+      "de": "Rotkohl"
+     },
+     "icon": "chou-rouge",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "carottes",
+     "name": {
+      "fr": "Carottes",
+      "en": "Carrots",
+      "tr": "Havuç",
+      "de": "Karotten"
+     },
+     "icon": "carottes",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "concombre",
+     "name": {
+      "fr": "Concombre",
+      "en": "Cucumber",
+      "tr": "Salatalık",
+      "de": "Gurke"
+     },
+     "icon": "concombre",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "mais",
+     "name": {
+      "fr": "Maïs",
+      "en": "Sweetcorn",
+      "tr": "Mısır",
+      "de": "Mais"
+     },
+     "icon": "mais",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "olives",
+     "name": {
+      "fr": "Olives",
+      "en": "Olives",
+      "tr": "Zeytin",
+      "de": "Oliven"
+     },
+     "icon": "olives",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "piment-vert",
+     "name": {
+      "fr": "Piment vert",
+      "en": "Green chili",
+      "tr": "Yeşil biber",
+      "de": "Grüne Peperoni"
+     },
+     "icon": "piment-vert",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "feta",
+     "name": {
+      "fr": "Feta",
+      "en": "Feta",
+      "tr": "Beyaz peynir",
+      "de": "Feta"
+     },
+     "icon": "feta",
+     "photo": "",
+     "price": 1,
+     "hidden": false
+    }
+   ]
+  },
+  {
+   "id": "sauces",
+   "name": {
+    "fr": "Sauces",
+    "en": "Sauces",
+    "tr": "Soslar",
+    "de": "Soßen"
+   },
+   "multi": true,
+   "max": 0,
+   "choices": [
+    {
+     "id": "ketchup",
+     "name": {
+      "fr": "Ketchup",
+      "en": "Ketchup",
+      "tr": "Ketçap",
+      "de": "Ketchup"
+     },
+     "icon": "ketchup",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "mayonnaise",
+     "name": {
+      "fr": "Mayonnaise",
+      "en": "Mayonnaise",
+      "tr": "Mayonez",
+      "de": "Mayonnaise"
+     },
+     "icon": "mayonnaise",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "algerienne",
+     "name": {
+      "fr": "Algérienne",
+      "en": "Algerian",
+      "tr": "Cezayir sos",
+      "de": "Algerische"
+     },
+     "icon": "algerienne",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "rouge",
+     "name": {
+      "fr": "Rouge",
+      "en": "Red sauce",
+      "tr": "Kırmızı sos",
+      "de": "Rote Soße"
+     },
+     "icon": "rouge",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "bbq",
+     "name": {
+      "fr": "Barbecue",
+      "en": "BBQ",
+      "tr": "Barbekü",
+      "de": "BBQ"
+     },
+     "icon": "bbq",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "bresilienne",
+     "name": {
+      "fr": "Brésilienne",
+      "en": "Brazilian",
+      "tr": "Brezilya sos",
+      "de": "Brasilianische"
+     },
+     "icon": "bresilienne",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "blanche",
+     "name": {
+      "fr": "Blanche",
+      "en": "White sauce",
+      "tr": "Beyaz sos",
+      "de": "Weiße Soße"
+     },
+     "icon": "blanche",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "samourai",
+     "name": {
+      "fr": "Samouraï",
+      "en": "Samurai",
+      "tr": "Samuray",
+      "de": "Samurai"
+     },
+     "icon": "samourai",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "curry",
+     "name": {
+      "fr": "Curry",
+      "en": "Curry",
+      "tr": "Köri",
+      "de": "Curry"
+     },
+     "icon": "curry",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "biggy-burger",
+     "name": {
+      "fr": "Biggy burger",
+      "en": "Biggy burger",
+      "tr": "Biggy burger",
+      "de": "Biggy Burger"
+     },
+     "icon": "biggy-burger",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "andalouse",
+     "name": {
+      "fr": "Andalouse",
+      "en": "Andalusian",
+      "tr": "Endülüs sos",
+      "de": "Andalusische"
+     },
+     "icon": "andalouse",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "tartare",
+     "name": {
+      "fr": "Tartare",
+      "en": "Tartar",
+      "tr": "Tartar",
+      "de": "Tartar"
+     },
+     "icon": "tartare",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "piment",
+     "name": {
+      "fr": "Piment",
+      "en": "Hot chili",
+      "tr": "Acı sos",
+      "de": "Scharf"
+     },
+     "icon": "piment",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "harissa",
+     "name": {
+      "fr": "Harissa",
+      "en": "Harissa",
+      "tr": "Harissa",
+      "de": "Harissa"
+     },
+     "icon": "harissa",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ]
+  },
+  {
+   "id": "sauce-frites",
+   "name": {
+    "fr": "Sauce pour les frites",
+    "en": "Sauce for the fries",
+    "tr": "Patates için sos",
+    "de": "Soße für die Pommes"
+   },
+   "multi": true,
+   "max": 0,
+   "choices": [
+    {
+     "id": "f-ketchup",
+     "name": {
+      "fr": "Ketchup",
+      "en": "Ketchup",
+      "tr": "Ketçap",
+      "de": "Ketchup"
+     },
+     "icon": "ketchup",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-mayonnaise",
+     "name": {
+      "fr": "Mayonnaise",
+      "en": "Mayonnaise",
+      "tr": "Mayonez",
+      "de": "Mayonnaise"
+     },
+     "icon": "mayonnaise",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-algerienne",
+     "name": {
+      "fr": "Algérienne",
+      "en": "Algerian",
+      "tr": "Cezayir sos",
+      "de": "Algerische"
+     },
+     "icon": "algerienne",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-rouge",
+     "name": {
+      "fr": "Rouge",
+      "en": "Red sauce",
+      "tr": "Kırmızı sos",
+      "de": "Rote Soße"
+     },
+     "icon": "rouge",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-bbq",
+     "name": {
+      "fr": "Barbecue",
+      "en": "BBQ",
+      "tr": "Barbekü",
+      "de": "BBQ"
+     },
+     "icon": "bbq",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-bresilienne",
+     "name": {
+      "fr": "Brésilienne",
+      "en": "Brazilian",
+      "tr": "Brezilya sos",
+      "de": "Brasilianische"
+     },
+     "icon": "bresilienne",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-blanche",
+     "name": {
+      "fr": "Blanche",
+      "en": "White sauce",
+      "tr": "Beyaz sos",
+      "de": "Weiße Soße"
+     },
+     "icon": "blanche",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-samourai",
+     "name": {
+      "fr": "Samouraï",
+      "en": "Samurai",
+      "tr": "Samuray",
+      "de": "Samurai"
+     },
+     "icon": "samourai",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-curry",
+     "name": {
+      "fr": "Curry",
+      "en": "Curry",
+      "tr": "Köri",
+      "de": "Curry"
+     },
+     "icon": "curry",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-biggy-burger",
+     "name": {
+      "fr": "Biggy burger",
+      "en": "Biggy burger",
+      "tr": "Biggy burger",
+      "de": "Biggy Burger"
+     },
+     "icon": "biggy-burger",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-andalouse",
+     "name": {
+      "fr": "Andalouse",
+      "en": "Andalusian",
+      "tr": "Endülüs sos",
+      "de": "Andalusische"
+     },
+     "icon": "andalouse",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-tartare",
+     "name": {
+      "fr": "Tartare",
+      "en": "Tartar",
+      "tr": "Tartar",
+      "de": "Tartar"
+     },
+     "icon": "tartare",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-piment",
+     "name": {
+      "fr": "Piment",
+      "en": "Hot chili",
+      "tr": "Acı sos",
+      "de": "Scharf"
+     },
+     "icon": "piment",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "f-harissa",
+     "name": {
+      "fr": "Harissa",
+      "en": "Harissa",
+      "tr": "Harissa",
+      "de": "Harissa"
+     },
+     "icon": "harissa",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ]
+  }
+ ]
 }
