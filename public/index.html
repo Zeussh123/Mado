@@ -468,7 +468,19 @@ let LAST = null;         // dernière ligne ajoutée (pour proposer le menu)
 const STAFF = location.pathname.replace(/\/+$/, "") === "/serveur";
 let STAFF_CODE = (() => { try { return localStorage.getItem("mado-staff") || ""; } catch { return ""; } })();
 // code secret de la table (dans le QR code)
-let TKEY = (() => { const k = new URLSearchParams(location.search).get("k"); try { if (k && /^[a-f0-9]{6,20}$/.test(k)) sessionStorage.setItem("mado-tkey", k); return sessionStorage.getItem("mado-tkey") || ""; } catch { return k || ""; } })();
+// Le code du QR est échangé contre un « pass » de table valable 2 h (voir tableSession côté serveur)
+const RAWK = (() => { const k = new URLSearchParams(location.search).get("k"); return k && /^[a-f0-9]{6,20}$/.test(k) ? k : ""; })();
+let TKEY = (() => { try { return sessionStorage.getItem("mado-tkey") || ""; } catch { return ""; } })();
+async function openTableSession(){
+  // on retire le code de l'adresse pour qu'il ne reste pas dans l'historique du téléphone
+  const q = new URLSearchParams(location.search); q.delete("k"); q.delete("t");
+  history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : ""));
+  try {
+    const r = await fetch(`/api/table/${TABLE}/session`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({k: RAWK})});
+    const j = await r.json(); TKEY = r.ok ? j.token : "";
+  } catch { TKEY = ""; }
+  try { sessionStorage.setItem("mado-tkey", TKEY); } catch {}
+}
 let TABLE = STAFF ? "" : (() => {
   const q = new URLSearchParams(location.search).get("t");
   try { if (q && /^\d{1,3}$/.test(q)) sessionStorage.setItem("mado-table", q); return sessionStorage.getItem("mado-table") || ""; } catch { return q || ""; }
@@ -1069,8 +1081,9 @@ setInterval(() => { if (MENU && $("#app").style.display === "block") { const ids
 
 (async () => {
   try { MENU = await loadMenu(); } catch (e) { document.body.innerHTML = '<p style="padding:40px;text-align:center">Menu indisponible, réessayez plus tard.</p>'; return; }
-  if (!STAFF) pollOrders();
   const p = new URLSearchParams(location.search).get("lang");
+  if (!STAFF && RAWK && TABLE) await openTableSession();
+  if (!STAFF) pollOrders();
   if (STAFF) {
     $("#langBtn").style.display = "none"; $("#tableChip").classList.add("click"); lang = "fr";
     if (!STAFF_CODE) return staffLogin();

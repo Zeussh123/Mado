@@ -29,6 +29,8 @@ export default {
       if (path === "/api/table-keys" && request.method === "GET") return withAuth(request, env, () => getTableKeys(request, env));
       const mReset = path.match(/^\/api\/table-keys\/(\d{1,3})\/reset$/);
       if (mReset && request.method === "POST") return withAuth(request, env, () => resetTableKey(env, mReset[1]));
+      const mSess = path.match(/^\/api\/table\/(\d{1,3})\/session$/);
+      if (mSess && request.method === "POST") return tableSession(request, env, mSess[1]);
       if (path.startsWith("/api/orders") || path.startsWith("/api/table/")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey });
       if (path === "/serveur") return env.ASSETS.fetch(new Request(new URL("/", url), request));
       if (path === "/ecran") return env.ASSETS.fetch(new Request(new URL("/ecran.html", url), request));
@@ -62,9 +64,34 @@ export async function withAuth(request, env, fn) {
 // Code secret de chaque table (dans le QR code) : empêche de commander en tapant juste ?t=1
 const randHex = (n) => [...crypto.getRandomValues(new Uint8Array(n))].map((b) => b.toString(16).padStart(2, "0")).join("");
 async function loadKeys(env) { try { return JSON.parse((await env.MADO.get(TKEYS)) || "{}"); } catch { return {}; } }
-export async function checkTableKey(env, table, k) {
+async function rawKeyOk(env, table, k) {
   const keys = await loadKeys(env);
   return !!(keys[table] && k && (await safeEqual(String(k), keys[table])));
+}
+// Scanner le QR donne un « pass » de table valable 2 h (signé par le serveur).
+// Seul ce pass permet de commander : un lien gardé dans le téléphone ne marche plus après 2 h.
+const SESSION_MS = 2 * 3600 * 1000;
+async function sessionKey(env) {
+  let sec = await env.MADO.get("session-secret");
+  if (!sec) { sec = randHex(32); await env.MADO.put("session-secret", sec); }
+  return crypto.subtle.importKey("raw", new TextEncoder().encode(sec), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+}
+async function sign(env, table, exp, keyVer) {
+  const sig = await crypto.subtle.sign("HMAC", await sessionKey(env), new TextEncoder().encode(`${table}|${exp}|${keyVer}`));
+  return [...new Uint8Array(sig)].slice(0, 16).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function tableSession(request, env, table) {
+  let body = {}; try { body = await request.json(); } catch {}
+  if (!(await rawKeyOk(env, table, body.k))) return json({ error: "badkey" }, 403);
+  const exp = Date.now() + SESSION_MS;
+  // le code de la table entre dans la signature : changer le code dans l'admin coupe aussi les pass en cours
+  return json({ token: `${exp}.${await sign(env, table, exp, String(body.k))}`, exp });
+}
+export async function checkTableKey(env, table, token) {
+  const m = /^(\d{13})\.([a-f0-9]{32})$/.exec(String(token || ""));
+  if (!m || +m[1] < Date.now()) return false;
+  const keys = await loadKeys(env); if (!keys[table]) return false;
+  return safeEqual(m[2], await sign(env, table, m[1], keys[table]));
 }
 async function getTableKeys(request, env) {
   const menu = JSON.parse(await menuText(request, env));

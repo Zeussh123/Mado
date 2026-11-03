@@ -36,3 +36,6 @@ Les prix, photos et promos se changent depuis `/admin`, sans toucher au code.
 
 ## Tester sur son ordinateur
 Créer `.dev.vars` avec `ADMIN_PASSWORD=motdepasse`, puis `npx wrangler dev`.
+
+### Pass de table (2 h)
+Scanner le QR (`?t=N&k=code`) échange le code contre un pass signé valable 2 h (`POST /api/table/N/session`). Seul ce pass permet de commander ; le code est retiré de l'adresse. Après 2 h, il faut rescanner le QR. Changer le code d'une table dans l'admin coupe aussi les pass en cours.
