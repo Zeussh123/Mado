@@ -204,8 +204,9 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <b>QR codes des tables</b>
         <p class="small">Un QR code par table : le client qui le scanne peut envoyer sa commande en cuisine avec le bon numéro de table. Imprimez la planche, découpez et collez sur chaque table.</p>
         <p class="small">Chaque QR contient un code secret propre à la table : taper l'adresse à la main ne suffit pas pour commander. Les QR se gardent tant que vous ne changez pas le code.</p>
-        <div class="actions"><button class="primary" id="qrTables" type="button">Imprimer les QR codes des tables</button><button id="qrKeysShow" type="button">Changer le code d'une table…</button></div>
-        <div id="qrKeys" style="display:none"></div>
+        <div class="actions"><button class="primary" id="qrTables" type="button">Imprimer les QR codes des tables</button></div>
+        <div class="lbl" style="margin-top:16px">Table par table : imprimer un seul QR ou changer son code</div>
+        <div id="qrKeys"></div>
       </div>
     </section>
   </div>
@@ -730,7 +731,7 @@ $("#save").onclick = async () => {
       const j = await r.json(); if (!r.ok) throw new Error(j.error || "Erreur");
       menu.updatedAt = j.updatedAt;
     }
-    saved = JSON.stringify(menu); updateStatus(); toast("Menu enregistré ✔");
+    saved = JSON.stringify(menu); updateStatus(); toast("Menu enregistré ✔"); drawKeys();
   } catch (err) { toast("Échec : " + err.message, 5000); updateStatus(); }
 };
 $("#undo").onclick = async () => { if (await ask("Annuler toutes les modifications non enregistrées ?", {yes:"Oui, annuler"})) { menu = JSON.parse(saved); render(); } };
@@ -759,7 +760,6 @@ $("#qrDl").onclick = () => {
 
 async function tableKeys(){
   if (DEMO) return {};
-  if (dirty()) toast("Pensez à enregistrer vos modifications (nombre de tables).");
   const r = await api("/api/table-keys"); return r.ok ? (await r.json()).keys : {};
 }
 async function printTableQRs(only){
@@ -784,7 +784,7 @@ async function drawKeys(){
   box.innerHTML = Array.from({length: n}, (_, i) => i + 1).map(i => `<div class="tkrow"><b>Table ${i}</b><code>${esc(keys[i] || "")}</code>
     <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button></div>`).join("");
 }
-$("#qrKeysShow").onclick = () => { const box = $("#qrKeys"); box.style.display = box.style.display === "none" ? "" : "none"; if (box.style.display === "") drawKeys(); };
+
 $("#qrKeys").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-tk]"); if (!b) return;
   const n = +b.dataset.t;
@@ -799,7 +799,7 @@ async function start(){
   $("#login").style.display = "none"; $("#app").style.display = "block";
   $("#demoNote").style.display = DEMO ? "block" : "none";
   $("#qrUrl").value = location.origin + "/";
-  menu = await loadMenu(); saved = JSON.stringify(menu); render(); loadStaffCode();
+  menu = await loadMenu(); saved = JSON.stringify(menu); render(); loadStaffCode(); drawKeys();
 }
 // Code serveur (stocké à part, pas dans le menu public)
 async function loadStaffCode(){
