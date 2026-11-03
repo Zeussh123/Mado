@@ -213,18 +213,25 @@ async function login(pw){
 
 
 async function withDefaults(m){
-  // complète un menu enregistré avant l'ajout des options, menus proposés et suggestions
+  // complète un menu enregistré avec une ancienne version du site
   try {
     const def = await (await fetch("menu.json", {cache:"no-store"})).json();
-    if (!m.optionGroups) m.optionGroups = def.optionGroups || [];
+    // groupes d'options ajoutés depuis : on les ajoute avec leurs réglages par défaut (sauf si le gérant les a supprimés)
+    m.optionGroups = m.optionGroups || [];
+    const have = new Set(m.optionGroups.map(g => g.id)), removed = new Set(m.removedGroups || []);
+    const added = (def.optionGroups || []).filter(g => !have.has(g.id) && !removed.has(g.id));
+    m.optionGroups.push(...added);
+    const addedIds = new Set(added.map(g => g.id));
     m.ui = {...def.ui, ...m.ui};
     const di = {}, dc = {};
     for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
     for (const c of m.categories) {
       if (c.suggest === undefined) c.suggest = (dc[c.id] && dc[c.id].suggest) || [];
       for (const it of c.items) {
-        if (it.options === undefined) it.options = (di[it.id] && di[it.id].options) || [];
-        if (it.upgrade === undefined) it.upgrade = (di[it.id] && di[it.id].upgrade) || "";
+        const d = di[it.id];
+        if (it.options === undefined) it.options = (d && d.options) || [];
+        else if (d && addedIds.size) for (const id of (d.options || [])) if (addedIds.has(id) && !it.options.includes(id)) it.options.push(id);
+        if (it.upgrade === undefined) it.upgrade = (d && d.upgrade) || "";
       }
     }
   } catch {}
@@ -577,7 +584,7 @@ $("#groups").addEventListener("click", async (e) => {
     case "delChoice": if (!(await ask(`Supprimer « ${c.name.fr} » ?`, {yes:"Supprimer", danger:true}))) return; g.choices.splice(ci, 1); break;
     case "addChoice": g.choices.push({id:uid(), name:blankL(), icon:"sauce", photo:"", price:0, hidden:false}); break;
     case "delGroup": if (!(await ask(`Supprimer le groupe « ${g.name.fr} » ? Il sera retiré de tous les produits.`, {yes:"Supprimer", danger:true}))) return;
-      menu.optionGroups.splice(gi, 1); for (const cat of menu.categories) for (const it of cat.items) if (it.options) it.options = it.options.filter(id => id !== g.id); break;
+      menu.optionGroups.splice(gi, 1); (menu.removedGroups = menu.removedGroups || []).push(g.id); for (const cat of menu.categories) for (const it of cat.items) if (it.options) it.options = it.options.filter(id => id !== g.id); break;
     default: return;
   }
   renderGroups(); updateStatus();

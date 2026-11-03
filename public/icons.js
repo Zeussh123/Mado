@@ -22,6 +22,14 @@
     <path d="M12 36 Q32 50 52 36" stroke="#f39200" stroke-width="2.5" fill="none"/>`);
   const slices = (c1, c2) => `<path d="M16 28 Q24 20 32 26 L30 30 Q24 26 18 31 Z" fill="${c1}"/><path d="M30 26 Q40 18 48 26 L46 30 Q40 25 32 30 Z" fill="${c2}"/>`;
 
+  // Canette générique de couleur (pas de logo de marque)
+  const can = (body, band) => svg(`
+    <ellipse cx="32" cy="57" rx="13" ry="3" fill="#000" opacity=".18"/>
+    <path d="M20 12 Q20 8 24 8 L40 8 Q44 8 44 12 L44 52 Q44 56 40 56 L24 56 Q20 56 20 52 Z" fill="${body}"/>
+    <rect x="20" y="10" width="24" height="5" fill="#c9c9c9"/><rect x="20" y="49" width="24" height="5" fill="#c9c9c9"/>
+    <path d="M20 26 Q32 34 44 26 L44 34 Q32 42 20 34 Z" fill="${band}"/>
+    <rect x="23" y="16" width="3" height="32" fill="#fff" opacity=".25"/>`);
+
   const I = {
     // ---------- Viandes ----------
     boeuf: svg(`
@@ -153,6 +161,12 @@
       <path d="M8 30 Q32 60 56 30 Z" fill="#2f7fb5"/>
       <path d="M14 36 Q32 50 50 36" stroke="#7fbde6" stroke-width="2" fill="none"/>`),
 
+    "can-cola": can("#c8102e", "#fff"),
+    "can-zero": can("#1a1a1a", "#c8102e"),
+    "can-orange": can("#f68b1f", "#1f5fbf"),
+    "can-tropical": can("#ffb000", "#e4572e"),
+    "can-tea": can("#f2c230", "#1e7b3a"),
+    "can-lemon": can("#2e9e44", "#f7e35a"),
     canette: svg(`
       <ellipse cx="32" cy="57" rx="13" ry="3" fill="#000" opacity=".18"/>
       <path d="M20 12 Q20 8 24 8 L40 8 Q44 8 44 12 L44 52 Q44 56 40 56 L24 56 Q20 56 20 52 Z" fill="#d62828"/>

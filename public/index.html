@@ -226,18 +226,25 @@ function fmtPrice(p){
 }
 
 async function withDefaults(m){
-  // complète un menu enregistré avant l'ajout des options, menus proposés et suggestions
+  // complète un menu enregistré avec une ancienne version du site
   try {
     const def = await (await fetch("menu.json", {cache:"no-store"})).json();
-    if (!m.optionGroups) m.optionGroups = def.optionGroups || [];
+    // groupes d'options ajoutés depuis : on les ajoute avec leurs réglages par défaut (sauf si le gérant les a supprimés)
+    m.optionGroups = m.optionGroups || [];
+    const have = new Set(m.optionGroups.map(g => g.id)), removed = new Set(m.removedGroups || []);
+    const added = (def.optionGroups || []).filter(g => !have.has(g.id) && !removed.has(g.id));
+    m.optionGroups.push(...added);
+    const addedIds = new Set(added.map(g => g.id));
     m.ui = {...def.ui, ...m.ui};
     const di = {}, dc = {};
     for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
     for (const c of m.categories) {
       if (c.suggest === undefined) c.suggest = (dc[c.id] && dc[c.id].suggest) || [];
       for (const it of c.items) {
-        if (it.options === undefined) it.options = (di[it.id] && di[it.id].options) || [];
-        if (it.upgrade === undefined) it.upgrade = (di[it.id] && di[it.id].upgrade) || "";
+        const d = di[it.id];
+        if (it.options === undefined) it.options = (d && d.options) || [];
+        else if (d && addedIds.size) for (const id of (d.options || [])) if (addedIds.has(id) && !it.options.includes(id)) it.options.push(id);
+        if (it.upgrade === undefined) it.upgrade = (d && d.upgrade) || "";
       }
     }
   } catch {}
@@ -450,6 +457,14 @@ function acceptMenu(){
 }
 
 /* ----- dessin de la fiche ----- */
+// ce que le menu ajoute : frites et/ou boisson, d'après ses options et sa description
+function upsellArt(it, menu){
+  const desc = (menu.description && menu.description.fr || "").toLowerCase(), opts = menu.options || [];
+  const parts = [`<span class="a1">${itemVisual(it)}</span>`];
+  if (opts.includes("sauce-frites") || desc.includes("frite")) parts.push(`<span class="a2">${MADO_ICONS.frites}</span>`);
+  if (opts.includes("boisson") || desc.includes("boisson")) parts.push(`<span class="a3">${MADO_ICONS.canette}</span>`);
+  return parts.join('<span class="plus">+</span>');
+}
 function drawSheet(){
   if (STEP === "cart") return drawCart();
   const it = CUR;
@@ -457,7 +472,7 @@ function drawSheet(){
     const menu = visibleItem(it.upgrade), diff = unitPrice(menu) - unitPrice(it);
     $("#shScroll").innerHTML = `<div class="upsell">
       <div class="ups-badge">🔥 ${esc(ui("goodDeal"))}</div>
-      <div class="ups-art"><span class="a1">${itemVisual(it)}</span><span class="plus">+</span><span class="a2">${MADO_ICONS.frites}</span><span class="plus">+</span><span class="a3">${MADO_ICONS.canette}</span></div>
+      <div class="ups-art">${upsellArt(it, menu)}</div>
       <h2>${esc(fill(ui("makeMenu"), {menu: t(menu.name)}))}</h2>
       ${t(menu.description) ? `<p class="ups-desc">${esc(t(menu.description))}</p>` : ""}
       <div class="ups-price">${esc(fill(ui("onlyMore"), {x: fmtPrice(diff)}))}</div>

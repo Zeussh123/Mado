@@ -258,7 +258,8 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -285,7 +286,8 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -312,7 +314,8 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -335,7 +338,8 @@
      "hidden": false,
      "photo": "",
      "options": [
-      "sauce-frites"
+      "sauce-frites",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -362,7 +366,8 @@
       "accompagnement",
       "crudites",
       "sauces",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -389,7 +394,8 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -416,7 +422,8 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -441,7 +448,8 @@
      "options": [
       "crudites",
       "sauces",
-      "sauce-frites"
+      "sauce-frites",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -467,7 +475,8 @@
       "bowl",
       "crudites",
       "sauces",
-      "supplement"
+      "supplement",
+      "boisson"
      ],
      "upgrade": ""
     },
@@ -3334,6 +3343,100 @@
    ],
    "free": 0,
    "extraPrice": 0
+  },
+  {
+   "id": "boisson",
+   "name": {
+    "fr": "Boisson 33 cl",
+    "en": "33 cl drink",
+    "tr": "33 cl içecek",
+    "de": "Getränk 33 cl"
+   },
+   "multi": false,
+   "max": 1,
+   "free": 0,
+   "extraPrice": 0,
+   "choices": [
+    {
+     "id": "d-coca",
+     "name": {
+      "fr": "Coca-Cola",
+      "en": "Coca-Cola",
+      "tr": "Coca-Cola",
+      "de": "Coca-Cola"
+     },
+     "icon": "can-cola",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "d-zero",
+     "name": {
+      "fr": "Coca-Cola Zero",
+      "en": "Coca-Cola Zero",
+      "tr": "Coca-Cola Zero",
+      "de": "Coca-Cola Zero"
+     },
+     "icon": "can-zero",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "d-fanta",
+     "name": {
+      "fr": "Fanta",
+      "en": "Fanta",
+      "tr": "Fanta",
+      "de": "Fanta"
+     },
+     "icon": "can-orange",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "d-oasis",
+     "name": {
+      "fr": "Oasis Tropical",
+      "en": "Oasis Tropical",
+      "tr": "Oasis Tropical",
+      "de": "Oasis Tropical"
+     },
+     "icon": "can-tropical",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "d-icetea",
+     "name": {
+      "fr": "Lipton Ice Tea",
+      "en": "Lipton Ice Tea",
+      "tr": "Lipton Ice Tea",
+      "de": "Lipton Ice Tea"
+     },
+     "icon": "can-tea",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "d-sprite",
+     "name": {
+      "fr": "Sprite",
+      "en": "Sprite",
+      "tr": "Sprite",
+      "de": "Sprite"
+     },
+     "icon": "can-lemon",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ]
   }
- ]
+ ],
+ "schema": 2
 }

@@ -66,15 +66,21 @@ async function getMenu(request, env) {
   } else {
     // Menu enregistré avec une ancienne version du site : on complète avec les nouveautés par défaut
     const saved = JSON.parse(body), def = JSON.parse(await loadDefault());
-    if (!saved.optionGroups) saved.optionGroups = def.optionGroups || [];
+    saved.optionGroups = saved.optionGroups || [];
+    const have = new Set(saved.optionGroups.map((g) => g.id)), removed = new Set(saved.removedGroups || []);
+    const added = (def.optionGroups || []).filter((g) => !have.has(g.id) && !removed.has(g.id));
+    saved.optionGroups.push(...added);
+    const addedIds = new Set(added.map((g) => g.id));
     saved.ui = { ...def.ui, ...saved.ui };
     const di = {}, dc = {};
     for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
     for (const c of saved.categories) {
       if (c.suggest === undefined) c.suggest = (dc[c.id] && dc[c.id].suggest) || [];
       for (const it of c.items) {
-        if (it.options === undefined) it.options = (di[it.id] && di[it.id].options) || [];
-        if (it.upgrade === undefined) it.upgrade = (di[it.id] && di[it.id].upgrade) || "";
+        const d = di[it.id];
+        if (it.options === undefined) it.options = (d && d.options) || [];
+        else if (d && addedIds.size) for (const id of d.options || []) if (addedIds.has(id) && !it.options.includes(id)) it.options.push(id);
+        if (it.upgrade === undefined) it.upgrade = (d && d.upgrade) || "";
       }
     }
     body = JSON.stringify(saved);
