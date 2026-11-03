@@ -465,6 +465,8 @@ let LAST = null;         // dernière ligne ajoutée (pour proposer le menu)
 // Version serveur (/serveur) : pas de choix de langue, pas de propositions, table choisie à la main ou « à emporter »
 const STAFF = location.pathname.replace(/\/+$/, "") === "/serveur";
 let STAFF_CODE = (() => { try { return localStorage.getItem("mado-staff") || ""; } catch { return ""; } })();
+// code secret de la table (dans le QR code)
+let TKEY = (() => { const k = new URLSearchParams(location.search).get("k"); try { if (k && /^[a-f0-9]{6,20}$/.test(k)) sessionStorage.setItem("mado-tkey", k); return sessionStorage.getItem("mado-tkey") || ""; } catch { return k || ""; } })();
 let TABLE = STAFF ? "" : (() => {
   const q = new URLSearchParams(location.search).get("t");
   try { if (q && /^\d{1,3}$/.test(q)) sessionStorage.setItem("mado-table", q); return sessionStorage.getItem("mado-table") || ""; } catch { return q || ""; }
@@ -644,7 +646,7 @@ async function sendOrder(btn){
   const note = ($("#orderNote") || {}).value || "";
   try {
     const r = await fetch("/api/orders", {method:"POST", headers:{"content-type":"application/json", ...(STAFF ? {authorization: "Bearer " + STAFF_CODE} : {})},
-      body: JSON.stringify({table: TABLE, note, lines: CART.map(l => ({id: l.id, qty: l.qty, sel: l.sel}))})});
+      body: JSON.stringify({table: TABLE, k: TKEY, note, lines: CART.map(l => ({id: l.id, qty: l.qty, sel: l.sel}))})});
     const j = await r.json().catch(() => ({}));
     if (STAFF && r.status === 401) { staffLogout(); return; }
     if (!r.ok) throw new Error(j.error === "closed" ? ui("closedNow") : (STAFF && j.error) || ui("sendError"));
@@ -807,8 +809,10 @@ const meM = () => member(ME);
 async function tbPost(action, data){
   tbBusy++;
   try {
-    const r = await fetch(`/api/table/${TABLE}/${action}`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({member: ME, ...data})});
+    const r = await fetch(`/api/table/${TABLE}/${action}?k=${encodeURIComponent(TKEY)}`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({member: ME, ...data})});
     const j = await r.json().catch(() => ({}));
+    if (j.error === "badkey") { badKey(); return null; }
+    if (j.error === "hours") { toast(meM(), ui("tbHours")); return null; }
     if (j.basket) applyTB(j.basket, action === "send");
     return r.ok ? j : null;
   } catch { return null; } finally { tbBusy--; }
@@ -816,9 +820,31 @@ async function tbPost(action, data){
 async function tbPoll(){
   clearTimeout(tbTimer);
   if (SHARED() && document.visibilityState === "visible" && !tbBusy) {
-    try { const r = await fetch(`/api/table/${TABLE}`, {cache: "no-store"}); if (r.ok) applyTB(await r.json()); } catch {}
+    try {
+      const r = await fetch(`/api/table/${TABLE}?k=${encodeURIComponent(TKEY)}`, {cache: "no-store"});
+      if (r.status === 403 && (await r.json().catch(() => ({}))).error === "badkey") return badKey();
+      if (r.ok) applyTB(await r.json());
+    } catch {}
   }
   tbTimer = setTimeout(tbPoll, 3000);
+}
+// lien de table sans code ou code changé : on repasse en simple menu
+function badKey(){
+  clearTimeout(tbTimer); tbTimer = null;
+  TABLE = ""; try { sessionStorage.removeItem("mado-table"); } catch {}
+  $("#tableChip").hidden = true; CART = []; drawPill();
+  CUR = null; STEP = "info";
+  $("#shScroll").innerHTML = `<div class="ask"><div class="big">📷</div><p style="color:var(--text);font-size:1.05rem">${esc(ui("tbBadKey"))}</p></div>`;
+  $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; showSheet();
+}
+// horaires de commande (même règle que le serveur)
+function orderingOpen(){
+  const o = MENU.ordering || {}, sch = o.schedule;
+  if (!o.useSchedule || !sch) return true;
+  const now = parisNow(), prev = now.day === 1 ? 7 : now.day - 1;
+  for (const r of sch[now.day] || []) { const f = toMin(r.from), to = toMin(r.to); if (f === null || to === null) continue; if (to > f ? now.min >= f && now.min < to : now.min >= f) return true; }
+  for (const r of sch[prev] || []) { const f = toMin(r.from), to = toMin(r.to); if (f === null || to === null) continue; if (to <= f && now.min < to) return true; }
+  return false;
 }
 function tbStart(){
   if (!ss.get("mado-joined")) { STEP = "join"; CUR = null; drawJoin(); showSheet(); }
@@ -852,7 +878,7 @@ function applyTB(b, iSent){
   if (open && STEP === "join") drawJoin(true);
   // tout le monde a fini : chaque téléphone propose d'envoyer
   const owners = tbOwners();
-  if (owners.length && owners.every(m => m.ready)) {
+  if (owners.length && owners.every(m => m.ready) && orderingOpen()) {
     const key = TB.lines.map(l => l.k + l.qty).join();
     if (key !== allDoneKey && (!open || STEP === "cart" || STEP === "remind")) { allDoneKey = key; STEP = "alldone"; CUR = null; drawAsk(); showSheet(); }
   }
@@ -930,6 +956,10 @@ function drawTableCart(){
     ${sendConfirm ? `<div class="warnbox">${esc(fill(ui("tbWait"), {names: owners.filter(m => !m.ready && m.id !== ME).map(mname).join(", ")}))}</div>` : ""}
   </div>`;
   if (!TB.lines.length) { $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return; }
+  if (!orderingOpen()) {
+    $("#shScroll .cart").insertAdjacentHTML("beforeend", `<div class="warnbox">${esc(ui("tbHours"))}</div>`);
+    $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return;
+  }
   const readyBtn = mine ? `<button class="btn ghost" data-sh="tbReady">${esc(ui(me.ready ? "tbNotDone" : "tbImDone"))}</button>` : "";
   $("#shBar").innerHTML = sendConfirm
     ? `<button class="btn ghost" data-sh="tbCancel">${esc(ui("tbLater"))}</button><button class="btn grow" data-sh="tbSendForce">${esc(ui("tbSendAnyway"))}</button>`

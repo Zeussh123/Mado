@@ -97,6 +97,13 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px;font-size:.88rem}
 .chip button{border:0;background:transparent;padding:2px 6px;color:var(--muted)}
+.sched{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sched .sd{min-width:70px;font-weight:700;display:flex;gap:6px;align-items:center}
+.sched input[type=time]{width:auto;padding:6px 8px}
+.sched.off .sr{opacity:.35;pointer-events:none}
+.tkrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0;border-bottom:1px dashed var(--line)}
+.tkrow b{min-width:70px}
+.tkrow code{color:var(--muted);font-size:.85rem}
 #qrSheet{display:none}
 @media print{
   @page{size:A4;margin:10mm}
@@ -175,6 +182,9 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <b>Commandes depuis les tables</b>
         <div class="toggles"><label><input type="checkbox" id="ordEnabled"> Accepter les commandes envoyées depuis les tables</label></div>
         <div class="lbl">Nombre de tables</div><input id="ordTables" inputmode="numeric" style="max-width:140px">
+        <div class="toggles" style="margin-top:14px"><label><input type="checkbox" id="ordUseSched"> Accepter les commandes des clients seulement aux heures ci-dessous</label></div>
+        <div id="ordSched"></div>
+        <p class="small">Deux créneaux possibles par jour (ex. midi et soir). Un créneau qui finit après minuit marche aussi (ex. 18:00 → 01:00). Le serveur peut toujours commander.</p>
         <div class="lbl" style="margin-top:14px">Code serveur (4 à 8 chiffres) pour la prise de commande sur <a href="/serveur" target="_blank">/serveur</a></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input id="staffCode" inputmode="numeric" maxlength="8" placeholder="ex. 482913" style="max-width:180px"><button id="staffSave" type="button">Enregistrer le code</button><span class="small" id="staffMsg"></span></div>
         <p class="small">Le serveur choisit la table ou « à emporter », même si les commandes clients sont désactivées. Votre mot de passe admin marche aussi.</p>
@@ -193,7 +203,9 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <div class="panel">
         <b>QR codes des tables</b>
         <p class="small">Un QR code par table : le client qui le scanne peut envoyer sa commande en cuisine avec le bon numéro de table. Imprimez la planche, découpez et collez sur chaque table.</p>
-        <div class="actions"><button class="primary" id="qrTables" type="button">Imprimer les QR codes des tables</button></div>
+        <p class="small">Chaque QR contient un code secret propre à la table : taper l'adresse à la main ne suffit pas pour commander. Les QR se gardent tant que vous ne changez pas le code.</p>
+        <div class="actions"><button class="primary" id="qrTables" type="button">Imprimer les QR codes des tables</button><button id="qrKeysShow" type="button">Changer le code d'une table…</button></div>
+        <div id="qrKeys" style="display:none"></div>
       </div>
     </section>
   </div>
@@ -387,6 +399,28 @@ function renderInfo(){
   $("#infoHours").innerHTML = LANGS.map(l=>`<input data-hl="${l}" placeholder="${LNAME[l]}" value="${esc((info.hours||{})[l])}">`).join("");
   const ord = menu.ordering || (menu.ordering = {enabled:false, tables:10});
   $("#ordEnabled").checked = !!ord.enabled; $("#ordTables").value = ord.tables || "";
+  $("#ordUseSched").checked = !!ord.useSchedule;
+  const sch = ord.schedule || {};
+  $("#ordSched").style.display = ord.useSchedule ? "" : "none";
+  $("#ordSched").innerHTML = DAYN.map((d, i) => {
+    const r = sch[i + 1] || [], on = r.length > 0, a = r[0] || {}, b = r[1] || {};
+    return `<div class="sched ${on ? "" : "off"}" data-day="${i + 1}"><label class="sd"><input type="checkbox" data-s="open" ${on ? "checked" : ""}> ${d}</label>
+      <span class="sr"><input type="time" data-s="f0" value="${esc(a.from || "")}"> → <input type="time" data-s="t0" value="${esc(a.to || "")}"></span>
+      <span class="sr"><input type="time" data-s="f1" value="${esc(b.from || "")}"> → <input type="time" data-s="t1" value="${esc(b.to || "")}"></span></div>`;
+  }).join("");
+}
+function readSched(){
+  const sch = {};
+  document.querySelectorAll("#ordSched .sched").forEach(row => {
+    const v = (k) => row.querySelector(`[data-s="${k}"]`).value, out = [];
+    if (row.querySelector('[data-s="open"]').checked) {
+      if (v("f0") && v("t0")) out.push({from: v("f0"), to: v("t0")});
+      if (v("f1") && v("t1")) out.push({from: v("f1"), to: v("t1")});
+    }
+    row.classList.toggle("off", !row.querySelector('[data-s="open"]').checked);
+    sch[row.dataset.day] = out;
+  });
+  return sch;
 }
 
 function dirty(){ return JSON.stringify(menu) !== saved; }
@@ -478,6 +512,9 @@ $("#tab-info").addEventListener("input", (e) => {
   else if (e.target.id === "infoPhone") info.phone = e.target.value;
   else if (e.target.dataset.hl) { info.hours = info.hours || blankL(); info.hours[e.target.dataset.hl] = e.target.value; }
   else if (e.target.id === "ordEnabled") menu.ordering.enabled = e.target.checked;
+  else if (e.target.id === "ordUseSched") { menu.ordering.useSchedule = e.target.checked; $("#ordSched").style.display = e.target.checked ? "" : "none";
+    if (e.target.checked && !menu.ordering.schedule) { menu.ordering.schedule = {}; for (let d = 1; d <= 7; d++) menu.ordering.schedule[d] = [{from: "11:00", to: "23:00"}]; renderInfo(); } }
+  else if (e.target.closest && e.target.closest("#ordSched")) menu.ordering.schedule = readSched();
   else if (e.target.id === "ordTables") menu.ordering.tables = Math.max(0, Math.min(200, parseInt(e.target.value) || 0));
   updateStatus();
 });
@@ -720,18 +757,42 @@ $("#qrDl").onclick = () => {
   const a = document.createElement("a"); a.download = "qr-menu-mado.png"; a.href = out.toDataURL("image/png"); a.click();
 };
 
-$("#qrTables").onclick = () => {
+async function tableKeys(){
+  if (DEMO) return {};
+  if (dirty()) toast("Pensez à enregistrer vos modifications (nombre de tables).");
+  const r = await api("/api/table-keys"); return r.ok ? (await r.json()).keys : {};
+}
+async function printTableQRs(only){
   const n = (menu.ordering && menu.ordering.tables) || 0;
   if (!n) { toast("Indiquez d'abord le nombre de tables (onglet Infos du restaurant)."); return; }
   if (!window.QRCode) { toast("Générateur de QR indisponible."); return; }
+  const keys = await tableKeys();
   const base = ($("#qrUrl").value || location.origin + "/").replace(/\?.*$/, "");
   const sheet = $("#qrSheet"); sheet.innerHTML = "";
-  for (let i = 1; i <= n; i++) {
+  const list = only ? [only] : Array.from({length: n}, (_, i) => i + 1);
+  for (const i of list) {
     sheet.insertAdjacentHTML("beforeend", `<div class="qcard"><img class="lg" src="img/logo.png" alt=""><div class="qr" id="q${i}"></div><div class="tn">Table ${i}</div><div class="tx">Scannez pour voir le menu et commander</div></div>`);
-    new QRCode(document.getElementById("q" + i), {text: base + "?t=" + i, width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M});
+    new QRCode(document.getElementById("q" + i), {text: base + "?t=" + i + (keys[i] ? "&k=" + keys[i] : ""), width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M});
   }
   setTimeout(() => window.print(), 400);
-};
+}
+$("#qrTables").onclick = () => printTableQRs();
+async function drawKeys(){
+  const box = $("#qrKeys"), n = (menu.ordering && menu.ordering.tables) || 0;
+  if (DEMO) { box.innerHTML = `<p class="small">Disponible une fois le site en ligne.</p>`; return; }
+  const keys = await tableKeys();
+  box.innerHTML = Array.from({length: n}, (_, i) => i + 1).map(i => `<div class="tkrow"><b>Table ${i}</b><code>${esc(keys[i] || "")}</code>
+    <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button></div>`).join("");
+}
+$("#qrKeysShow").onclick = () => { const box = $("#qrKeys"); box.style.display = box.style.display === "none" ? "" : "none"; if (box.style.display === "") drawKeys(); };
+$("#qrKeys").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-tk]"); if (!b) return;
+  const n = +b.dataset.t;
+  if (b.dataset.tk === "print") return printTableQRs(n);
+  if (!(await ask(`Changer le code de la table ${n} ? L'ancien QR de cette table ne marchera plus : il faudra imprimer le nouveau.`, {yes: "Changer le code", danger: true}))) return;
+  const r = await api(`/api/table-keys/${n}/reset`, {method: "POST"});
+  if (r.ok) { toast(`Nouveau code pour la table ${n}. Imprimez son QR.`); drawKeys(); } else toast("Erreur, réessayez.");
+});
 
 /* ---------- Démarrage ---------- */
 async function start(){

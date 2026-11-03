@@ -103,12 +103,13 @@ async function updateBasket(env, table, fn) {
 const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, last: data.last });
 const cleanStr = (x, n) => String(x || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, n);
 
-async function handleBasket(request, env, table, action, { json, menuText }) {
+async function handleBasket(request, env, table, action, { json, menuText, checkTableKey }) {
   const menu = JSON.parse(await menuText(request, env));
   if (!(menu.ordering && menu.ordering.enabled)) return json({ error: "closed" }, 403);
   const maxT = parseInt(menu.ordering.tables) || 0;
   if (+table < 1 || (maxT && +table > maxT)) return json({ error: "Table inconnue" }, 400);
   const nocache = { "cache-control": "no-store" };
+  if (!(await checkTableKey(env, table, new URL(request.url).searchParams.get("k")))) return json({ error: "badkey" }, 403);
   if (!action) {
     if (request.method !== "GET") return json({ error: "introuvable" }, 404);
     const b = await readBasket(env, table);
@@ -150,6 +151,7 @@ async function handleBasket(request, env, table, action, { json, menuText }) {
     }
     if (action === "ready") { m.ready = !!body.ready; return {}; }
     if (action === "send") {
+      if (!orderingOpen(menu)) return { error: "hours", status: 403 };
       if (!d.lines.length) return { error: "Commande vide", status: 400 };
       const o = await createOrder(env, menu, table, d.lines, body.note);
       if (!o) return { error: "Commande vide", status: 400 };
@@ -169,7 +171,23 @@ function randomToken() {
 }
 
 // ---------- routes ----------
-export async function handleOrders(request, env, path, { withAuth, json, menuText, staffAuth }) {
+// Horaires de commande (onglet Infos de l'admin) : {1:[{from,to}],…,7:[…]}, lundi = 1. Vide = toujours ouvert.
+export function orderingOpen(menu, now = parisNow()) {
+  const sch = (menu.ordering || {}).schedule;
+  if (!(menu.ordering || {}).useSchedule || !sch) return true;
+  const prev = now.day === 1 ? 7 : now.day - 1;
+  for (const r of sch[now.day] || []) {
+    const f = toMin(r.from), t = toMin(r.to); if (f === null || t === null) continue;
+    if (t > f ? now.min >= f && now.min < t : now.min >= f) return true;
+  }
+  for (const r of sch[prev] || []) {   // créneau qui passe minuit
+    const f = toMin(r.from), t = toMin(r.to); if (f === null || t === null) continue;
+    if (t <= f && now.min < t) return true;
+  }
+  return false;
+}
+
+export async function handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey }) {
   if (!env.DB) return json({ error: "Les commandes ne sont pas encore activées sur ce site." }, 503);
   await ensureSchema(env.DB);
   const m = request.method;
@@ -188,6 +206,8 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
     const maxT = parseInt((menu.ordering || {}).tables) || 0;
     const takeaway = staff && table === "EMP";
     if (!takeaway && (!/^\d{1,3}$/.test(table) || +table < 1 || (maxT && +table > maxT))) return json({ error: "Table inconnue" }, 400);
+    if (!staff && !(await checkTableKey(env, table, body.k))) return json({ error: "badkey" }, 403);
+    if (!staff && !orderingOpen(menu)) return json({ error: "hours" }, 403);
     const o = await createOrder(env, menu, table, body.lines, body.note);
     if (!o) return json({ error: "Commande vide" }, 400);
     return json({ ok: true, ...o });
@@ -195,7 +215,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
 
   // Panier commun de la table (tous les téléphones d'une même table)
   const mBasket = path.match(/^\/api\/table\/(\d{1,3})(?:\/(join|add|remove|qty|ready|send))?$/);
-  if (mBasket) return handleBasket(request, env, mBasket[1], mBasket[2] || "", { json, menuText });
+  if (mBasket) return handleBasket(request, env, mBasket[1], mBasket[2] || "", { json, menuText, checkTableKey });
 
   // Le client suit sa commande
   const mStatus = path.match(/^\/api\/orders\/(\d+)$/);

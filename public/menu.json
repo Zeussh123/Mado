@@ -493,6 +493,18 @@
    "en": "Later",
    "tr": "Sonra",
    "de": "Später"
+  },
+  "tbBadKey": {
+   "fr": "Ce lien de table n'est plus valable. Scannez le QR code posé sur votre table pour commander.",
+   "en": "This table link is no longer valid. Scan the QR code on your table to order.",
+   "tr": "Bu masa bağlantısı artık geçerli değil. Sipariş için masanızdaki QR kodu okutun.",
+   "de": "Dieser Tisch-Link ist nicht mehr gültig. Scannen Sie den QR-Code auf Ihrem Tisch, um zu bestellen."
+  },
+  "tbHours": {
+   "fr": "Les commandes depuis la table sont fermées à cette heure-ci. Vous pouvez commander au comptoir.",
+   "en": "Table ordering is closed at this time. You can order at the counter.",
+   "tr": "Şu anda masadan sipariş kapalı. Kasadan sipariş verebilirsiniz.",
+   "de": "Tischbestellungen sind zu dieser Zeit geschlossen. Sie können an der Theke bestellen."
   }
  },
  "categories": [

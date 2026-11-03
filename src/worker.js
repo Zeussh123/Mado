@@ -7,6 +7,7 @@ import { handleOrders } from "./orders.js";
 
 const MENU_KEY = "menu";
 const STAFF_KEY = "staff-code";
+const TKEYS = "table-keys";
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
 
 export default {
@@ -25,7 +26,10 @@ export default {
       if (path === "/api/staff/login" && request.method === "POST") return staffLogin(request, env);
       if (path === "/api/staff/code" && request.method === "GET") return withAuth(request, env, async () => json({ code: (await env.MADO.get(STAFF_KEY)) || "" }));
       if (path === "/api/staff/code" && request.method === "PUT") return withAuth(request, env, () => putStaffCode(request, env));
-      if (path.startsWith("/api/orders") || path.startsWith("/api/table/")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth });
+      if (path === "/api/table-keys" && request.method === "GET") return withAuth(request, env, () => getTableKeys(request, env));
+      const mReset = path.match(/^\/api\/table-keys\/(\d{1,3})\/reset$/);
+      if (mReset && request.method === "POST") return withAuth(request, env, () => resetTableKey(env, mReset[1]));
+      if (path.startsWith("/api/orders") || path.startsWith("/api/table/")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey });
       if (path === "/serveur") return env.ASSETS.fetch(new Request(new URL("/", url), request));
       if (path === "/cuisine") return env.ASSETS.fetch(new Request(new URL("/cuisine.html", url), request));
       if (path === "/admin") return env.ASSETS.fetch(new Request(new URL("/admin.html", url), request));
@@ -52,6 +56,27 @@ export async function withAuth(request, env, fn) {
     return json({ error: "Mot de passe incorrect" }, 401);
   }
   return fn();
+}
+
+// Code secret de chaque table (dans le QR code) : empêche de commander en tapant juste ?t=1
+const randHex = (n) => [...crypto.getRandomValues(new Uint8Array(n))].map((b) => b.toString(16).padStart(2, "0")).join("");
+async function loadKeys(env) { try { return JSON.parse((await env.MADO.get(TKEYS)) || "{}"); } catch { return {}; } }
+export async function checkTableKey(env, table, k) {
+  const keys = await loadKeys(env);
+  return !!(keys[table] && k && (await safeEqual(String(k), keys[table])));
+}
+async function getTableKeys(request, env) {
+  const menu = JSON.parse(await menuText(request, env));
+  const n = Math.min(200, parseInt((menu.ordering || {}).tables) || 0);
+  const keys = await loadKeys(env); let changed = false;
+  for (let i = 1; i <= n; i++) if (!keys[i]) { keys[i] = randHex(5); changed = true; }
+  if (changed) await env.MADO.put(TKEYS, JSON.stringify(keys));
+  return json({ keys });
+}
+async function resetTableKey(env, n) {
+  const keys = await loadKeys(env); keys[n] = randHex(5);
+  await env.MADO.put(TKEYS, JSON.stringify(keys));
+  return json({ ok: true, key: keys[n] });
 }
 
 // Code serveur (enregistré dans KV, jamais dans le menu public). Le mot de passe admin marche aussi.

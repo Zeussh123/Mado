@@ -30,6 +30,7 @@ Les prix, photos et promos se changent depuis `/admin`, sans toucher au code.
 - La page `/cuisine` a 4 onglets : Commandes en cours (alerte qui sonne tant que la commande n'est pas vue), Plan des tables (libre / en préparation / prête / à encaisser, addition, « Encaissée »), Historique (par jour : chiffre, produits les plus vendus, rapport imprimable) et Réglages (son, volume, rappel, voix, impression auto, nombre de tickets ; enregistrés sur ce PC).
 - Prise de commande serveur : `/serveur`, code à 4-8 chiffres réglé dans l'admin (Infos du restaurant). Le serveur choisit la table ou « À emporter », sans choix de langue ni propositions.
 - Panier commun : tous les téléphones d'une même table (QR ?t=N) remplissent le même panier (table D1 `table_baskets`), une personne envoie, un seul ticket. Rappel après 1 min sans ajout. Le panier est vidé quand la table est encaissée.
+- Anti-commandes fantômes : chaque QR de table contient un code secret (`?t=N&k=…`, KV `table-keys`, « Changer le code » dans l'onglet QR). Horaires de commande par jour (onglet Infos, `ordering.useSchedule` + `schedule`).
 - Impression sans fenêtre : lancer Chrome avec l'option `--kiosk-printing` et mettre l'imprimante ticket par défaut.
 - Les commandes sont stockées dans la base D1 `mado-commandes` (créée automatiquement au déploiement).
 
