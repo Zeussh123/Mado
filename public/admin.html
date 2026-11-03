@@ -522,6 +522,7 @@ function renderGroups(){
       <div class="lbl">Nom du groupe</div>
       <div class="grid4">${LANGS.map(l=>`<input data-gf="name.${l}" placeholder="${LNAME[l]}" value="${esc(g.name[l])}">`).join("")}</div>
       <div class="toggles"><label><input type="radio" name="gm${gi}" data-gf="single" ${g.multi?"":"checked"}> 1 seul choix</label><label><input type="radio" name="gm${gi}" data-gf="multi" ${g.multi?"checked":""}> Plusieurs choix</label></div>
+      ${g.multi ? `<div class="times" style="margin-top:10px"><div><div class="lbl">Nombre inclus (0 = pas de limite)</div><input data-gf="free" inputmode="numeric" value="${+g.free||""}" placeholder="0"></div><div><div class="lbl">Prix par choix en plus</div><input data-gf="extraPrice" inputmode="decimal" value="${+g.extraPrice?String(g.extraPrice).replace(".",","):""}" placeholder="0 €"></div></div>` : ""}
       <div class="lbl" style="margin-top:14px">Choix (touchez l'image pour mettre votre photo)</div>
       ${g.choices.map((c, ci) => `<div class="gchoice ${c.hidden?"off":""}" data-ci="${ci}">
         <div class="gi" data-gact="photo" title="Changer l'image">${choiceIcon(c)}</div>
@@ -558,6 +559,8 @@ $("#groups").addEventListener("input", (e) => {
     else if (f === "icon") { c.icon = el.value; if (!c.photo) $(".gi", row).innerHTML = choiceIcon(c); }
     else setPath(c, f, el.value);
   } else if (el.dataset.gf === "single" || el.dataset.gf === "multi") { g.multi = el.dataset.gf === "multi"; g.max = g.multi ? 0 : 1; renderGroups(); }
+  else if (el.dataset.gf === "free") g.free = Math.max(0, parseInt(el.value) || 0);
+  else if (el.dataset.gf === "extraPrice") { const v = parsePrice(el.value); if (v !== undefined) g.extraPrice = v || 0; }
   else if (el.dataset.gf) setPath(g, el.dataset.gf, el.value);
   updateStatus();
 });

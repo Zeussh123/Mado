@@ -13,6 +13,15 @@
     <path d="M22 26.5 Q30 23.5 40 25.5" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity=".45"/>
     ${extra}`);
 
+  // Bol vu de côté avec garniture
+  const bowl = (top) => svg(`
+    <ellipse cx="32" cy="54" rx="22" ry="4" fill="#000" opacity=".18"/>
+    <path d="M14 26 Q20 16 30 22 Q38 14 46 22 Q54 20 54 30 L10 30 Q10 24 14 26 Z" fill="#5cb85c"/>
+    ${top}
+    <path d="M8 30 Q32 62 56 30 Z" fill="#f4f1ec"/>
+    <path d="M12 36 Q32 50 52 36" stroke="#f39200" stroke-width="2.5" fill="none"/>`);
+  const slices = (c1, c2) => `<path d="M16 28 Q24 20 32 26 L30 30 Q24 26 18 31 Z" fill="${c1}"/><path d="M30 26 Q40 18 48 26 L46 30 Q40 25 32 30 Z" fill="${c2}"/>`;
+
   const I = {
     // ---------- Viandes ----------
     boeuf: svg(`
@@ -115,6 +124,19 @@
       <path d="M12 28 L34 34 L34 52 L12 46 Z" fill="#ede7da"/>
       <path d="M34 34 L52 26 L52 44 L34 52 Z" fill="#d9d1c1"/>
       <g fill="#cfc6b3"><circle cx="20" cy="38" r="1.5"/><circle cx="27" cy="44" r="1.2"/><circle cx="43" cy="38" r="1.5"/><circle cx="30" cy="27" r="1.2"/></g>`),
+
+    "bowl-boeuf": bowl(slices("#8a4a2b", "#a0582f") + `<circle cx="24" cy="24" r="2.5" fill="#e63946"/>`),
+    "bowl-poulet": bowl(slices("#e0a052", "#eab060") + `<circle cx="24" cy="24" r="2.5" fill="#e63946"/>`),
+    "bowl-mixte": bowl(slices("#8a4a2b", "#e0a052") + `<circle cx="24" cy="24" r="2.5" fill="#e63946"/>`),
+    "bowl-chicken": bowl(`<path d="M16 29 C14 22 24 19 30 23 C33 26 31 30 28 30 Z" fill="#d98b3a"/><path d="M32 28 C31 21 42 18 48 23 C51 27 48 30 44 30 Z" fill="#e9a54f"/><g fill="#c4762b"><circle cx="22" cy="25" r="1.2"/><circle cx="40" cy="24" r="1.2"/></g>`),
+    "bowl-kofte": bowl(`<ellipse cx="22" cy="26" rx="7" ry="5" fill="#7a3f22"/><ellipse cx="34" cy="24" rx="7" ry="5" fill="#8a4a2b"/><ellipse cx="45" cy="27" rx="6" ry="4.5" fill="#6b351c"/><g fill="#a86a44"><circle cx="20" cy="24" r="1"/><circle cx="33" cy="22" r="1"/><circle cx="44" cy="25" r="1"/></g>`),
+    "supp-viande": svg(`
+      <ellipse cx="32" cy="54" rx="20" ry="4" fill="#000" opacity=".18"/>
+      <path d="M8 26 Q22 16 36 24 L34 32 Q22 26 10 34 Z" fill="#8a4a2b"/>
+      <path d="M9 35 Q22 27 35 33 L33 41 Q22 36 11 43 Z" fill="#a0582f"/>
+      <path d="M10 44 Q22 37 34 42 L32 49 Q22 45 12 51 Z" fill="#7a3f22"/>
+      <circle cx="46" cy="22" r="13" fill="#f39200"/>
+      <path d="M46 15 V29 M39 22 H53" stroke="#1a1100" stroke-width="4" stroke-linecap="round"/>`),
 
     // ---------- Accompagnements ----------
     frites: svg(`

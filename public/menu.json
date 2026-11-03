@@ -217,6 +217,12 @@
    "en": "See my order",
    "tr": "Siparişimi gör",
    "de": "Bestellung ansehen"
+  },
+  "freeHint": {
+   "fr": "{n} incluses, +{p} la suivante",
+   "en": "{n} included, +{p} each extra",
+   "tr": "{n} dahil, fazlası +{p}",
+   "de": "{n} inklusive, jede weitere +{p}"
   }
  },
  "categories": [
@@ -251,7 +257,8 @@
       "viande",
       "crudites",
       "sauces",
-      "sauce-frites"
+      "sauce-frites",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -277,7 +284,8 @@
       "viande-tacos",
       "crudites",
       "sauces",
-      "sauce-frites"
+      "sauce-frites",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -303,7 +311,8 @@
       "viande",
       "crudites",
       "sauces",
-      "sauce-frites"
+      "sauce-frites",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -352,7 +361,8 @@
       "viande",
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -378,7 +388,8 @@
       "viande",
       "crudites",
       "sauces",
-      "sauce-frites"
+      "sauce-frites",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -404,7 +415,8 @@
       "viande-tacos",
       "crudites",
       "sauces",
-      "sauce-frites"
+      "sauce-frites",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -451,7 +463,12 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": [],
+     "options": [
+      "bowl",
+      "crudites",
+      "sauces",
+      "supplement"
+     ],
      "upgrade": ""
     },
     {
@@ -518,7 +535,12 @@
       "tr": "",
       "de": ""
      },
-     "options": [],
+     "options": [
+      "bowl",
+      "crudites",
+      "sauces",
+      "supplement"
+     ],
      "upgrade": "menus-menu-bowl"
     }
    ],
@@ -563,7 +585,8 @@
      "options": [
       "viande",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-kebab"
     },
@@ -588,7 +611,8 @@
      "options": [
       "viande",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-yufka"
     },
@@ -613,7 +637,8 @@
      "options": [
       "viande-tacos",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-tacos"
     },
@@ -637,7 +662,8 @@
      },
      "options": [
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -661,7 +687,8 @@
      },
      "options": [
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -686,7 +713,8 @@
      "options": [
       "viande",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-lahmacun"
     },
@@ -711,7 +739,8 @@
      "options": [
       "viande-tacos",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-maxi-tacos"
     },
@@ -826,7 +855,8 @@
      "options": [
       "viande",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     }
@@ -905,7 +935,8 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-assiette"
     },
@@ -930,7 +961,8 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-assiette"
     },
@@ -955,7 +987,8 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": "menus-menu-assiette"
     },
@@ -980,7 +1013,8 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -1005,7 +1039,8 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -1030,7 +1065,8 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -1707,7 +1743,9 @@
       "tr": "",
       "de": ""
      },
-     "options": [],
+     "options": [
+      "sauce-frites"
+     ],
      "upgrade": ""
     },
     {
@@ -1728,7 +1766,9 @@
       "tr": "",
       "de": ""
      },
-     "options": [],
+     "options": [
+      "sauce-frites"
+     ],
      "upgrade": ""
     },
     {
@@ -1749,7 +1789,9 @@
       "tr": "",
       "de": ""
      },
-     "options": [],
+     "options": [
+      "sauce-frites"
+     ],
      "upgrade": ""
     },
     {
@@ -2494,7 +2536,9 @@
      "price": 0,
      "hidden": false
     }
-   ]
+   ],
+   "free": 0,
+   "extraPrice": 0
   },
   {
    "id": "viande-tacos",
@@ -2585,7 +2629,89 @@
      "price": 0,
      "hidden": false
     }
-   ]
+   ],
+   "free": 0,
+   "extraPrice": 0
+  },
+  {
+   "id": "bowl",
+   "name": {
+    "fr": "Votre bowl",
+    "en": "Your bowl",
+    "tr": "Bowl seçimi",
+    "de": "Ihre Bowl"
+   },
+   "multi": false,
+   "max": 1,
+   "choices": [
+    {
+     "id": "b-boeuf",
+     "name": {
+      "fr": "Bowl kebab bœuf",
+      "en": "Beef kebab bowl",
+      "tr": "Dana döner bowl",
+      "de": "Rind-Döner-Bowl"
+     },
+     "icon": "bowl-boeuf",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "b-poulet",
+     "name": {
+      "fr": "Bowl kebab poulet",
+      "en": "Chicken kebab bowl",
+      "tr": "Tavuk döner bowl",
+      "de": "Hähnchen-Döner-Bowl"
+     },
+     "icon": "bowl-poulet",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "b-mixte",
+     "name": {
+      "fr": "Bowl kebab mixte",
+      "en": "Mixed kebab bowl",
+      "tr": "Karışık döner bowl",
+      "de": "Gemischte Döner-Bowl"
+     },
+     "icon": "bowl-mixte",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "b-chicken",
+     "name": {
+      "fr": "Chicken bowl",
+      "en": "Chicken bowl",
+      "tr": "Chicken bowl",
+      "de": "Chicken Bowl"
+     },
+     "icon": "bowl-chicken",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "b-kofte",
+     "name": {
+      "fr": "Köfte bowl",
+      "en": "Köfte bowl",
+      "tr": "Köfte bowl",
+      "de": "Köfte-Bowl"
+     },
+     "icon": "bowl-kofte",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ],
+   "free": 0,
+   "extraPrice": 0
   },
   {
    "id": "accompagnement",
@@ -2624,7 +2750,9 @@
      "price": 0,
      "hidden": false
     }
-   ]
+   ],
+   "free": 0,
+   "extraPrice": 0
   },
   {
    "id": "crudites",
@@ -2781,7 +2909,9 @@
      "price": 1,
      "hidden": false
     }
-   ]
+   ],
+   "free": 0,
+   "extraPrice": 0
   },
   {
    "id": "sauces",
@@ -2976,7 +3106,9 @@
      "price": 0,
      "hidden": false
     }
-   ]
+   ],
+   "free": 2,
+   "extraPrice": 0.3
   },
   {
    "id": "sauce-frites",
@@ -3171,7 +3303,37 @@
      "price": 0,
      "hidden": false
     }
-   ]
+   ],
+   "free": 2,
+   "extraPrice": 0.3
+  },
+  {
+   "id": "supplement",
+   "name": {
+    "fr": "Suppléments",
+    "en": "Extras",
+    "tr": "Ekstralar",
+    "de": "Extras"
+   },
+   "multi": true,
+   "max": 0,
+   "choices": [
+    {
+     "id": "supp-viande",
+     "name": {
+      "fr": "Supplément viande",
+      "en": "Extra meat",
+      "tr": "Ekstra et",
+      "de": "Extra Fleisch"
+     },
+     "icon": "supp-viande",
+     "photo": "",
+     "price": 2,
+     "hidden": false
+    }
+   ],
+   "free": 0,
+   "extraPrice": 0
   }
  ]
 }

@@ -91,7 +91,7 @@ footer .info{margin-bottom:8px;color:var(--text)}
 .sh-body h2{margin:0;font-size:1.4rem}
 .sh-body .d{color:var(--muted);margin:4px 0 0;font-size:.92rem}
 .grp{margin-top:22px}
-.grp-h{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+.grp-h{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .grp-h h3{margin:0;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em}
 .grp-h small{color:var(--muted);font-size:.78rem}
 .grp-h .cnt{margin-left:auto;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
@@ -388,9 +388,15 @@ function itemVisual(it){
 function unitPrice(it){ const pp = promoPrice(it, PROMOS); return pp !== null && pp < +it.price ? pp : (+it.price || 0); }
 function extras(it, sel){
   let x = 0;
-  for (const g of itemGroups(it)) for (const id of (sel[g.id] || [])) { const c = g.choices.find(c => c.id === id); if (c) x += +c.price || 0; }
-  return x;
+  for (const g of itemGroups(it)) {
+    const ids = sel[g.id] || [];
+    for (const id of ids) { const c = g.choices.find(c => c.id === id); if (c) x += +c.price || 0; }
+    // ex. sauces : 2 incluses, chaque sauce en plus est payante
+    if (+g.free && +g.extraPrice) { const n = ids.filter(id => !g.choices.find(c => c.id === id)?.all).length; x += Math.max(0, n - g.free) * g.extraPrice; }
+  }
+  return Math.round(x * 100) / 100;
 }
+const groupHint = (g) => (+g.free && +g.extraPrice) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) : ui(g.multi ? "severalChoices" : "oneChoice");
 function choiceSummary(it, sel){
   return itemGroups(it).map(g => g.choices.filter(c => (sel[g.id] || []).includes(c.id) && !c.all).map(c => t(c.name)).join(", ")).filter(Boolean).join(" · ");
 }
@@ -479,7 +485,7 @@ function drawSheet(){
     ${groups.map(g => {
       const ids = SEL[g.id] || [];
       const n = ids.filter(id => !g.choices.find(c => c.id === id)?.all).length;
-      return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(ui(g.multi ? "severalChoices" : "oneChoice"))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
+      return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(groupHint(g))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
         <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
     }).join("")}</div>`;
   drawBar();
