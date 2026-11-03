@@ -2999,7 +2999,8 @@
      "icon": "piment-vert",
      "photo": "",
      "price": 0,
-     "hidden": false
+     "hidden": false,
+     "apart": true
     },
     {
      "id": "feta",
@@ -3210,6 +3211,20 @@
      "photo": "",
      "price": 0,
      "hidden": false
+    },
+    {
+     "id": "piment-poudre",
+     "name": {
+      "fr": "Piment en poudre",
+      "en": "Spicy (chili powder)",
+      "tr": "Pul biber",
+      "de": "Chilipulver (scharf)"
+     },
+     "icon": "piment-poudre",
+     "photo": "",
+     "price": 0,
+     "hidden": false,
+     "apart": true
     }
    ],
    "free": 2,
@@ -3538,5 +3553,8 @@
  "ordering": {
   "enabled": false,
   "tables": 10
- }
+ },
+ "applied": [
+  "piment-2026-11"
+ ]
 }

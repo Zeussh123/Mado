@@ -188,6 +188,14 @@
     andalouse: cup("#f08a4b", `<g fill="#3fa34d"><circle cx="27" cy="28" r="1.1"/><circle cx="37" cy="30" r="1.1"/></g>`),
     tartare: cup("#eef0d6", `<g fill="#4caf50"><circle cx="25" cy="29" r="1.2"/><circle cx="31" cy="27" r="1.2"/><circle cx="37" cy="30" r="1.2"/><circle cx="40" cy="27" r="1"/></g>`),
     piment: cup("#b5121b", `<path d="M42 14 C44 22 40 26 34 30" stroke="#e63946" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M42 14 Q44 10 48 10" stroke="#2e7d32" stroke-width="2.5" fill="none" stroke-linecap="round"/>`),
+    "piment-poudre": svg(`
+      <ellipse cx="32" cy="54" rx="22" ry="4" fill="#000" opacity=".18"/>
+      <path d="M8 52 Q14 34 30 32 Q46 31 56 52 Z" fill="#c1272d"/>
+      <path d="M14 50 Q20 38 30 37 Q40 37 48 50 Z" fill="#e0452b"/>
+      <g fill="#8f1d14"><circle cx="22" cy="46" r="1.2"/><circle cx="31" cy="42" r="1.1"/><circle cx="40" cy="47" r="1.2"/><circle cx="27" cy="50" r="1"/><circle cx="46" cy="44" r="1"/></g>
+      <g fill="#e0452b"><circle cx="12" cy="55" r="1"/><circle cx="54" cy="56" r="1"/><circle cx="58" cy="50" r=".9"/></g>
+      <path d="M44 10 C50 16 48 26 36 30 C34 31 33 29 35 28 C42 24 42 17 40 12 Z" fill="#b5121b"/>
+      <path d="M42 11 Q42 5 48 4" stroke="#2e7d32" stroke-width="3" fill="none" stroke-linecap="round"/>`),
     harissa: cup("#8f1d14", `<g fill="#d9480f"><circle cx="27" cy="29" r="1.2"/><circle cx="36" cy="28" r="1.2"/></g>`),
     sauce: cup("#f39200"),
     aucune: svg(`<circle cx="32" cy="32" r="18" fill="none" stroke="#a9a39a" stroke-width="4"/><path d="M19 45 L45 19" stroke="#a9a39a" stroke-width="4" stroke-linecap="round"/>`),

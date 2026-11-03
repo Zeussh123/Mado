@@ -48,10 +48,10 @@ function priceLine(menu, line, promos) {
     const chosen = g.choices.filter((c) => ids.includes(c.id) && !c.hidden);
     if (!g.multi && chosen.length > 1) chosen.length = 1;
     for (const c of chosen) unit += +c.price || 0;
-    const counted = chosen.filter((c) => !c.all).length;
+    const counted = chosen.filter((c) => !c.all && !c.apart).length;
     if (+g.free && +g.extraPrice) unit += Math.max(0, counted - g.free) * g.extraPrice;
     const all = chosen.find((c) => c.all);
-    const names = [all ? all.name.fr : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price))).map((c) => c.name.fr)].filter(Boolean);
+    const names = [all ? all.name.fr : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price) && !c.apart)).map((c) => c.name.fr)].filter(Boolean);
     if (names.length) details.push({ gid: g.id, group: g.name.fr, choices: names });
   }
   const qty = Math.max(1, Math.min(20, parseInt(line.qty) || 1));
@@ -65,7 +65,7 @@ function randomToken() {
 }
 
 // ---------- routes ----------
-export async function handleOrders(request, env, path, { withAuth, json, menuText }) {
+export async function handleOrders(request, env, path, { withAuth, json, menuText, staffAuth }) {
   if (!env.DB) return json({ error: "Les commandes ne sont pas encore activées sur ce site." }, 503);
   await ensureSchema(env.DB);
   const m = request.method;
@@ -76,10 +76,14 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
     if (raw.length > 30000) return json({ error: "Commande trop grande" }, 413);
     let body; try { body = JSON.parse(raw); } catch { return json({ error: "Commande illisible" }, 400); }
     const menu = JSON.parse(await menuText(request, env));
-    if (!(menu.ordering && menu.ordering.enabled)) return json({ error: "closed" }, 403);
+    // un serveur (code serveur ou mot de passe admin) peut commander même si les commandes clients sont fermées, et « à emporter »
+    const staff = request.headers.get("authorization") ? await staffAuth(request, env) : null;
+    if (request.headers.get("authorization") && !staff) return json({ error: "Code incorrect" }, 401);
+    if (!staff && !(menu.ordering && menu.ordering.enabled)) return json({ error: "closed" }, 403);
     const table = String(body.table || "").trim().slice(0, 10);
-    const maxT = parseInt(menu.ordering.tables) || 0;
-    if (!/^\d{1,3}$/.test(table) || +table < 1 || (maxT && +table > maxT)) return json({ error: "Table inconnue" }, 400);
+    const maxT = parseInt((menu.ordering || {}).tables) || 0;
+    const takeaway = staff && table === "EMP";
+    if (!takeaway && (!/^\d{1,3}$/.test(table) || +table < 1 || (maxT && +table > maxT))) return json({ error: "Table inconnue" }, 400);
     const lines = (Array.isArray(body.lines) ? body.lines : []).slice(0, MAX_LINES);
     const now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
     const priced = lines.map((l) => priceLine(menu, l, promos)).filter(Boolean);

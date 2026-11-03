@@ -6,6 +6,7 @@
 import { handleOrders } from "./orders.js";
 
 const MENU_KEY = "menu";
+const STAFF_KEY = "staff-code";
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
 
 export default {
@@ -21,7 +22,11 @@ export default {
       if (path.startsWith("/api/photo/") && request.method === "DELETE")
         return withAuth(request, env, () => deletePhoto(path.slice(11), env));
       if (path.startsWith("/photos/") && request.method === "GET") return getPhoto(path.slice(8), env);
-      if (path.startsWith("/api/orders")) return handleOrders(request, env, path, { withAuth, json, menuText });
+      if (path === "/api/staff/login" && request.method === "POST") return staffLogin(request, env);
+      if (path === "/api/staff/code" && request.method === "GET") return withAuth(request, env, async () => json({ code: (await env.MADO.get(STAFF_KEY)) || "" }));
+      if (path === "/api/staff/code" && request.method === "PUT") return withAuth(request, env, () => putStaffCode(request, env));
+      if (path.startsWith("/api/orders")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth });
+      if (path === "/serveur") return env.ASSETS.fetch(new Request(new URL("/", url), request));
       if (path === "/cuisine") return env.ASSETS.fetch(new Request(new URL("/cuisine.html", url), request));
       if (path === "/admin") return env.ASSETS.fetch(new Request(new URL("/admin.html", url), request));
     } catch (e) {
@@ -47,6 +52,29 @@ export async function withAuth(request, env, fn) {
     return json({ error: "Mot de passe incorrect" }, 401);
   }
   return fn();
+}
+
+// Code serveur (enregistré dans KV, jamais dans le menu public). Le mot de passe admin marche aussi.
+export async function staffAuth(request, env) {
+  const given = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+  if (!given) return null;
+  if (env.ADMIN_PASSWORD && (await safeEqual(given, env.ADMIN_PASSWORD))) return "admin";
+  const code = await env.MADO.get(STAFF_KEY);
+  if (code && (await safeEqual(given, code))) return "staff";
+  return null;
+}
+async function staffLogin(request, env) {
+  if (await staffAuth(request, env)) return json({ ok: true });
+  await new Promise((r) => setTimeout(r, 800));
+  return json({ error: "Code incorrect" }, 401);
+}
+async function putStaffCode(request, env) {
+  const { code } = await request.json().catch(() => ({}));
+  const c = String(code || "").trim();
+  if (!c) { await env.MADO.delete(STAFF_KEY); return json({ ok: true, code: "" }); }
+  if (!/^\d{4,8}$/.test(c)) return json({ error: "Le code doit faire 4 à 8 chiffres" }, 400);
+  await env.MADO.put(STAFF_KEY, c);
+  return json({ ok: true, code: c });
 }
 
 async function safeEqual(a, b) {
@@ -96,9 +124,24 @@ export async function menuText(request, env) {
         if (it.upgrade === undefined) it.upgrade = (d && d.upgrade) || "";
       }
     }
+    applyMigrations(saved);
     body = JSON.stringify(saved);
   }
   return body;
+}
+
+// Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
+function applyMigrations(m){
+  m.applied = m.applied || [];
+  if (!m.applied.includes("piment-2026-11")) {
+    const gr = (id) => (m.optionGroups || []).find((g) => g.id === id);
+    const cr = gr("crudites"), sa = gr("sauces");
+    if (cr) for (const c of cr.choices) if (c.id === "piment-vert") c.apart = true;
+    if (sa && !sa.choices.some((c) => c.id === "piment-poudre"))
+      sa.choices.push({ id: "piment-poudre", name: { fr: "Piment en poudre", en: "Spicy (chili powder)", tr: "Pul biber", de: "Chilipulver (scharf)" }, icon: "piment-poudre", photo: "", price: 0, hidden: false, apart: true });
+    m.applied.push("piment-2026-11");
+  }
+  return m;
 }
 
 async function putMenu(request, env) {

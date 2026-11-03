@@ -175,6 +175,9 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <b>Commandes depuis les tables</b>
         <div class="toggles"><label><input type="checkbox" id="ordEnabled"> Accepter les commandes envoyées depuis les tables</label></div>
         <div class="lbl">Nombre de tables</div><input id="ordTables" inputmode="numeric" style="max-width:140px">
+        <div class="lbl" style="margin-top:14px">Code serveur (4 à 8 chiffres) pour la prise de commande sur <a href="/serveur" target="_blank">/serveur</a></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input id="staffCode" inputmode="numeric" maxlength="8" placeholder="ex. 482913" style="max-width:180px"><button id="staffSave" type="button">Enregistrer le code</button><span class="small" id="staffMsg"></span></div>
+        <p class="small">Le serveur choisit la table ou « à emporter », même si les commandes clients sont désactivées. Votre mot de passe admin marche aussi.</p>
         <p class="small">Les commandes arrivent sur la page <a href="cuisine" target="_blank" style="color:var(--accent)">Cuisine</a> (à ouvrir sur l'ordinateur relié à l'imprimante). Décochez pour couper les commandes, par exemple quand c'est fermé : le client verra « montrez cet écran au comptoir ».</p>
       </div>
     </section>
@@ -237,6 +240,19 @@ async function login(pw){
 }
 
 
+// Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
+function applyMigrations(m){
+  m.applied = m.applied || [];
+  if (!m.applied.includes("piment-2026-11")) {
+    const gr = (id) => (m.optionGroups || []).find((g) => g.id === id);
+    const cr = gr("crudites"), sa = gr("sauces");
+    if (cr) for (const c of cr.choices) if (c.id === "piment-vert") c.apart = true;
+    if (sa && !sa.choices.some((c) => c.id === "piment-poudre"))
+      sa.choices.push({ id: "piment-poudre", name: { fr: "Piment en poudre", en: "Spicy (chili powder)", tr: "Pul biber", de: "Chilipulver (scharf)" }, icon: "piment-poudre", photo: "", price: 0, hidden: false, apart: true });
+    m.applied.push("piment-2026-11");
+  }
+  return m;
+}
 async function withDefaults(m){
   // complète un menu enregistré avec une ancienne version du site
   try {
@@ -260,6 +276,7 @@ async function withDefaults(m){
         if (it.upgrade === undefined) it.upgrade = (d && d.upgrade) || "";
       }
     }
+    applyMigrations(m);
   } catch {}
   return m;
 }
@@ -570,7 +587,8 @@ function renderGroups(){
           <div class="grid4" style="margin-top:6px">${["en","tr","de"].map(l=>`<input data-cf="name.${l}" placeholder="${LNAME[l]}" value="${esc(c.name[l])}">`).join("")}</div>
           <div class="lbl">Image dessinée</div>
           <select data-cf="icon" style="width:auto">${ICON_KEYS.map(k=>`<option ${k===c.icon?"selected":""}>${k}</option>`).join("")}</select>
-          ${g.multi ? `<div class="toggles"><label><input type="checkbox" data-cf="all" ${c.all?"checked":""}> Ce choix sélectionne tout (ex. « Tout »)</label></div>` : ""}
+          ${g.multi ? `<div class="toggles"><label><input type="checkbox" data-cf="all" ${c.all?"checked":""}> Ce choix sélectionne tout (ex. « Tout »)</label></div>
+          <div class="toggles"><label><input type="checkbox" data-cf="apart" ${c.apart?"checked":""}> À part : pas compris dans « Tout » et ne compte pas dans les choix inclus (ex. piment)</label></div>` : ""}
           <div class="actions">
             ${c.photo?`<button data-gact="rmPhoto">Remettre l'image dessinée</button>`:""}
             <button data-gact="up" ${ci===0?"disabled":""}>↑</button><button data-gact="down" ${ci===g.choices.length-1?"disabled":""}>↓</button>
@@ -593,6 +611,7 @@ $("#groups").addEventListener("input", (e) => {
     if (f === "price") { const v = parsePrice(el.value); if (v !== undefined) c.price = v || 0; el.style.borderColor = v===undefined ? "var(--red)" : ""; }
     else if (f === "visible") { c.hidden = !el.checked; row.classList.toggle("off", c.hidden); }
     else if (f === "all") c.all = el.checked;
+    else if (f === "apart") c.apart = el.checked;
     else if (f === "icon") { c.icon = el.value; if (!c.photo) $(".gi", row).innerHTML = choiceIcon(c); }
     else setPath(c, f, el.value);
   } else if (el.dataset.gf === "single" || el.dataset.gf === "multi") { g.multi = el.dataset.gf === "multi"; g.max = g.multi ? 0 : 1; renderGroups(); }
@@ -719,8 +738,19 @@ async function start(){
   $("#login").style.display = "none"; $("#app").style.display = "block";
   $("#demoNote").style.display = DEMO ? "block" : "none";
   $("#qrUrl").value = location.origin + "/";
-  menu = await loadMenu(); saved = JSON.stringify(menu); render();
+  menu = await loadMenu(); saved = JSON.stringify(menu); render(); loadStaffCode();
 }
+// Code serveur (stocké à part, pas dans le menu public)
+async function loadStaffCode(){
+  if (DEMO) { $("#staffMsg").textContent = "Disponible une fois le site en ligne."; return; }
+  try { const j = await (await api("/api/staff/code")).json(); $("#staffCode").value = j.code || ""; $("#staffMsg").textContent = j.code ? "" : "Aucun code pour l'instant."; } catch {}
+}
+$("#staffSave").onclick = async () => {
+  if (DEMO) return;
+  const r = await api("/api/staff/code", {method: "PUT", headers: {"content-type": "application/json"}, body: JSON.stringify({code: $("#staffCode").value})});
+  const j = await r.json().catch(() => ({}));
+  $("#staffMsg").textContent = r.ok ? (j.code ? "Code enregistré ✓" : "Code supprimé") : (j.error || "Erreur");
+};
 $("#loginForm").onsubmit = async (e) => {
   e.preventDefault(); $("#loginErr").textContent = "";
   if (await login($("#pw").value)) start(); else $("#loginErr").textContent = "Mot de passe incorrect";

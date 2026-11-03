@@ -247,6 +247,8 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&
 const eur = (n) => new Intl.NumberFormat("fr-FR", {style:"currency", currency:"EUR"}).format(n || 0);
 const hm = (iso) => new Date(iso).toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"});
 const ls = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(k,v){try{localStorage.setItem(k,v)}catch{}}, del(k){try{localStorage.removeItem(k)}catch{}} };
+const isEmp = (t) => t === "EMP";
+const tName = (t) => isEmp(t) ? "À emporter" : "Table " + t;
 const STATUS = {new: "En préparation", ready: "Prête", done: "Servie", paid: "Encaissée", cancelled: "Annulée"};
 let token = (() => { try { return sessionStorage.getItem("mado-admin") || ls.get("mado-kitchen") || ""; } catch { return ""; } })();
 let ORDERS = [], TABLES = 10, started = false, audio = null, firstLoad = true, tab = "orders", openTable = null;
@@ -314,13 +316,14 @@ function alarmTick(force){
   $("#alarm").style.display = u.length && started ? "flex" : "none";
   if (!u.length) { document.title = "Mado · Caisse & cuisine"; return; }
   const tables = [...new Set(u.map(o => o.table_no))];
-  $("#alarmTxt").textContent = `🔔 ${u.length > 1 ? u.length + " nouvelles commandes" : "Nouvelle commande"} · table ${tables.join(", ")}`;
+  const spoken = tables.map(t => isEmp(t) ? "à emporter" : "table " + t).join(", ");
+  $("#alarmTxt").textContent = `🔔 ${u.length > 1 ? u.length + " nouvelles commandes" : "Nouvelle commande"} · ${spoken}`;
   document.title = `(${u.length}) Nouvelle commande · Mado`;
   if (!started) return;
   const now = Date.now();
   if (force || (S.repeat && now - lastAlarm >= S.repeat * 1000)) {
     lastAlarm = now; playSound();
-    setTimeout(() => say(`Nouvelle commande, table ${tables.join(", table ")}`), S.sound === "aucun" ? 0 : 1200);
+    setTimeout(() => say(`Nouvelle commande, ${spoken}`), S.sound === "aucun" ? 0 : 1200);
   }
 }
 function markSeen(ids){ ids.forEach(id => seen.add(id)); saveSet("mado-seen", seen); alarmTick(); render(); }
@@ -342,14 +345,14 @@ function ticketDetails(l){
   const by = (k) => l.details.filter(d => kind(d) === k);
   const list = (d) => esc(d.choices.join(", "));
   return by("meat").map(d => `<div class="g meat">▸ ${list(d).toUpperCase()}</div>`).join("")
-    + by("crud").map(d => `<div class="g">▸ ${list(d)}</div>`).join("")
+    + by("crud").map(d => `<div class="g">▸ ${esc(d.choices.map(c => c === "Tout" ? "Toutes crudités" : c).join(", "))}</div>`).join("")
     + by("sauce").map(d => `<div class="g">▸ Sauces : ${list(d)}</div>`).join("")
     + by("other").map(d => `<div class="g">▸ ${esc(d.group)} : ${list(d)}</div>`).join("")
     + by("frites").map(d => `<div class="g sub">Frites ▸ ${list(d)}</div>`).join("");
 }
 const row = (a, b) => `<tr><td>${a}</td><td class="r">${b}</td></tr>`;
 function ticketHtml(o){
-  return `<div class="resto">MADO</div><div class="big">TABLE ${esc(o.table_no)}</div>
+  return `<div class="resto">MADO</div><div class="big"${isEmp(o.table_no) ? ' style="font-size:22pt"' : ""}>${esc(tName(o.table_no).toUpperCase())}</div>
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>
     ${o.lines.map(l => `<div class="dash"></div><div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}
     ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}<div class="sep"></div>
@@ -383,7 +386,7 @@ function runQueue(){
 function orderCard(o, opts = {}){
   const isNew = o.status === "new" && !seen.has(o.id);
   return `<div class="order ${o.status} ${isNew && started ? "unseen" : ""}" data-id="${o.id}">
-    <div class="oh"><span class="t">Table ${esc(o.table_no)}</span><span class="n">n° ${o.num}</span><span class="st ${o.status}">${STATUS[o.status] || o.status}</span><span class="time">${hm(o.created_at)}</span></div>
+    <div class="oh"><span class="t">${isEmp(o.table_no) ? "🛍 " : ""}${esc(tName(o.table_no))}</span><span class="n">n° ${o.num}</span><span class="st ${o.status}">${STATUS[o.status] || o.status}</span><span class="time">${hm(o.created_at)}</span></div>
     ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${detailsHtml(l)}</div>`).join("")}
     ${o.note ? `<div class="note">📝 ${esc(o.note)}</div>` : ""}
     <div class="of"><span class="tot">${eur(o.total)}</span>
@@ -418,7 +421,7 @@ function tableState(t){
 const LAB = {free: "Libre", new: "En préparation", ready: "Prête à servir", done: "À encaisser"};
 function minutes(iso){ const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0"); }
 function renderTables(){
-  const extra = [...new Set(ORDERS.filter(o => OPEN.includes(o.status)).map(o => +o.table_no))].filter(n => n > TABLES);
+  const extra = [...new Set(ORDERS.filter(o => OPEN.includes(o.status)).map(o => +o.table_no))].filter(n => n > TABLES);  // « à emporter » n'a pas de table
   const nums = [...Array.from({length: TABLES}, (_, i) => i + 1), ...extra];
   let busy = 0;
   $("#tables").innerHTML = nums.map(t => {

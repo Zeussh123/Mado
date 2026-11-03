@@ -31,6 +31,21 @@ img{display:block;max-width:100%}
 .langs .flag{font-size:1.6rem;line-height:1}
 .langs small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
 
+/* ---------- Version serveur ---------- */
+#staff{display:none;min-height:100vh;min-height:100dvh;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:22px;text-align:center;background:radial-gradient(120% 70% at 50% 0%,#2a2a2a 0%,var(--bg) 70%)}
+#staff .logo{width:min(220px,60vw);height:auto}
+#staffBody{width:100%;display:grid;justify-items:center;gap:18px}
+#staff h1{margin:0;font-size:1.3rem}
+#staff form{display:grid;gap:12px;width:min(320px,100%)}
+#staff input{font-size:1.6rem;text-align:center;letter-spacing:.3em;padding:12px;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface);color:var(--text)}
+#staff .err{color:#ff8d86;min-height:1.2em;margin:0}
+.tpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px;width:min(520px,100%)}
+.tpick button{aspect-ratio:1;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface);font-size:1.7rem;font-weight:900}
+.tpick button:hover,.tpick button:focus-visible{border-color:var(--accent);outline:none}
+.tpick .emp{grid-column:1/-1;aspect-ratio:auto;padding:18px;font-size:1.2rem;background:var(--accent);color:#1a1100;border-color:var(--accent)}
+.staff-out{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:.9rem}
+#tableChip.click{cursor:pointer}
+
 /* ---------- Menu ---------- */
 #app{display:none}
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(22,22,22,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -207,6 +222,11 @@ main{padding-bottom:96px}
   <div class="langs" id="langs"></div>
 </div>
 
+<div id="staff">
+  <img class="logo" src="img/logo.png" alt="Mado">
+  <div id="staffBody"></div>
+</div>
+
 <div id="app">
   <header class="top">
     <div class="bar">
@@ -247,6 +267,19 @@ function fmtPrice(p){
   return new Intl.NumberFormat(LOCALES[lang], {style:"currency", currency:"EUR", minimumFractionDigits: Number.isInteger(+p) ? 0 : 2}).format(+p);
 }
 
+// Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
+function applyMigrations(m){
+  m.applied = m.applied || [];
+  if (!m.applied.includes("piment-2026-11")) {
+    const gr = (id) => (m.optionGroups || []).find((g) => g.id === id);
+    const cr = gr("crudites"), sa = gr("sauces");
+    if (cr) for (const c of cr.choices) if (c.id === "piment-vert") c.apart = true;
+    if (sa && !sa.choices.some((c) => c.id === "piment-poudre"))
+      sa.choices.push({ id: "piment-poudre", name: { fr: "Piment en poudre", en: "Spicy (chili powder)", tr: "Pul biber", de: "Chilipulver (scharf)" }, icon: "piment-poudre", photo: "", price: 0, hidden: false, apart: true });
+    m.applied.push("piment-2026-11");
+  }
+  return m;
+}
 async function withDefaults(m){
   // complète un menu enregistré avec une ancienne version du site
   try {
@@ -270,6 +303,7 @@ async function withDefaults(m){
         if (it.upgrade === undefined) it.upgrade = (d && d.upgrade) || "";
       }
     }
+    applyMigrations(m);
   } catch {}
   return m;
 }
@@ -299,12 +333,12 @@ function showSplash(){
 function openMenu(code){
   lang = code; store.set("mado-lang", code);
   document.documentElement.lang = code;
-  $("#splash").style.display = "none"; $("#app").style.display = "block";
+  $("#splash").style.display = "none"; $("#staff").style.display = "none"; $("#app").style.display = "block";
   history.replaceState(null, "", "?lang=" + code);
   const L = LANGS.find(l => l.code === code);
   $("#langBtn").innerHTML = `<span>${L.flag}</span><span>${code.toUpperCase()}</span>`;
   $("#q").placeholder = ui("search"); $("#q").value = "";
-  if (TABLE) { $("#tableChip").hidden = false; $("#tableChip").textContent = `${ui("table")} ${TABLE}`; }
+  if (TABLE) { $("#tableChip").hidden = false; $("#tableChip").textContent = tableLabel(); }
   renderMenu(); drawPill(); window.scrollTo(0,0);
 }
 
@@ -398,13 +432,17 @@ let CUR = null;          // produit ouvert
 let STEP = "item";       // item | upsell | suggest | cart
 let LAST = null;         // dernière ligne ajoutée (pour proposer le menu)
 // Table : le QR code de chaque table ouvre le site avec ?t=numéro
-const TABLE = (() => {
+// Version serveur (/serveur) : pas de choix de langue, pas de propositions, table choisie à la main ou « à emporter »
+const STAFF = location.pathname.replace(/\/+$/, "") === "/serveur";
+let STAFF_CODE = (() => { try { return localStorage.getItem("mado-staff") || ""; } catch { return ""; } })();
+let TABLE = STAFF ? "" : (() => {
   const q = new URLSearchParams(location.search).get("t");
   try { if (q && /^\d{1,3}$/.test(q)) sessionStorage.setItem("mado-table", q); return sessionStorage.getItem("mado-table") || ""; } catch { return q || ""; }
 })();
 let ORDERS = (() => { try { return JSON.parse(sessionStorage.getItem("mado-orders")) || []; } catch { return []; } })();
 const saveOrders = () => { try { sessionStorage.setItem("mado-orders", JSON.stringify(ORDERS)); } catch {} };
-const canOrder = () => TABLE && MENU.ordering && MENU.ordering.enabled;
+const canOrder = () => TABLE && (STAFF || (MENU.ordering && MENU.ordering.enabled));
+const tableLabel = () => TABLE === "EMP" ? "À emporter" : `${ui("table")} ${TABLE}`;
 let CART = (() => { try { return JSON.parse(sessionStorage.getItem("mado-cart")) || []; } catch { return []; } })();
 const saveCart = () => { try { sessionStorage.setItem("mado-cart", JSON.stringify(CART)); } catch {} };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
@@ -431,7 +469,7 @@ function extras(it, sel){
     const ids = sel[g.id] || [];
     for (const id of ids) { const c = g.choices.find(c => c.id === id); if (c) x += +c.price || 0; }
     // ex. sauces : 2 incluses, chaque sauce en plus est payante
-    if (+g.free && +g.extraPrice) { const n = ids.filter(id => !g.choices.find(c => c.id === id)?.all).length; x += Math.max(0, n - g.free) * g.extraPrice; }
+    if (+g.free && +g.extraPrice) { const n = ids.filter(id => { const c = g.choices.find(c => c.id === id); return c && !c.all && !c.apart; }).length; x += Math.max(0, n - g.free) * g.extraPrice; }
   }
   return Math.round(x * 100) / 100;
 }
@@ -440,7 +478,7 @@ function choiceSummary(it, sel){
   return itemGroups(it).map(g => {
     const ids = sel[g.id] || [], all = g.choices.find(c => c.all && ids.includes(c.id));
     // « Tout » coché : on l'écrit au lieu de lister chaque crudité (les suppléments payants restent affichés)
-    const shown = g.choices.filter(c => ids.includes(c.id) && !c.all && !(all && !(+c.price)));
+    const shown = g.choices.filter(c => ids.includes(c.id) && !c.all && !(all && !(+c.price) && !c.apart));
     return [all ? t(all.name) : "", ...shown.map(c => t(c.name))].filter(Boolean).join(", ");
   }).filter(Boolean).join(" · ");
 }
@@ -469,6 +507,7 @@ function addCurrent(){
   LAST = {key: Date.now() + Math.random(), id: it.id, sel: SEL, price, qty: 1};
   CART.push(LAST); saveCart(); bumpPill();
   const up = it.upgrade && visibleItem(it.upgrade);
+  if (STAFF) { flashAdded(); return; }
   if (up && unitPrice(up) > unitPrice(it)) { STEP = "upsell"; drawSheet(); return; }
   goSuggest(it);
 }
@@ -536,7 +575,7 @@ function drawSheet(){
     <div class="sh-body"><h2>${esc(t(it.name))}</h2>${t(it.description) ? `<p class="d">${esc(t(it.description))}</p>` : ""}
     ${groups.map(g => {
       const ids = SEL[g.id] || [];
-      const n = ids.filter(id => !g.choices.find(c => c.id === id)?.all).length;
+      const n = ids.filter(id => { const c = g.choices.find(c => c.id === id); return c && !c.all && !c.apart; }).length;
       return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(groupHint(g))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
         <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
     }).join("")}</div>`;
@@ -558,7 +597,7 @@ function drawCart(){
     ${CART.length ? `<div class="big-total"><span>${esc(ui("total"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>` : ""}
   </div>`;
   if (CART.length && canOrder()) {
-    $("#shScroll .cart .hint").innerHTML = `<b>${esc(ui("table"))} ${esc(TABLE)}</b> · ${esc(ui("payAtCounter"))}<br><small>↔ ${esc(ui("swipeHint"))}</small>`;
+    $("#shScroll .cart .hint").innerHTML = `<b>${esc(tableLabel())}</b> · ${esc(ui("payAtCounter"))}<br><small>↔ ${esc(ui("swipeHint"))}</small>`;
     $("#shScroll .cart").insertAdjacentHTML("beforeend", `<textarea id="orderNote" class="note-in" rows="2" maxlength="300" placeholder="${esc(ui("notePh"))}"></textarea>`);
     $("#shBar").innerHTML = `<button class="btn ghost" data-sh="clear">${esc(ui("clearOrder"))}</button><button class="btn grow pulse" data-sh="send">${esc(ui("sendOrder"))} · ${esc(fmtPrice(cartTotal()))}</button>`;
     return;
@@ -572,13 +611,15 @@ async function sendOrder(btn){
   btn.disabled = true; btn.textContent = ui("sending");
   const note = ($("#orderNote") || {}).value || "";
   try {
-    const r = await fetch("/api/orders", {method:"POST", headers:{"content-type":"application/json"},
+    const r = await fetch("/api/orders", {method:"POST", headers:{"content-type":"application/json", ...(STAFF ? {authorization: "Bearer " + STAFF_CODE} : {})},
       body: JSON.stringify({table: TABLE, note, lines: CART.map(l => ({id: l.id, qty: l.qty, sel: l.sel}))})});
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.error === "closed" ? ui("closedNow") : ui("sendError"));
+    if (STAFF && r.status === 401) { staffLogout(); return; }
+    if (!r.ok) throw new Error(j.error === "closed" ? ui("closedNow") : (STAFF && j.error) || ui("sendError"));
     ORDERS.unshift({id: j.id, num: j.num, token: j.token, table: TABLE, status: "new", at: Date.now()}); ORDERS = ORDERS.slice(0, 5); saveOrders();
     CART = []; saveCart(); drawPill();
-    STEP = "sent"; drawSent(true); pollOrders();
+    if (STAFF) { ORDERS = ORDERS.slice(0, 1); saveOrders(); }
+    STEP = "sent"; drawSent(true); if (!STAFF) pollOrders();
   } catch (e) {
     btn.disabled = false; btn.textContent = `${ui("sendOrder")} · ${fmtPrice(cartTotal())}`;
     let err = $("#sendErr"); if (!err) { $("#shScroll .cart").insertAdjacentHTML("beforeend", `<p id="sendErr" class="send-err"></p>`); err = $("#sendErr"); }
@@ -590,10 +631,11 @@ function drawSent(fresh){
   const o = ORDERS[0]; if (!o) return closeSheet();
   $("#shScroll").innerHTML = `<div class="sent ${fresh ? "fresh" : ""}">
     <div class="check">✓</div><h2>${esc(ui("orderSent"))}</h2>
-    <p class="onum">${esc(fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
+    <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
     <p class="hint">${esc(ui("payAtCounter"))}</p></div>`;
-  $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
+  $("#shBar").innerHTML = STAFF ? `<button class="btn grow" data-sh="staffNext">Nouvelle commande</button>` : `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
+  if (STAFF) $("#shScroll .sent .status").remove();
   if (fresh) burst($("#shScroll .sent"));
 }
 let pollT = null;
@@ -687,7 +729,7 @@ function burst(el){
 function toggleChoice(gid, cid, tileEl){
   const g = (MENU.optionGroups || []).find(g => g.id === gid), c = g.choices.find(c => c.id === cid);
   let ids = SEL[gid] || [];
-  const plain = g.choices.filter(x => !x.hidden && !x.all && !(+x.price));
+  const plain = g.choices.filter(x => !x.hidden && !x.all && !x.apart && !(+x.price));
   if (!g.multi) ids = ids.includes(cid) ? [] : [cid];
   else if (c.all) ids = ids.includes(cid) ? ids.filter(id => !plain.some(p => p.id === id) && id !== cid) : [...new Set([...ids, cid, ...plain.map(p => p.id)])];
   else {
@@ -699,7 +741,7 @@ function toggleChoice(gid, cid, tileEl){
   SEL[gid] = ids;
   const box = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`);
   box.querySelectorAll(".tile").forEach(b => { const on = ids.includes(b.dataset.c); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
-  const n = ids.filter(id => !g.choices.find(x => x.id === id)?.all).length;
+  const n = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
   const cnt = box.querySelector(".cnt"); cnt.textContent = n + (g.multi ? "" : "/1"); cnt.classList.toggle("ok", n > 0);
   tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
   // une seule viande : on descend tout seul au groupe suivant
@@ -735,20 +777,54 @@ $("#sheet").addEventListener("click", (e) => {
     saveCart(); drawCart(); drawPill();
   }
   else if (a === "send") sendOrder(b);
+  else if (a === "staffNext") { ORDERS = []; saveOrders(); TABLE = ""; closeSheet(); drawPill(); staffTables(); }
   else if (a === "clear") { CART = []; saveCart(); drawCart(); drawPill(); }
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#sheet").classList.contains("on")) closeSheet(); });
 
 $("#langBtn").onclick = showSplash;
-$("#homeLogo").onclick = showSplash;
+$("#homeLogo").onclick = () => STAFF ? staffTables() : showSplash();
+$("#tableChip").onclick = () => { if (STAFF) staffTables(); };
+
+/* ---------- Version serveur ---------- */
+function staffShow(html){
+  $("#app").style.display = "none"; $("#splash").style.display = "none";
+  $("#staff").style.display = "flex"; $("#staffBody").innerHTML = html; window.scrollTo(0, 0);
+}
+function staffLogin(){
+  staffShow(`<h1>Prise de commande</h1><form id="staffForm"><input id="staffCode" type="password" inputmode="numeric" autocomplete="off" placeholder="Code" required><button class="btn grow" type="submit">Entrer</button><p class="err" id="staffErr"></p></form>`);
+  $("#staffCode").focus();
+  $("#staffForm").onsubmit = async (e) => {
+    e.preventDefault(); const code = $("#staffCode").value.trim();
+    const r = await fetch("/api/staff/login", {method: "POST", headers: {authorization: "Bearer " + code}}).catch(() => null);
+    if (r && r.ok) { STAFF_CODE = code; try { localStorage.setItem("mado-staff", code); } catch {} staffTables(); }
+    else $("#staffErr").textContent = r ? "Code incorrect" : "Pas de connexion";
+  };
+}
+function staffLogout(){ STAFF_CODE = ""; try { localStorage.removeItem("mado-staff"); } catch {} closeSheet(); staffLogin(); }
+function staffTables(){
+  const n = parseInt((MENU.ordering || {}).tables) || 10;
+  staffShow(`<h1>Quelle table ?</h1>
+    <div class="tpick">${Array.from({length: n}, (_, i) => `<button data-t="${i + 1}">${i + 1}</button>`).join("")}<button class="emp" data-t="EMP">🛍 À emporter</button></div>
+    ${CART.length ? `<p class="small" style="color:var(--muted)">La commande en cours (${cartCount()} article${cartCount() > 1 ? "s" : ""}) est gardée.</p>` : ""}
+    <button class="staff-out" id="staffOut">Se déconnecter</button>`);
+  $(".tpick").onclick = (e) => { const b = e.target.closest("[data-t]"); if (!b) return; TABLE = b.dataset.t; openMenu("fr"); };
+  $("#staffOut").onclick = staffLogout;
+}
 $("#q").oninput = renderMenu;
 // les promos changent selon l'heure : on vérifie chaque minute
 setInterval(() => { if (MENU && $("#app").style.display === "block") { const ids = activePromos().map(p=>p.id).join(); if (ids !== PROMOS.map(p=>p.id).join()) { const y = scrollY; renderMenu(); scrollTo(0, y); } } }, 60000);
 
 (async () => {
   try { MENU = await loadMenu(); } catch (e) { document.body.innerHTML = '<p style="padding:40px;text-align:center">Menu indisponible, réessayez plus tard.</p>'; return; }
-  pollOrders();
+  if (!STAFF) pollOrders();
   const p = new URLSearchParams(location.search).get("lang");
+  if (STAFF) {
+    $("#langBtn").style.display = "none"; $("#tableChip").classList.add("click"); lang = "fr";
+    if (!STAFF_CODE) return staffLogin();
+    const r = await fetch("/api/staff/login", {method: "POST", headers: {authorization: "Bearer " + STAFF_CODE}}).catch(() => null);
+    return r && r.status === 401 ? staffLogout() : staffTables();
+  }
   if (p && LANGS.some(l => l.code === p)) openMenu(p); else showSplash();
 })();
 </script>
