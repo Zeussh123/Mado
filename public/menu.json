@@ -127,6 +127,96 @@
    "en": "Total",
    "tr": "Toplam",
    "de": "Gesamt"
+  },
+  "add": {
+   "fr": "Ajouter",
+   "en": "Add",
+   "tr": "Ekle",
+   "de": "Hinzufügen"
+  },
+  "addToOrder": {
+   "fr": "Ajouter à ma commande",
+   "en": "Add to my order",
+   "tr": "Siparişime ekle",
+   "de": "Zur Bestellung"
+  },
+  "myOrder": {
+   "fr": "Ma commande",
+   "en": "My order",
+   "tr": "Siparişim",
+   "de": "Meine Bestellung"
+  },
+  "goodDeal": {
+   "fr": "Bon plan !",
+   "en": "Great deal!",
+   "tr": "Fırsat!",
+   "de": "Top-Angebot!"
+  },
+  "makeMenu": {
+   "fr": "Passez en {menu}",
+   "en": "Make it a {menu}",
+   "tr": "{menu} yapın",
+   "de": "Machen Sie ein {menu} daraus"
+  },
+  "onlyMore": {
+   "fr": "seulement +{x}",
+   "en": "only +{x}",
+   "tr": "sadece +{x}",
+   "de": "nur +{x}"
+  },
+  "yesMenu": {
+   "fr": "Oui, en menu !",
+   "en": "Yes, make it a meal!",
+   "tr": "Evet, menü olsun!",
+   "de": "Ja, als Menü!"
+  },
+  "noThanks": {
+   "fr": "Non merci",
+   "en": "No thanks",
+   "tr": "Hayır, teşekkürler",
+   "de": "Nein, danke"
+  },
+  "withThat": {
+   "fr": "Et avec ça ?",
+   "en": "Anything else?",
+   "tr": "Yanına ne alırsınız?",
+   "de": "Darf es noch etwas sein?"
+  },
+  "continue": {
+   "fr": "Continuer",
+   "en": "Continue",
+   "tr": "Devam",
+   "de": "Weiter"
+  },
+  "added": {
+   "fr": "Ajouté !",
+   "en": "Added!",
+   "tr": "Eklendi!",
+   "de": "Hinzugefügt!"
+  },
+  "emptyOrder": {
+   "fr": "Votre commande est vide.",
+   "en": "Your order is empty.",
+   "tr": "Siparişiniz boş.",
+   "de": "Ihre Bestellung ist leer."
+  },
+  "clearOrder": {
+   "fr": "Tout effacer",
+   "en": "Clear all",
+   "tr": "Hepsini sil",
+   "de": "Alles löschen"
+  },
+  "orderHint": {
+   "fr": "Montrez cet écran au comptoir pour commander.",
+   "en": "Show this screen at the counter to order.",
+   "tr": "Sipariş için bu ekranı kasada gösterin.",
+   "de": "Zeigen Sie diesen Bildschirm an der Theke, um zu bestellen."
+  },
+  "seeOrder": {
+   "fr": "Voir ma commande",
+   "en": "See my order",
+   "tr": "Siparişimi gör",
+   "de": "Bestellung ansehen"
   }
  },
  "categories": [
@@ -162,7 +252,8 @@
       "crudites",
       "sauces",
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -187,7 +278,8 @@
       "crudites",
       "sauces",
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -212,7 +304,8 @@
       "crudites",
       "sauces",
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -234,7 +327,8 @@
      "photo": "",
      "options": [
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -259,7 +353,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -284,7 +379,8 @@
       "crudites",
       "sauces",
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -309,7 +405,8 @@
       "crudites",
       "sauces",
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -333,7 +430,8 @@
       "crudites",
       "sauces",
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -353,7 +451,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -375,7 +474,8 @@
      "photo": "",
      "options": [
       "sauce-frites"
-     ]
+     ],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -383,7 +483,13 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "accompagnements-nuggets-6-pieces",
+    "desserts-baklava-piece",
+    "desserts-tiramisu",
+    "desserts-kunefe"
+   ]
   },
   {
    "id": "pokebowl",
@@ -412,7 +518,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": "menus-menu-bowl"
     }
    ],
    "note": {
@@ -420,7 +527,11 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "boissons-canette-33-cl-coca-cola-fanta-lipton",
+    "desserts-tiramisu"
+   ]
   },
   {
    "id": "sandwichs",
@@ -453,7 +564,8 @@
       "viande",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-kebab"
     },
     {
      "name": {
@@ -477,7 +589,8 @@
       "viande",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-yufka"
     },
     {
      "name": {
@@ -501,7 +614,8 @@
       "viande-tacos",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-tacos"
     },
     {
      "name": {
@@ -524,7 +638,8 @@
      "options": [
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -547,7 +662,8 @@
      "options": [
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -571,7 +687,8 @@
       "viande",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-lahmacun"
     },
     {
      "name": {
@@ -595,7 +712,8 @@
       "viande-tacos",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-maxi-tacos"
     },
     {
      "name": {
@@ -618,7 +736,8 @@
      "options": [
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -641,7 +760,8 @@
      "options": [
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-falafel"
     },
     {
      "name": {
@@ -661,7 +781,8 @@
       "tr": "Marul, domates, soğan, burger sos, çedar",
       "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar"
      },
-     "options": []
+     "options": [],
+     "upgrade": "menus-menu-hamburger"
     },
     {
      "name": {
@@ -681,7 +802,8 @@
       "tr": "Marul, domates, soğan, burger sos, çedar",
       "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar"
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -705,7 +827,8 @@
       "viande",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -713,7 +836,13 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "accompagnements-moyenne-frites",
+    "boissons-canette-33-cl-coca-cola-fanta-lipton",
+    "accompagnements-nuggets-6-pieces",
+    "desserts-baklava-piece"
+   ]
   },
   {
    "id": "assiettes",
@@ -752,7 +881,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -776,7 +906,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-assiette"
     },
     {
      "name": {
@@ -800,7 +931,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-assiette"
     },
     {
      "name": {
@@ -824,7 +956,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": "menus-menu-assiette"
     },
     {
      "name": {
@@ -848,7 +981,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -872,7 +1006,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -896,7 +1031,8 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     },
     {
      "name": {
@@ -920,8 +1056,14 @@
       "accompagnement",
       "crudites",
       "sauces"
-     ]
+     ],
+     "upgrade": ""
     }
+   ],
+   "suggest": [
+    "boissons-canette-33-cl-coca-cola-fanta-lipton",
+    "desserts-baklava-piece",
+    "desserts-kunefe"
    ]
   },
   {
@@ -951,7 +1093,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -971,7 +1114,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -991,7 +1135,8 @@
      "id": "pides-pide-doner",
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1011,7 +1156,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1031,7 +1177,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1051,7 +1198,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1071,7 +1219,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1091,7 +1240,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1111,7 +1261,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1131,7 +1282,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1151,7 +1303,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -1159,7 +1312,13 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "boissons-canette-33-cl-coca-cola-fanta-lipton",
+    "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino",
+    "accompagnements-nuggets-6-pieces",
+    "desserts-baklava-piece"
+   ]
   },
   {
    "id": "pizzas",
@@ -1188,7 +1347,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1208,7 +1368,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1228,7 +1389,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1248,7 +1410,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1268,7 +1431,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1288,7 +1452,8 @@
      "id": "pizzas-pizza-margherita",
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1308,7 +1473,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1328,7 +1494,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1348,7 +1515,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1368,7 +1536,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1388,7 +1557,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1408,7 +1578,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1428,7 +1599,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1448,7 +1620,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1468,7 +1641,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1488,7 +1662,8 @@
      "bestseller": false,
      "hidden": false,
      "photo": "",
-     "options": []
+     "options": [],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -1496,7 +1671,14 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "boissons-canette-33-cl-coca-cola-fanta-lipton",
+    "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino",
+    "accompagnements-nuggets-6-pieces",
+    "accompagnements-tenders-2-pieces",
+    "desserts-tiramisu"
+   ]
   },
   {
    "id": "accompagnements",
@@ -1525,7 +1707,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1545,7 +1728,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1565,7 +1749,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1585,7 +1770,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1605,7 +1791,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1625,7 +1812,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1645,7 +1833,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1665,7 +1854,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1685,7 +1875,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1705,7 +1896,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -1713,7 +1905,11 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "boissons-canette-33-cl-coca-cola-fanta-lipton",
+    "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino"
+   ]
   },
   {
    "id": "boissons",
@@ -1742,7 +1938,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1762,7 +1959,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1782,7 +1980,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1802,7 +2001,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1822,7 +2022,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1842,7 +2043,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1862,7 +2064,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -1870,7 +2073,10 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "desserts-baklava-piece"
+   ]
   },
   {
    "id": "alcools",
@@ -1899,7 +2105,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1919,7 +2126,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1939,7 +2147,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1959,7 +2168,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1979,7 +2189,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -1999,7 +2210,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2019,7 +2231,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2039,7 +2252,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2059,7 +2273,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2079,7 +2294,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2099,7 +2315,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -2107,7 +2324,10 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": [
+    "accompagnements-nuggets-6-pieces"
+   ]
   },
   {
    "id": "desserts",
@@ -2136,7 +2356,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2156,7 +2377,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2176,7 +2398,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     },
     {
      "name": {
@@ -2196,7 +2419,8 @@
       "tr": "",
       "de": ""
      },
-     "options": []
+     "options": [],
+     "upgrade": ""
     }
    ],
    "note": {
@@ -2204,7 +2428,8 @@
     "en": "",
     "tr": "",
     "de": ""
-   }
+   },
+   "suggest": []
   }
  ],
  "info": {

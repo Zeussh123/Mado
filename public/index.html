@@ -120,6 +120,62 @@ footer .info{margin-bottom:8px;color:var(--text)}
 .recap .line span{flex:1;font-weight:700;font-size:1.05rem}
 .recap .big-total{display:flex;justify-content:space-between;margin-top:14px;font-size:1.3rem;font-weight:800}
 .recap .big-total span:last-child{color:var(--accent)}
+
+.cust.plusb{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800}
+.btn.grow{flex:1}
+.btn.pulse{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(243,146,0,.55)}50%{box-shadow:0 0 0 10px rgba(243,146,0,0)}}
+#cartPill{position:fixed;z-index:45;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:12px 18px 12px 12px;background:var(--accent);color:var(--accent-ink);font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.45);white-space:nowrap}
+#cartPill[hidden]{display:none}
+#cartPill .cnum{min-width:28px;height:28px;border-radius:999px;background:var(--accent-ink);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.9rem}
+#cartPill.bump{animation:bump .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bump{0%{transform:translateX(-50%) scale(1)}40%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1)}}
+main{padding-bottom:96px}
+.upsell{position:relative;padding:28px 18px 10px;text-align:center;overflow:hidden}
+.ups-badge{display:inline-block;padding:6px 14px;border-radius:999px;background:#3a2400;color:#ffb54d;font-weight:800;font-size:.85rem;animation:wiggle 1.2s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.ups-art{display:flex;align-items:center;justify-content:center;gap:6px;margin:22px 0 10px}
+.ups-art > span:not(.plus){width:78px;height:78px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;animation:popin .5s cubic-bezier(.3,1.6,.5,1) both}
+.ups-art .a2{animation-delay:.15s!important}.ups-art .a3{animation-delay:.3s!important}
+.ups-art svg{width:60px;height:60px}.ups-art img{width:100%;height:100%;object-fit:cover}
+.ups-art .emo,.sv .emo{font-size:2.6rem}
+.ups-art .plus{font-size:1.5rem;font-weight:900;color:var(--accent)}
+@keyframes popin{0%{transform:scale(0) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+.upsell h2{margin:8px 0 4px;font-size:1.45rem;text-wrap:balance}
+.ups-desc{color:var(--muted);margin:0}
+.ups-price{display:inline-block;margin-top:16px;padding:10px 20px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-size:1.5rem;font-weight:900;transform:rotate(-2deg);animation:popin .5s .45s cubic-bezier(.3,1.6,.5,1) both}
+.confetti{position:absolute;left:50%;top:45%;width:8px;height:12px;border-radius:2px;pointer-events:none;animation:conf .85s ease-out forwards}
+@keyframes conf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+.sugg{padding:20px 16px 8px;position:relative}
+.added-line{display:flex;align-items:center;gap:8px;color:#8fd88f;font-weight:700;font-size:.9rem}
+.added-line .ok{width:24px;height:24px;border-radius:50%;background:#2e5e2e;display:flex;align-items:center;justify-content:center;animation:popin .4s cubic-bezier(.3,1.6,.5,1)}
+.sugg h2{margin:14px 0 12px;font-size:1.4rem}
+.sug-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.sug{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:4px;animation:popin .45s var(--d) cubic-bezier(.3,1.4,.5,1) both;overflow:visible}
+.sug .sv{height:84px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sug .sv img{width:100%;height:100%;object-fit:cover}
+.sug .sn{font-weight:650;font-size:.88rem;line-height:1.2}
+.sug .sp{color:var(--accent);font-weight:800}
+.sug .sadd{position:absolute;right:8px;bottom:8px;width:36px;height:36px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);font-size:1.4rem;font-weight:900}
+.sug.got{border-color:#5cb85c}
+.sug.got .sadd{background:#5cb85c;color:#fff}
+.done-anim{padding:60px 0;text-align:center}
+.done-anim .check{width:84px;height:84px;margin:0 auto;border-radius:50%;background:#5cb85c;color:#fff;font-size:2.6rem;font-weight:900;display:flex;align-items:center;justify-content:center;animation:popin .45s cubic-bezier(.3,1.6,.5,1)}
+.done-anim p{font-weight:800;font-size:1.2rem}
+.cart{padding:20px 16px}
+.cart-h{display:flex;align-items:center}
+.cart-h h2{flex:1;margin:0;font-size:1.5rem}
+.sh-x{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-2)}
+.cart .hint{color:var(--muted);margin:4px 0 14px}
+.cl{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.cq{display:flex;align-items:center;gap:6px}
+.cq button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);font-weight:800}
+.cq b{min-width:16px;text-align:center}
+.ct{flex:1;min-width:0}.cn{font-weight:700}.cs{color:var(--muted);font-size:.82rem}
+.cp{font-weight:800;color:var(--accent);white-space:nowrap}
+.cart .big-total{display:flex;justify-content:space-between;margin-top:16px;font-size:1.35rem;font-weight:800}
+.cart .big-total span:last-child{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.ups-badge,.btn.pulse,.ups-art > span,.ups-price,.sug,#cartPill.bump{animation:none!important}}
 </style>
 </head>
 <body>
@@ -142,6 +198,7 @@ footer .info{margin-bottom:8px;color:var(--text)}
   </header>
   <main id="menu"></main>
   <footer id="footer"></footer>
+  <button id="cartPill" hidden></button>
   <div id="sheet" aria-hidden="true"><div class="sh" role="dialog" aria-modal="true"><div class="sh-scroll" id="shScroll"></div><div class="sh-bar" id="shBar"></div></div></div>
 </div>
 
@@ -169,12 +226,20 @@ function fmtPrice(p){
 }
 
 async function withDefaults(m){
-  if (m.optionGroups) return m;
+  // complète un menu enregistré avant l'ajout des options, menus proposés et suggestions
   try {
     const def = await (await fetch("menu.json", {cache:"no-store"})).json();
-    m.optionGroups = def.optionGroups || []; m.ui = {...def.ui, ...m.ui};
-    const o = {}; for (const c of def.categories) for (const it of c.items) o[it.id] = it.options || [];
-    for (const c of m.categories) for (const it of c.items) if (!it.options) it.options = o[it.id] || [];
+    if (!m.optionGroups) m.optionGroups = def.optionGroups || [];
+    m.ui = {...def.ui, ...m.ui};
+    const di = {}, dc = {};
+    for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
+    for (const c of m.categories) {
+      if (c.suggest === undefined) c.suggest = (dc[c.id] && dc[c.id].suggest) || [];
+      for (const it of c.items) {
+        if (it.options === undefined) it.options = (di[it.id] && di[it.id].options) || [];
+        if (it.upgrade === undefined) it.upgrade = (di[it.id] && di[it.id].upgrade) || "";
+      }
+    }
   } catch {}
   return m;
 }
@@ -209,7 +274,7 @@ function openMenu(code){
   const L = LANGS.find(l => l.code === code);
   $("#langBtn").innerHTML = `<span>${L.flag}</span><span>${code.toUpperCase()}</span>`;
   $("#q").placeholder = ui("search"); $("#q").value = "";
-  renderMenu(); window.scrollTo(0,0);
+  renderMenu(); drawPill(); window.scrollTo(0,0);
 }
 
 /* ---------- Promos (heure de Paris) ---------- */
@@ -250,14 +315,12 @@ function itemCard(it, catId){
   const desc = t(it.description);
   const pp = promoPrice(it, PROMOS);
   const groups = itemGroups(it);
-  const sel = SEL[it.id], pickedTxt = sel ? choiceSummary(it, sel) : "";
-  return `<article class="item${groups.length ? " custom" : ""}" data-id="${esc(it.id)}"${groups.length ? ' role="button" tabindex="0"' : ""}>
+  return `<article class="item custom" data-id="${esc(it.id)}" role="button" tabindex="0">
     <div class="ph">${ph}</div>
     <div class="tx">
       <h3>${esc(t(it.name))}</h3>
       ${desc ? `<p>${esc(desc)}</p>` : ""}
-      ${pickedTxt ? `<div class="picked">✓ ${esc(pickedTxt)}</div>` : ""}
-      <div class="meta">${pp !== null && pp < +it.price ? `<span class="old">${esc(fmtPrice(it.price))}</span><span class="price">${esc(fmtPrice(pp))}</span><span class="badge promo">${esc(ui("promo"))}</span>` : `<span class="price">${esc(fmtPrice(it.price))}</span>`}${it.bestseller ? `<span class="badge">★ ${esc(ui("bestseller"))}</span>` : ""}${groups.length ? `<span class="cust">${esc(ui("customize"))} ›</span>` : ""}</div>
+      <div class="meta">${pp !== null && pp < +it.price ? `<span class="old">${esc(fmtPrice(it.price))}</span><span class="price">${esc(fmtPrice(pp))}</span><span class="badge promo">${esc(ui("promo"))}</span>` : `<span class="price">${esc(fmtPrice(it.price))}</span>`}${it.bestseller ? `<span class="badge">★ ${esc(ui("bestseller"))}</span>` : ""}${groups.length ? `<span class="cust">${esc(ui("customize"))} ›</span>` : `<span class="cust plusb" aria-hidden="true">+</span>`}</div>
     </div>
   </article>`;
 }
@@ -298,10 +361,17 @@ function spy(){
 }
 
 
-/* ---------- Personnalisation ---------- */
-const SEL = {};          // choix du client par produit : {groupId: [choiceId,…]}
+/* ---------- Fiche produit, panier et suggestions ---------- */
+let SEL = {};            // choix en cours pour le produit ouvert : {groupId: [choiceId,…]}
 let CUR = null;          // produit ouvert
+let STEP = "item";       // item | upsell | suggest | cart
+let LAST = null;         // dernière ligne ajoutée (pour proposer le menu)
+let CART = (() => { try { return JSON.parse(sessionStorage.getItem("mado-cart")) || []; } catch { return []; } })();
+const saveCart = () => { try { sessionStorage.setItem("mado-cart", JSON.stringify(CART)); } catch {} };
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
+
 const findItem = (id) => { for (const c of MENU.categories) for (const it of c.items) if (it.id === id) return [it, c]; return [null, null]; };
+const visibleItem = (id) => { const [it, c] = findItem(id); return it && !it.hidden && !c.hidden ? it : null; };
 function itemGroups(it){
   const all = MENU.optionGroups || [];
   return (it.options || []).map(id => all.find(g => g.id === id)).filter(g => g && g.choices.some(c => !c.hidden));
@@ -310,6 +380,11 @@ function iconHtml(c){
   if (c.photo) return `<img src="${esc(c.photo)}" alt="" loading="lazy">`;
   return (window.MADO_ICONS || {})[c.icon] || (window.MADO_ICONS || {}).sauce || "";
 }
+function itemVisual(it){
+  if (it.photo) return `<img src="${esc(it.photo)}" alt="" loading="lazy">`;
+  const cat = findItem(it.id)[1];
+  return `<span class="emo">${ICONS[cat && cat.id] || "🍴"}</span>`;
+}
 function unitPrice(it){ const pp = promoPrice(it, PROMOS); return pp !== null && pp < +it.price ? pp : (+it.price || 0); }
 function extras(it, sel){
   let x = 0;
@@ -317,42 +392,92 @@ function extras(it, sel){
   return x;
 }
 function choiceSummary(it, sel){
-  return itemGroups(it).map(g => {
-    const ids = sel[g.id] || []; if (!ids.length) return "";
-    const names = g.choices.filter(c => ids.includes(c.id) && !c.all).map(c => t(c.name));
-    return names.join(", ");
-  }).filter(Boolean).join(" · ");
+  return itemGroups(it).map(g => g.choices.filter(c => (sel[g.id] || []).includes(c.id) && !c.all).map(c => t(c.name)).join(", ")).filter(Boolean).join(" · ");
 }
-function openSheet(id){
-  const [it, cat] = findItem(id); if (!it) return;
-  CUR = it; SEL[it.id] = SEL[it.id] || {};
-  drawSheet(false);
+const cartCount = () => CART.reduce((n, l) => n + l.qty, 0);
+const cartTotal = () => CART.reduce((n, l) => n + l.qty * l.price, 0);
+
+/* ----- ouverture / fermeture ----- */
+function showSheet(){
   $("#sheet").classList.add("on"); $("#sheet").setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-  $("#shScroll").scrollTop = 0;
+  document.body.style.overflow = "hidden"; $("#shScroll").scrollTop = 0;
 }
+function openItem(id, prefill){
+  const it = visibleItem(id); if (!it) return;
+  CUR = it; SEL = prefill ? JSON.parse(JSON.stringify(prefill)) : {}; STEP = "item";
+  drawSheet(); showSheet();
+}
+function openCart(){ CUR = null; STEP = "cart"; drawSheet(); showSheet(); }
 function closeSheet(){
   $("#sheet").classList.remove("on"); $("#sheet").setAttribute("aria-hidden", "true");
-  document.body.style.overflow = ""; CUR = null;
-  const y = scrollY; renderMenu(); scrollTo(0, y);
+  document.body.style.overflow = ""; CUR = null; drawPill();
 }
-function drawSheet(recap){
-  const it = CUR, sel = SEL[it.id], groups = itemGroups(it);
-  const total = unitPrice(it) + extras(it, sel);
-  const cat = findItem(it.id)[1];
-  const hero = it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="big">${ICONS[cat.id] || "🍴"}</span>`;
-  if (recap) {
-    $("#shScroll").innerHTML = `<div class="recap">
-      <h2>${esc(t(it.name))}</h2><p class="hint">${esc(ui("showStaff"))}</p>
-      ${groups.map(g => { const names = g.choices.filter(c => (sel[g.id]||[]).includes(c.id) && !c.all).map(c => t(c.name)); return `<div class="line"><b>${esc(t(g.name))}</b><span>${names.length ? esc(names.join(", ")) : "–"}</span></div>`; }).join("")}
-      <div class="big-total"><span>${esc(ui("total"))}</span><span>${esc(fmtPrice(total))}</span></div></div>`;
-    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="edit">‹ ${esc(ui("customize"))}</button><span class="tot"></span><button class="btn" data-sh="close">OK</button>`;
+
+/* ----- ajout au panier et enchaînement ----- */
+function addCurrent(){
+  const it = CUR, price = unitPrice(it) + extras(it, SEL);
+  LAST = {key: Date.now() + Math.random(), id: it.id, sel: SEL, price, qty: 1};
+  CART.push(LAST); saveCart(); bumpPill();
+  const up = it.upgrade && visibleItem(it.upgrade);
+  if (up && unitPrice(up) > unitPrice(it)) { STEP = "upsell"; drawSheet(); return; }
+  goSuggest(it);
+}
+function suggestionsFor(it){
+  const cat = findItem(it.id)[1]; const inCart = new Set(CART.map(l => l.id));
+  return (cat && cat.suggest || []).map(visibleItem).filter(x => x && !inCart.has(x.id) && x.id !== it.id).slice(0, 6);
+}
+function goSuggest(it){
+  if (!suggestionsFor(it).length) { flashAdded(); return; }
+  CUR = it; STEP = "suggest"; drawSheet(); $("#shScroll").scrollTop = 0;
+}
+function flashAdded(){
+  $("#shScroll").innerHTML = `<div class="done-anim"><div class="check">✓</div><p>${esc(ui("added"))}</p></div>`;
+  $("#shBar").innerHTML = "";
+  setTimeout(closeSheet, 750);
+}
+function acceptMenu(){
+  const it = CUR, menu = visibleItem(it.upgrade);
+  CART = CART.filter(l => l !== LAST); saveCart(); drawPill();
+  burst($("#shScroll .upsell"));
+  // on garde les choix déjà faits (viande, crudités, sauces) et on ouvre le menu
+  setTimeout(() => { CUR = menu; SEL = JSON.parse(JSON.stringify(LAST.sel)); STEP = "item"; drawSheet(); $("#shScroll").scrollTop = 0; }, 450);
+}
+
+/* ----- dessin de la fiche ----- */
+function drawSheet(){
+  if (STEP === "cart") return drawCart();
+  const it = CUR;
+  if (STEP === "upsell") {
+    const menu = visibleItem(it.upgrade), diff = unitPrice(menu) - unitPrice(it);
+    $("#shScroll").innerHTML = `<div class="upsell">
+      <div class="ups-badge">🔥 ${esc(ui("goodDeal"))}</div>
+      <div class="ups-art"><span class="a1">${itemVisual(it)}</span><span class="plus">+</span><span class="a2">${MADO_ICONS.frites}</span><span class="plus">+</span><span class="a3">${MADO_ICONS.canette}</span></div>
+      <h2>${esc(fill(ui("makeMenu"), {menu: t(menu.name)}))}</h2>
+      ${t(menu.description) ? `<p class="ups-desc">${esc(t(menu.description))}</p>` : ""}
+      <div class="ups-price">${esc(fill(ui("onlyMore"), {x: fmtPrice(diff)}))}</div>
+    </div>`;
+    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="noMenu">${esc(ui("noThanks"))}</button><button class="btn grow pulse" data-sh="yesMenu">${esc(ui("yesMenu"))}</button>`;
     return;
   }
-  $("#shScroll").innerHTML = `<div class="sh-hero">${hero}<button class="sh-close" data-sh="close" aria-label="Fermer">←</button></div>
+  if (STEP === "suggest") {
+    const list = suggestionsFor(it);
+    $("#shScroll").innerHTML = `<div class="sugg">
+      <div class="added-line"><span class="ok">✓</span> ${esc(t(it.name))} · ${esc(ui("added"))}</div>
+      <h2>${esc(ui("withThat"))}</h2>
+      <div class="sug-grid">${list.map((x, i) => `<div class="sug" style="--d:${i * 70}ms" data-id="${esc(x.id)}">
+        <div class="sv">${itemVisual(x)}</div><div class="sn">${esc(t(x.name))}</div>
+        <div class="sp">${esc(fmtPrice(unitPrice(x)))}</div>
+        <button class="sadd" data-sh="sugAdd" aria-label="${esc(ui("add"))}">+</button></div>`).join("")}</div>
+    </div>`;
+    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="cart">${esc(ui("seeOrder"))} (${cartCount()})</button><button class="btn grow" data-sh="close">${esc(ui("continue"))}</button>`;
+    return;
+  }
+  // fiche produit
+  const groups = itemGroups(it);
+  $("#shScroll").innerHTML = `<div class="sh-hero">${it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="big">${ICONS[findItem(it.id)[1].id] || "🍴"}</span>`}<button class="sh-close" data-sh="close" aria-label="Fermer">←</button></div>
     <div class="sh-body"><h2>${esc(t(it.name))}</h2>${t(it.description) ? `<p class="d">${esc(t(it.description))}</p>` : ""}
     ${groups.map(g => {
-      const ids = sel[g.id] || [];
+      const ids = SEL[g.id] || [];
       const n = ids.filter(id => !g.choices.find(c => c.id === id)?.all).length;
       return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(ui(g.multi ? "severalChoices" : "oneChoice"))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
         <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
@@ -360,15 +485,47 @@ function drawSheet(recap){
   drawBar();
 }
 function drawBar(){
-  const it = CUR, sel = SEL[it.id];
-  const total = unitPrice(it) + extras(it, sel);
-  $("#shBar").innerHTML = `<span class="tot"><small>${esc(ui("total"))}</small><b>${esc(fmtPrice(total))}</b></span>
-    ${Object.values(sel).some(a => a.length) ? `<button class="btn ghost" data-sh="reset">${esc(ui("reset"))}</button>` : ""}
-    <button class="btn" data-sh="done">${esc(ui("done"))}</button>`;
+  const total = unitPrice(CUR) + extras(CUR, SEL);
+  $("#shBar").innerHTML = `${Object.values(SEL).some(a => a.length) ? `<button class="btn ghost" data-sh="reset">${esc(ui("reset"))}</button>` : ""}
+    <button class="btn grow" data-sh="add">${esc(ui("addToOrder"))} · ${esc(fmtPrice(total))}</button>`;
 }
+function drawCart(){
+  $("#shScroll").innerHTML = `<div class="cart">
+    <div class="cart-h"><h2>${esc(ui("myOrder"))}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
+    <p class="hint">${esc(ui("orderHint"))}</p>
+    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="cl" data-i="${i}">
+      <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>
+      <div class="ct"><div class="cn">${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div>
+      <div class="cp">${esc(fmtPrice(l.price * l.qty))}</div></div>`; }).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
+    ${CART.length ? `<div class="big-total"><span>${esc(ui("total"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>` : ""}
+  </div>`;
+  $("#shBar").innerHTML = CART.length ? `<button class="btn ghost" data-sh="clear">${esc(ui("clearOrder"))}</button><button class="btn grow" data-sh="close">OK</button>` : `<button class="btn grow" data-sh="close">OK</button>`;
+}
+
+/* ----- bouton panier flottant ----- */
+function drawPill(){
+  const n = cartCount(), p = $("#cartPill");
+  p.hidden = !n;
+  p.innerHTML = `<span class="cnum">${n}</span><span>${esc(ui("myOrder"))}</span><b>${esc(fmtPrice(cartTotal()))}</b>`;
+}
+function bumpPill(){ drawPill(); const p = $("#cartPill"); p.classList.remove("bump"); void p.offsetWidth; p.classList.add("bump"); }
+
+/* ----- petites animations ----- */
+function burst(el){
+  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const colors = ["#f39200", "#5cb85c", "#e63946", "#f2c94c", "#fff"];
+  for (let i = 0; i < 22; i++) {
+    const s = document.createElement("i"); s.className = "confetti";
+    const a = Math.random() * Math.PI * 2, d = 70 + Math.random() * 90;
+    s.style.cssText = `background:${colors[i % 5]};--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d - 40}px;--r:${Math.random() * 540}deg`;
+    el.appendChild(s); setTimeout(() => s.remove(), 900);
+  }
+}
+
+/* ----- choix des options ----- */
 function toggleChoice(gid, cid, tileEl){
   const g = (MENU.optionGroups || []).find(g => g.id === gid), c = g.choices.find(c => c.id === cid);
-  const sel = SEL[CUR.id]; let ids = sel[gid] || [];
+  let ids = SEL[gid] || [];
   const plain = g.choices.filter(x => !x.hidden && !x.all && !(+x.price));
   if (!g.multi) ids = ids.includes(cid) ? [] : [cid];
   else if (c.all) ids = ids.includes(cid) ? ids.filter(id => !plain.some(p => p.id === id) && id !== cid) : [...new Set([...ids, cid, ...plain.map(p => p.id)])];
@@ -378,28 +535,47 @@ function toggleChoice(gid, cid, tileEl){
     if (allC) { const full = plain.every(p => ids.includes(p.id)); ids = full ? [...new Set([...ids, allC.id])] : ids.filter(id => id !== allC.id); }
     if (g.max && ids.length > g.max) ids = ids.slice(-g.max);
   }
-  sel[gid] = ids;
-  // mise à jour sans tout redessiner (garde le défilement)
+  SEL[gid] = ids;
   const box = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`);
   box.querySelectorAll(".tile").forEach(b => { const on = ids.includes(b.dataset.c); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
   const n = ids.filter(id => !g.choices.find(x => x.id === id)?.all).length;
   const cnt = box.querySelector(".cnt"); cnt.textContent = n + (g.multi ? "" : "/1"); cnt.classList.toggle("ok", n > 0);
   tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
+  // une seule viande : on descend tout seul au groupe suivant
+  if (!g.multi && ids.length) { const next = box.nextElementSibling; if (next) setTimeout(() => next.scrollIntoView({behavior:"smooth", block:"start"}), 250); }
   drawBar();
 }
-$("#menu").addEventListener("click", (e) => { const a = e.target.closest(".item.custom"); if (a) openSheet(a.dataset.id); });
-$("#menu").addEventListener("keydown", (e) => { const a = e.target.closest(".item.custom"); if (a && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openSheet(a.dataset.id); } });
+
+/* ----- événements ----- */
+$("#menu").addEventListener("click", (e) => { const a = e.target.closest(".item[data-id]"); if (a) openItem(a.dataset.id); });
+$("#menu").addEventListener("keydown", (e) => { const a = e.target.closest(".item[data-id]"); if (a && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openItem(a.dataset.id); } });
+$("#cartPill").onclick = openCart;
 $("#sheet").addEventListener("click", (e) => {
   if (e.target.id === "sheet") return closeSheet();
   const tile = e.target.closest(".tile"); if (tile) return toggleChoice(tile.closest(".grp").dataset.g, tile.dataset.c, tile);
   const b = e.target.closest("[data-sh]"); if (!b) return;
   const a = b.dataset.sh;
   if (a === "close") closeSheet();
-  else if (a === "reset") { SEL[CUR.id] = {}; drawSheet(false); }
-  else if (a === "done") { drawSheet(true); $("#shScroll").scrollTop = 0; }
-  else if (a === "edit") drawSheet(false);
+  else if (a === "reset") { SEL = {}; drawSheet(); }
+  else if (a === "add") addCurrent();
+  else if (a === "yesMenu") acceptMenu();
+  else if (a === "noMenu") goSuggest(CUR);
+  else if (a === "cart") openCart();
+  else if (a === "sugAdd") {
+    const card = b.closest(".sug"), x = visibleItem(card.dataset.id); if (!x) return;
+    if (itemGroups(x).length) return openItem(x.id);
+    CART.push({key: Date.now() + Math.random(), id: x.id, sel: {}, price: unitPrice(x), qty: 1}); saveCart(); bumpPill();
+    card.classList.add("got"); b.textContent = "✓"; b.disabled = true; burst(card);
+    $("#shBar [data-sh=cart]").textContent = `${ui("seeOrder")} (${cartCount()})`;
+  }
+  else if (a === "minus" || a === "plus") {
+    const l = CART[+b.closest(".cl").dataset.i]; l.qty += a === "plus" ? 1 : -1;
+    if (l.qty <= 0) CART.splice(CART.indexOf(l), 1);
+    saveCart(); drawCart(); drawPill();
+  }
+  else if (a === "clear") { CART = []; saveCart(); drawCart(); drawPill(); }
 });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && CUR) closeSheet(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#sheet").classList.contains("on")) closeSheet(); });
 
 $("#langBtn").onclick = showSplash;
 $("#homeLogo").onclick = showSplash;

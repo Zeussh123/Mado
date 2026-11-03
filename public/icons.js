@@ -131,6 +131,13 @@
       <path d="M8 30 Q32 60 56 30 Z" fill="#2f7fb5"/>
       <path d="M14 36 Q32 50 50 36" stroke="#7fbde6" stroke-width="2" fill="none"/>`),
 
+    canette: svg(`
+      <ellipse cx="32" cy="57" rx="13" ry="3" fill="#000" opacity=".18"/>
+      <path d="M20 12 Q20 8 24 8 L40 8 Q44 8 44 12 L44 52 Q44 56 40 56 L24 56 Q20 56 20 52 Z" fill="#d62828"/>
+      <rect x="20" y="10" width="24" height="5" fill="#c9c9c9"/><rect x="20" y="49" width="24" height="5" fill="#c9c9c9"/>
+      <path d="M24 22 Q32 28 40 22 L40 40 Q32 34 24 40 Z" fill="#fff" opacity=".85"/>
+      <rect x="23" y="16" width="3" height="32" fill="#fff" opacity=".25"/>`),
+
     // ---------- Sauces ----------
     ketchup: cup("#d62828"),
     mayonnaise: cup("#f6e7b0"),

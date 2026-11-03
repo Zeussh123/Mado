@@ -94,6 +94,9 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 .gchoice .gi.busy{opacity:.4}
 .gchoice details{grid-column:2/-1}
 @media (max-width:520px){.gchoice{grid-template-columns:56px 1fr 84px}.gchoice .gx{grid-column:2/-1}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px;font-size:.88rem}
+.chip button{border:0;background:transparent;padding:2px 6px;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:10px;z-index:50;display:none;max-width:90vw}
 </style>
 </head>
@@ -191,7 +194,7 @@ const ls = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(
 
 let token = ss.get("mado-admin") || "";
 let DEMO = false;
-let menu = null, saved = "", openCats = new Set(), openItems = new Set();
+let menu = null, saved = "", openCats = new Set(), openItems = new Set(), openSettings = new Set();
 
 function toast(msg, ms=2600){ const t=$("#toast"); t.textContent=msg; t.style.display="block"; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display="none", ms); }
 const api = (path, opts={}) => fetch(path, {...opts, headers:{...(opts.headers||{}), authorization:"Bearer "+token}});
@@ -210,15 +213,24 @@ async function login(pw){
 
 
 async function withDefaults(m){
-  if (m.optionGroups) return m;
+  // complète un menu enregistré avant l'ajout des options, menus proposés et suggestions
   try {
     const def = await (await fetch("menu.json", {cache:"no-store"})).json();
-    m.optionGroups = def.optionGroups || []; m.ui = {...def.ui, ...m.ui};
-    const o = {}; for (const c of def.categories) for (const it of c.items) o[it.id] = it.options || [];
-    for (const c of m.categories) for (const it of c.items) if (!it.options) it.options = o[it.id] || [];
+    if (!m.optionGroups) m.optionGroups = def.optionGroups || [];
+    m.ui = {...def.ui, ...m.ui};
+    const di = {}, dc = {};
+    for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
+    for (const c of m.categories) {
+      if (c.suggest === undefined) c.suggest = (dc[c.id] && dc[c.id].suggest) || [];
+      for (const it of c.items) {
+        if (it.options === undefined) it.options = (di[it.id] && di[it.id].options) || [];
+        if (it.upgrade === undefined) it.upgrade = (di[it.id] && di[it.id].upgrade) || "";
+      }
+    }
   } catch {}
   return m;
 }
+
 async function loadMenu(){
   if (DEMO) {
     const local = ls.get("mado-demo-menu");
@@ -245,6 +257,10 @@ function ask(msg, {input=false, yes="OK", danger=false}={}){
 }
 
 /* ---------- Rendu ---------- */
+function itemById(id){ for (const c of menu.categories) for (const it of c.items) if (it.id === id) return it; return null; }
+function allItemOptions(selected, exclude, skip = []){
+  return menu.categories.map(c => `<optgroup label="${esc(c.name.fr)}">${c.items.filter(it => it.id !== exclude && !skip.includes(it.id)).map(it => `<option value="${esc(it.id)}" ${it.id===selected?"selected":""}>${esc(it.name.fr)} · ${it.price ?? "?"} €</option>`).join("")}</optgroup>`).join("");
+}
 function render(){
   const root = $("#cats");
   root.innerHTML = menu.categories.map((c, ci) => {
@@ -252,12 +268,15 @@ function render(){
     return `<div class="cat ${openCats.has(c.id)?"open":""} ${c.hidden?"hidden-cat":""}" data-ci="${ci}">
       <div class="head" data-act="toggleCat"><span class="chev">▶</span><h2>${esc(c.name.fr || "(sans nom)")}</h2><span class="count">${visible}/${c.items.length} visibles</span></div>
       <div class="body">
-        <details style="margin-bottom:6px"><summary class="small" style="cursor:pointer">Réglages de la catégorie</summary>
+        <details class="catset" style="margin-bottom:6px" ${openSettings.has(c.id)?"open":""}><summary class="small" style="cursor:pointer">Réglages de la catégorie et suggestions</summary>
           <div class="lbl">Nom de la catégorie</div>
           <div class="grid4">${LANGS.map(l=>`<input data-cf="name.${l}" placeholder="${LNAME[l]}" value="${esc(c.name[l])}">`).join("")}</div>
           <div class="lbl">Note sous le titre (optionnel)</div>
           <div class="grid4">${LANGS.map(l=>`<textarea data-cf="note.${l}" rows="2" placeholder="${LNAME[l]}">${esc((c.note||{})[l])}</textarea>`).join("")}</div>
           <div class="toggles"><label><input type="checkbox" data-cf="visible" ${c.hidden?"":"checked"}> Catégorie visible</label></div>
+          <div class="lbl">Suggestions « Et avec ça ? » après un produit de cette catégorie</div>
+          <div class="chips">${(c.suggest||[]).map((id,si)=>{const x=itemById(id);return x?`<span class="chip">${esc(x.name.fr)}<button data-act="sugDel" data-si="${si}" aria-label="Retirer">✕</button></span>`:"";}).join("") || '<span class="small">Aucune suggestion</span>'}</div>
+          <select data-cf="sugAdd" style="margin-top:6px"><option value="">+ Ajouter une suggestion…</option>${allItemOptions("", null, c.suggest||[])}</select>
           <div class="actions">
             <button data-act="catUp" ${ci===0?"disabled":""}>↑ Monter</button>
             <button data-act="catDown" ${ci===menu.categories.length-1?"disabled":""}>↓ Descendre</button>
@@ -296,6 +315,8 @@ function itemHtml(c, ci, it, ii){
       <div class="grid4">${["en","tr","de"].map(l=>`<input data-f="name.${l}" placeholder="${LNAME[l]}" value="${esc(it.name[l])}">`).join("")}</div>
       <div class="lbl">Options proposées au client</div>
       <div class="toggles">${(menu.optionGroups||[]).map(g=>`<label><input type="checkbox" data-opt="${esc(g.id)}" ${(it.options||[]).includes(g.id)?"checked":""}> ${esc(g.name.fr)}</label>`).join("") || '<span class="small">Aucun groupe d\'options</span>'}</div>
+      <div class="lbl">Après ce produit, proposer de passer en menu (« seulement +X € »)</div>
+      <select data-f="upgrade"><option value="">Ne rien proposer</option>${allItemOptions(it.upgrade, it.id)}</select>
       <div class="lbl">Description / composition</div>
       <div class="grid4">${LANGS.map(l=>`<textarea data-f="description.${l}" rows="2" placeholder="${LNAME[l]}">${esc((it.description||{})[l])}</textarea>`).join("")}</div>
       <div class="actions">
@@ -344,12 +365,18 @@ $("#cats").addEventListener("input", (e) => {
     else setPath(it, f, el.value);
   } else if (catEl && el.dataset.cf) {
     const c = menu.categories[catEl.dataset.ci];
+    if (el.dataset.cf === "sugAdd") { if (el.value) { (c.suggest = c.suggest || []).push(el.value); render(); } updateStatus(); return; }
     if (el.dataset.cf === "visible") { c.hidden = !el.checked; catEl.classList.toggle("hidden-cat", c.hidden); }
     else { setPath(c, el.dataset.cf, el.value); if (el.dataset.cf === "name.fr") $(".head h2", catEl).textContent = el.value || "(sans nom)"; }
   }
   updateStatus();
 });
 
+$("#cats").addEventListener("toggle", (e) => {
+  if (!e.target.classList || !e.target.classList.contains("catset")) return;
+  const c = menu.categories[e.target.closest(".cat").dataset.ci];
+  e.target.open ? openSettings.add(c.id) : openSettings.delete(c.id);
+}, true);
 $("#cats").addEventListener("change", (e) => {
   const el = e.target;
   if (el.dataset.act === "move" && el.value !== "") {
@@ -376,6 +403,7 @@ $("#cats").addEventListener("click", async (e) => {
     case "rmPhoto": it.photo = ""; break;
     case "photo": pickPhoto(it, b); return;
     case "addItem": { const n = {id:uid(), name:blankL(), description:blankL(), price:null, bestseller:false, hidden:false, photo:""}; c.items.push(n); openItems.add(n.id); render(); const last = document.querySelector(`.cat[data-ci="${ci}"] .item:last-of-type input.name`); if (last) last.focus(); return; }
+    case "sugDel": c.suggest.splice(+b.dataset.si, 1); break;
     case "catUp": swap(menu.categories, ci, ci-1); break;
     case "catDown": swap(menu.categories, ci, ci+1); break;
     case "catDel": if (c.items.length && !(await ask(`Supprimer la catégorie « ${c.name.fr} » et ses ${c.items.length} produits ?`, {yes:"Supprimer", danger:true}))) return; menu.categories.splice(ci,1); break;

@@ -64,17 +64,20 @@ async function getMenu(request, env) {
     // Premier lancement : on part du menu livré avec le site
     body = await loadDefault();
   } else {
-    // Menu enregistré avant l'arrivée des options : on ajoute celles par défaut
-    const saved = JSON.parse(body);
-    if (!saved.optionGroups) {
-      const def = JSON.parse(await loadDefault());
-      saved.optionGroups = def.optionGroups || [];
-      const opts = {};
-      for (const c of def.categories) for (const it of c.items) opts[it.id] = it.options || [];
-      for (const c of saved.categories) for (const it of c.items) if (!it.options) it.options = opts[it.id] || [];
-      saved.ui = { ...def.ui, ...saved.ui };
-      body = JSON.stringify(saved);
+    // Menu enregistré avec une ancienne version du site : on complète avec les nouveautés par défaut
+    const saved = JSON.parse(body), def = JSON.parse(await loadDefault());
+    if (!saved.optionGroups) saved.optionGroups = def.optionGroups || [];
+    saved.ui = { ...def.ui, ...saved.ui };
+    const di = {}, dc = {};
+    for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
+    for (const c of saved.categories) {
+      if (c.suggest === undefined) c.suggest = (dc[c.id] && dc[c.id].suggest) || [];
+      for (const it of c.items) {
+        if (it.options === undefined) it.options = (di[it.id] && di[it.id].options) || [];
+        if (it.upgrade === undefined) it.upgrade = (di[it.id] && di[it.id].upgrade) || "";
+      }
     }
+    body = JSON.stringify(saved);
   }
   return new Response(body, {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
