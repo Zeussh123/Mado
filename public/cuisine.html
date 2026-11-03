@@ -3,64 +3,116 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mado · Cuisine</title>
+<title>Mado · Caisse & cuisine</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <style>
-:root{--bg:#161616;--surface:#222;--surface-2:#2b2b2b;--line:#383838;--text:#f4f1ec;--muted:#a9a39a;--accent:#f39200;--ink:#1a1100;--green:#5cb85c;--red:#e5534b;color-scheme:dark}
+:root{--bg:#161616;--surface:#222;--surface-2:#2b2b2b;--line:#383838;--text:#f4f1ec;--muted:#a9a39a;--accent:#f39200;--ink:#1a1100;--green:#5cb85c;--red:#e5534b;--blue:#4a9eff;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.35}
-button,input{font:inherit;color:inherit}
+button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:9px 14px;font-weight:700}
+button:disabled{opacity:.5;cursor:default}
 button.primary{background:var(--accent);border-color:var(--accent);color:var(--ink)}
 button.ok{background:var(--green);border-color:var(--green);color:#08210a}
-input{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px;width:100%}
+button.blue{background:var(--blue);border-color:var(--blue);color:#001a33}
+button.danger{background:transparent;border-color:#6b2a26;color:#ff8d86}
+input,select{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px}
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 #login form{width:min(360px,100%);display:grid;gap:14px;text-align:center}
 #login img{width:220px;margin:0 auto}
 .err{color:#ff8d86;min-height:1.2em}
 #app{display:none}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px;background:rgba(22,22,22,.96);border-bottom:1px solid var(--line)}
-header img{height:34px}
-header h1{font-size:1.1rem;margin:0;flex:1}
+header{position:sticky;top:0;z-index:5;background:rgba(22,22,22,.97);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px 0}
+.hrow img{height:34px}
+.hrow .sp{flex:1}
 .live{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.9rem}
 .live .dot{width:10px;height:10px;border-radius:50%;background:var(--red)}
 .live.on .dot{background:var(--green);animation:blink 1.6s infinite}
 @keyframes blink{50%{opacity:.3}}
-label.sw{display:flex;align-items:center;gap:6px;font-size:.9rem}
-label.sw input{width:18px;height:18px;accent-color:var(--accent)}
-#start{margin:16px;padding:16px;border-radius:14px;background:#3a2400;border:1px solid #6b4e00;color:#ffd38a;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-#start p{margin:0;flex:1;min-width:220px}
-.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:16px}
+.pill{font-size:.85rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.pill.on{color:#c9f2c9;border-color:#2f5d2f}
+nav{display:flex;gap:4px;padding:8px 12px 0;overflow-x:auto}
+nav button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 14px;color:var(--muted);white-space:nowrap}
+nav button.on{color:var(--text);border-bottom-color:var(--accent)}
+nav .badge{display:inline-block;min-width:22px;padding:1px 7px;margin-left:6px;border-radius:999px;background:var(--accent);color:var(--ink);font-size:.8rem}
+#start,#alarm{margin:16px;padding:16px;border-radius:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#start{background:#3a2400;border:1px solid #6b4e00;color:#ffd38a}
+#start p,#alarm p{margin:0;flex:1;min-width:220px}
+#alarm{display:none;background:var(--accent);color:var(--ink);font-weight:800;font-size:1.15rem;animation:pulse 1s infinite}
+@keyframes pulse{50%{filter:brightness(1.25)}}
+section{display:none;padding:16px}
+section.on{display:block}
+.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .col-title{grid-column:1/-1;margin:8px 0 0;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .order{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
 .order.new{border-color:var(--accent)}
-.order.flash{animation:flash 1s ease 3}
+.order.unseen{box-shadow:0 0 0 4px rgba(243,146,0,.35);animation:flash 1s ease infinite}
 @keyframes flash{50%{background:#3a2400}}
 .order.ready{border-color:var(--green)}
-.order.done,.order.cancelled{opacity:.55}
-.oh{display:flex;align-items:baseline;gap:10px}
+.order.done{border-color:var(--blue)}
+.order.paid,.order.cancelled{opacity:.6}
+.oh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .oh .t{font-size:1.6rem;font-weight:900}
 .oh .n{color:var(--muted);font-weight:700}
 .oh .time{margin-left:auto;color:var(--muted);font-size:.9rem}
+.st{font-size:.78rem;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--surface-2)}
+.st.new{background:#4a2e00;color:#ffc46b}.st.ready{background:#1d3d1d;color:#9fe39f}.st.done{background:#0f2d4d;color:#9ccbff}.st.paid{background:#2b2b2b;color:#ccc}.st.cancelled{background:#3d1a18;color:#ff9d96}
 .ln{border-top:1px dashed var(--line);padding-top:6px}
 .ln b{font-size:1.05rem}
 .ln .d{color:var(--muted);font-size:.88rem}
 .note{background:#3a2400;color:#ffd38a;border-radius:10px;padding:8px 10px;font-weight:700}
 .of{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px}
 .of .tot{margin-right:auto;font-weight:900;color:var(--accent);font-size:1.1rem}
-.empty{color:var(--muted);padding:30px 16px;text-align:center}
+.empty{color:var(--muted);padding:30px 16px;text-align:center;grid-column:1/-1}
+.tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+label.sw{display:flex;align-items:center;gap:8px}
+label.sw input{width:20px;height:20px;accent-color:var(--accent)}
+/* plan des tables */
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-bottom:14px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.tables{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tbl{aspect-ratio:1.15;border-radius:18px;border:2px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px;text-align:center}
+.tbl .num{font-size:2.2rem;font-weight:900;line-height:1}
+.tbl .lab{font-size:.85rem;font-weight:800}
+.tbl .amt{font-size:1.05rem;font-weight:900}
+.tbl .since{font-size:.8rem;color:var(--muted)}
+.tbl.free{color:var(--muted);border-style:dashed}
+.tbl.new{border-color:var(--accent);background:#2e1f08}.tbl.new .lab{color:#ffc46b}
+.tbl.ready{border-color:var(--green);background:#142a14}.tbl.ready .lab{color:#9fe39f}
+.tbl.done{border-color:var(--blue);background:#0d2136}.tbl.done .lab{color:#9ccbff}
+#tableSheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:20}
+#tableSheet.on{display:flex}
+#tableSheet .box{background:var(--bg);border:1px solid var(--line);border-radius:18px 18px 0 0;width:min(720px,100%);max-height:88vh;overflow:auto;padding:18px}
+/* historique */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat .k{color:var(--muted);font-size:.85rem}
+.stat .v{font-size:1.6rem;font-weight:900;margin-top:4px}
+table.top{width:100%;border-collapse:collapse;margin-bottom:18px}
+table.top th,table.top td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+table.top td.r,table.top th.r{text-align:right}
+h3{margin:18px 0 10px}
+/* réglages */
+.settings{display:grid;gap:14px;max-width:640px}
+.set{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px}
+.set h4{margin:0}
+.set .hint{color:var(--muted);font-size:.9rem;margin:0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
 #ticket{display:none}
 @media print{
   @page{size:80mm auto;margin:0}
   body{background:#fff;color:#000}
-  #app,#login{display:none!important}
+  #app,#login,#tableSheet{display:none!important}
   #ticket{display:block;width:72mm;margin:0 auto;padding:2mm 0 6mm;font-family:"Courier New",monospace;font-size:12pt;color:#000}
   #ticket .c{text-align:center}
   #ticket .big{font-size:26pt;font-weight:900;text-align:center;margin:2mm 0}
   #ticket hr{border:0;border-top:1px dashed #000;margin:2mm 0}
   #ticket .l{font-weight:900;font-size:13pt;margin-top:2mm}
+  #ticket .lp{display:flex;justify-content:space-between;gap:2mm;margin-top:1mm}
   #ticket .d{font-size:11pt;padding-left:3mm}
   #ticket .nt{border:2px solid #000;padding:1.5mm;font-weight:900;margin-top:2mm}
   #ticket .tot{display:flex;justify-content:space-between;font-weight:900;font-size:13pt}
@@ -72,7 +124,7 @@ label.sw input{width:18px;height:18px;accent-color:var(--accent)}
 <div id="login">
   <form id="loginForm">
     <img src="img/logo.png" alt="Mado">
-    <h2 style="margin:0">Cuisine</h2>
+    <h2 style="margin:0">Caisse & cuisine</h2>
     <input id="pw" type="password" placeholder="Mot de passe de l'admin" autocomplete="current-password" required>
     <button class="primary" type="submit">Ouvrir</button>
     <div class="err" id="err"></div>
@@ -81,116 +133,402 @@ label.sw input{width:18px;height:18px;accent-color:var(--accent)}
 
 <div id="app">
   <header>
-    <img src="img/logo.png" alt="">
-    <h1>Commandes du jour</h1>
-    <span class="live" id="live"><span class="dot"></span><span id="liveTxt">Hors ligne</span></span>
-    <label class="sw"><input type="checkbox" id="autoPrint" checked> Impression auto</label>
-    <label class="sw"><input type="checkbox" id="showDone"> Voir les servies</label>
+    <div class="hrow">
+      <img src="img/logo.png" alt="">
+      <span class="sp"></span>
+      <span class="pill" id="printPill">🖨 Impression auto</span>
+      <span class="pill" id="soundPill">🔔 Son</span>
+      <span class="live" id="live"><span class="dot"></span><span id="liveTxt">Hors ligne</span></span>
+    </div>
+    <nav id="tabs">
+      <button data-tab="orders" class="on">Commandes en cours<span class="badge" id="bOrders" hidden></span></button>
+      <button data-tab="tables">Plan des tables<span class="badge" id="bTables" hidden></span></button>
+      <button data-tab="history">Historique</button>
+      <button data-tab="settings">Réglages</button>
+    </nav>
   </header>
   <div id="start">
-    <p><b>Touchez « Démarrer » une fois</b> pour activer le son et l'impression des nouvelles commandes. Laissez cette page ouverte.</p>
+    <p><b>Touchez « Démarrer » une fois</b> pour activer le son, les alertes et l'impression automatique. Laissez cette page ouverte.</p>
     <button class="primary" id="startBtn">Démarrer</button>
   </div>
-  <div class="cols" id="list"></div>
+  <div id="alarm"><p id="alarmTxt"></p><button id="ackAll" style="background:var(--ink);color:#fff;border-color:var(--ink)">Vu ✓</button></div>
+
+  <section id="s-orders" class="on">
+    <div class="tools">
+      <label class="sw"><input type="checkbox" id="showDone"> Voir aussi les commandes servies</label>
+    </div>
+    <div class="cols" id="list"></div>
+  </section>
+
+  <section id="s-tables">
+    <div class="legend">
+      <span><i style="border:2px dashed var(--line)"></i>Libre</span>
+      <span><i style="background:var(--accent)"></i>En préparation</span>
+      <span><i style="background:var(--green)"></i>Prête à servir</span>
+      <span><i style="background:var(--blue)"></i>Servie, à encaisser</span>
+    </div>
+    <div class="tables" id="tables"></div>
+  </section>
+
+  <section id="s-history">
+    <div class="tools">
+      <button id="hPrev">‹</button>
+      <input type="date" id="hDay">
+      <button id="hNext">›</button>
+      <button id="hToday">Aujourd'hui</button>
+      <button id="hPrint">🖨 Imprimer le rapport</button>
+    </div>
+    <div id="hBody"></div>
+  </section>
+
+  <section id="s-settings">
+    <div class="settings">
+      <div class="set">
+        <h4>🔔 Son des nouvelles commandes</h4>
+        <div class="row">
+          <select id="sSound">
+            <option value="bip">Bip</option>
+            <option value="cloche">Cloche</option>
+            <option value="sonnette">Ding-dong</option>
+            <option value="alarme">Alarme forte</option>
+            <option value="aucun">Aucun son</option>
+          </select>
+          <button id="tSound">▶ Tester</button>
+        </div>
+        <div class="row"><span>Volume</span><input type="range" id="sVolume" min="0" max="100"><b id="vVolume"></b></div>
+      </div>
+      <div class="set">
+        <h4>⏰ Rappel tant que la commande n'est pas vue</h4>
+        <p class="hint">Le son recommence jusqu'à ce que vous touchiez « Vu », « Prête » ou « Servie ».</p>
+        <select id="sRepeat">
+          <option value="0">Une seule fois</option>
+          <option value="10">Toutes les 10 secondes</option>
+          <option value="20">Toutes les 20 secondes</option>
+          <option value="30">Toutes les 30 secondes</option>
+          <option value="60">Toutes les minutes</option>
+        </select>
+      </div>
+      <div class="set">
+        <h4>🗣 Alerte vocale</h4>
+        <label class="sw"><input type="checkbox" id="sVoice"> Annoncer « Nouvelle commande, table 4 »</label>
+        <button id="tVoice" style="justify-self:start">▶ Tester</button>
+      </div>
+      <div class="set">
+        <h4>🖨 Impression automatique</h4>
+        <label class="sw"><input type="checkbox" id="sAutoPrint"> Imprimer le ticket dès qu'une commande arrive</label>
+        <div class="row"><span>Nombre de tickets par commande</span>
+          <select id="sCopies"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+        </div>
+        <label class="sw"><input type="checkbox" id="sPrintPrice"> Afficher les prix sur le ticket cuisine</label>
+        <p class="hint">Pour que le ticket sorte sans fenêtre, ouvrez cette page avec le raccourci Chrome « impression silencieuse » (voir le guide d'installation) et choisissez l'imprimante ZJ-8250 comme imprimante par défaut de Windows.</p>
+        <button id="tPrint" style="justify-self:start">🖨 Imprimer un ticket de test</button>
+      </div>
+      <div class="set">
+        <h4>Ce poste</h4>
+        <p class="hint">Ces réglages sont enregistrés sur cet ordinateur seulement.</p>
+        <button class="danger" id="logout" style="justify-self:start">Se déconnecter</button>
+      </div>
+    </div>
+  </section>
 </div>
+
+<div id="tableSheet"><div class="box" id="tableBox"></div></div>
 <div id="ticket"></div>
 
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const eur = (n) => new Intl.NumberFormat("fr-FR", {style:"currency", currency:"EUR"}).format(n);
+const eur = (n) => new Intl.NumberFormat("fr-FR", {style:"currency", currency:"EUR"}).format(n || 0);
 const hm = (iso) => new Date(iso).toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"});
-const ls = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(k,v){try{localStorage.setItem(k,v)}catch{}} };
+const ls = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(k,v){try{localStorage.setItem(k,v)}catch{}}, del(k){try{localStorage.removeItem(k)}catch{}} };
+const STATUS = {new: "En préparation", ready: "Prête", done: "Servie", paid: "Encaissée", cancelled: "Annulée"};
 let token = (() => { try { return sessionStorage.getItem("mado-admin") || ls.get("mado-kitchen") || ""; } catch { return ""; } })();
-let ORDERS = [], printed = new Set((ls.get("mado-printed") || "").split(",").filter(Boolean).map(Number)), started = false, audio = null, firstLoad = true;
+let ORDERS = [], TABLES = 10, started = false, audio = null, firstLoad = true, tab = "orders", openTable = null;
+const idSet = (k) => new Set((ls.get(k) || "").split(",").filter(Boolean).map(Number));
+const saveSet = (k, s) => ls.set(k, [...s].slice(-400).join(","));
+const printed = idSet("mado-printed"), seen = idSet("mado-seen");
 const api = (p, o = {}) => fetch(p, {...o, headers: {...(o.headers || {}), authorization: "Bearer " + token}});
 
-/* ----- son ----- */
-function beep(){
-  if (!audio) return;
-  const t = audio.currentTime;
-  [0, .18, .36].forEach((d, i) => {
-    const o = audio.createOscillator(), g = audio.createGain();
-    o.frequency.value = i === 2 ? 1320 : 880; o.type = "square";
-    g.gain.setValueAtTime(.0001, t + d); g.gain.exponentialRampToValueAtTime(.3, t + d + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d + .16);
-    o.connect(g).connect(audio.destination); o.start(t + d); o.stop(t + d + .17);
-  });
+/* ---------- réglages (sur ce poste) ---------- */
+const DEF = {sound: "cloche", volume: 80, repeat: 20, voice: true, autoPrint: true, copies: 1, printPrice: true};
+let S = (() => { try { return {...DEF, ...JSON.parse(ls.get("mado-kitchen-settings") || "{}")}; } catch { return {...DEF}; } })();
+function saveSettings(){ ls.set("mado-kitchen-settings", JSON.stringify(S)); pills(); }
+function pills(){
+  $("#printPill").classList.toggle("on", S.autoPrint && started);
+  $("#printPill").textContent = S.autoPrint ? "🖨 Impression auto" + (started ? "" : " (en attente)") : "🖨 Impression manuelle";
+  $("#soundPill").classList.toggle("on", S.sound !== "aucun" && started);
+  $("#soundPill").textContent = S.sound === "aucun" ? "🔕 Sans son" : "🔔 Son" + (S.voice ? " + voix" : "");
+}
+function bindSettings(){
+  const f = {sSound: "sound", sVolume: "volume", sRepeat: "repeat", sVoice: "voice", sAutoPrint: "autoPrint", sCopies: "copies", sPrintPrice: "printPrice"};
+  for (const [id, k] of Object.entries(f)) {
+    const el = $("#" + id);
+    if (el.type === "checkbox") el.checked = !!S[k]; else el.value = S[k];
+    el.addEventListener(el.type === "range" ? "input" : "change", () => {
+      S[k] = el.type === "checkbox" ? el.checked : (["volume", "repeat", "copies"].includes(k) ? +el.value : el.value);
+      $("#vVolume").textContent = S.volume + " %"; saveSettings();
+    });
+  }
+  $("#vVolume").textContent = S.volume + " %";
+  $("#tSound").onclick = () => { unlockAudio(); playSound(); };
+  $("#tVoice").onclick = () => say("Nouvelle commande, table 4");
+  $("#tPrint").onclick = () => printOrder({id: 0, num: 0, table_no: "TEST", created_at: new Date().toISOString(), total: 9.5,
+    lines: [{qty: 1, name: "Kebab", unit: 9.5, details: [{group: "Viande", choices: ["Kebab bœuf"]}, {group: "Sauces", choices: ["Blanche", "Samouraï"]}]}], note: "Ticket de test"}, 1);
+  $("#logout").onclick = () => { ls.del("mado-kitchen"); try { sessionStorage.removeItem("mado-admin"); } catch {} location.reload(); };
+  pills();
 }
 
-/* ----- impression du ticket 80 mm ----- */
+/* ---------- sons ---------- */
+function unlockAudio(){ if (!audio) try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch {} if (audio && audio.state === "suspended") audio.resume(); }
+function tone(freq, start, dur, type, vol){
+  const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime + start;
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(Math.max(.0002, vol), t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g).connect(audio.destination); o.start(t); o.stop(t + dur + .02);
+}
+function playSound(){
+  if (!audio || S.sound === "aucun" || !S.volume) return;
+  const v = (S.volume / 100) * .5;
+  if (S.sound === "bip") [0, .18, .36].forEach((d, i) => tone(i === 2 ? 1320 : 880, d, .16, "square", v * .6));
+  if (S.sound === "cloche") [0, .5].forEach(d => { tone(1568, d, 1.2, "sine", v); tone(3136, d, .6, "sine", v * .3); tone(2349, d, .9, "sine", v * .25); });
+  if (S.sound === "sonnette") { tone(988, 0, .9, "triangle", v); tone(784, .45, 1.2, "triangle", v); }
+  if (S.sound === "alarme") for (let i = 0; i < 6; i++) tone(i % 2 ? 660 : 990, i * .2, .19, "sawtooth", v * .5);
+}
+function say(text){
+  if (!S.voice || !("speechSynthesis" in window)) return;
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = "fr-FR"; u.volume = Math.max(.1, S.volume / 100); speechSynthesis.speak(u); } catch {}
+}
+
+/* ---------- alerte qui se répète tant que ce n'est pas vu ---------- */
+let lastAlarm = 0;
+const unseen = () => ORDERS.filter(o => o.status === "new" && !seen.has(o.id));
+function alarmTick(force){
+  const u = unseen();
+  $("#alarm").style.display = u.length && started ? "flex" : "none";
+  if (!u.length) { document.title = "Mado · Caisse & cuisine"; return; }
+  const tables = [...new Set(u.map(o => o.table_no))];
+  $("#alarmTxt").textContent = `🔔 ${u.length > 1 ? u.length + " nouvelles commandes" : "Nouvelle commande"} · table ${tables.join(", ")}`;
+  document.title = `(${u.length}) Nouvelle commande · Mado`;
+  if (!started) return;
+  const now = Date.now();
+  if (force || (S.repeat && now - lastAlarm >= S.repeat * 1000)) {
+    lastAlarm = now; playSound();
+    setTimeout(() => say(`Nouvelle commande, table ${tables.join(", table ")}`), S.sound === "aucun" ? 0 : 1200);
+  }
+}
+function markSeen(ids){ ids.forEach(id => seen.add(id)); saveSet("mado-seen", seen); alarmTick(); render(); }
+$("#ackAll").onclick = () => markSeen(unseen().map(o => o.id));
+
+/* ---------- impression du ticket 80 mm ---------- */
 const queue = []; let printing = false;
+const detailsHtml = (l) => l.details.map(d => `<div class="d">${esc(d.group)} : ${esc(d.choices.join(", "))}</div>`).join("");
 function ticketHtml(o){
   return `<div class="c">MADO</div><div class="big">TABLE ${esc(o.table_no)}</div>
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div><hr>
-    ${o.lines.map(l => `<div class="l">${l.qty} x ${esc(l.name)}</div>${l.details.map(d => `<div class="d">${esc(d.group)} : ${esc(d.choices.join(", "))}</div>`).join("")}`).join("")}
+    ${o.lines.map(l => `<div class="l">${l.qty} x ${esc(l.name)}</div>${detailsHtml(l)}`).join("")}
     ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}<hr>
-    <div class="tot"><span>TOTAL</span><span>${eur(o.total)}</span></div><div class="c" style="margin-top:2mm">À payer au comptoir</div>`;
+    ${S.printPrice ? `<div class="tot"><span>TOTAL</span><span>${eur(o.total)}</span></div><div class="c" style="margin-top:2mm">À payer au comptoir</div>` : ""}`;
 }
-function printOrder(o){ queue.push(o); runQueue(); }
+function billHtml(t, list){
+  const total = list.reduce((n, o) => n + o.total, 0);
+  return `<div class="c">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big">TABLE ${esc(t)}</div>
+    <div class="c">Addition · ${new Date().toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"})}</div><hr>
+    ${list.flatMap(o => o.lines).map(l => `<div class="lp"><span>${l.qty} x ${esc(l.name)}</span><span>${eur(l.unit * l.qty)}</span></div>`).join("")}<hr>
+    <div class="tot"><span>TOTAL TTC</span><span>${eur(total)}</span></div><div class="c" style="margin-top:3mm">Merci de votre visite !</div>`;
+}
+function reportHtml(day, st){
+  return `<div class="c">MADO</div><div class="big" style="font-size:16pt">RAPPORT DU ${esc(day.split("-").reverse().join("/"))}</div><hr>
+    <div class="lp"><span>Commandes</span><span>${st.count}</span></div>
+    <div class="lp"><span>Panier moyen</span><span>${eur(st.avg)}</span></div>
+    <div class="lp"><span>Annulées</span><span>${st.cancelled}</span></div><hr>
+    ${st.top.map(p => `<div class="lp"><span>${p.qty} x ${esc(p.name)}</span><span>${eur(p.amount)}</span></div>`).join("")}<hr>
+    <div class="tot"><span>TOTAL</span><span>${eur(st.total)}</span></div>`;
+}
+function printHtml(html, copies = 1){ for (let i = 0; i < copies; i++) queue.push(html); runQueue(); }
+function printOrder(o, copies = S.copies){
+  printHtml(ticketHtml(o), copies);
+  if (o.id) { printed.add(o.id); saveSet("mado-printed", printed); }
+}
 function runQueue(){
   if (printing || !queue.length) return;
-  printing = true; const o = queue.shift();
-  $("#ticket").innerHTML = ticketHtml(o);
-  setTimeout(() => { window.print(); printed.add(o.id); ls.set("mado-printed", [...printed].slice(-300).join(",")); printing = false; setTimeout(runQueue, 400); }, 50);
+  printing = true; $("#ticket").innerHTML = queue.shift();
+  setTimeout(() => { window.print(); printing = false; setTimeout(runQueue, 400); }, 50);
 }
 
-/* ----- liste ----- */
-function render(){
-  const showDone = $("#showDone").checked;
-  const act = ORDERS.filter(o => o.status === "new" || o.status === "ready");
-  const old = ORDERS.filter(o => o.status === "done" || o.status === "cancelled");
-  const card = (o) => `<div class="order ${o.status} ${o._flash ? "flash" : ""}" data-id="${o.id}">
-    <div class="oh"><span class="t">Table ${esc(o.table_no)}</span><span class="n">n° ${o.num}</span><span class="time">${hm(o.created_at)}</span></div>
-    ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.details.map(d => `<div class="d">${esc(d.group)} : ${esc(d.choices.join(", "))}</div>`).join("")}</div>`).join("")}
+/* ---------- onglet Commandes en cours ---------- */
+function orderCard(o, opts = {}){
+  const isNew = o.status === "new" && !seen.has(o.id);
+  return `<div class="order ${o.status} ${isNew && started ? "unseen" : ""}" data-id="${o.id}">
+    <div class="oh"><span class="t">Table ${esc(o.table_no)}</span><span class="n">n° ${o.num}</span><span class="st ${o.status}">${STATUS[o.status] || o.status}</span><span class="time">${hm(o.created_at)}</span></div>
+    ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${detailsHtml(l)}</div>`).join("")}
     ${o.note ? `<div class="note">📝 ${esc(o.note)}</div>` : ""}
     <div class="of"><span class="tot">${eur(o.total)}</span>
-      <button data-a="print">🖨 Réimprimer</button>
+      <button data-a="print">🖨</button>
+      ${isNew ? `<button data-a="seen">Vu</button>` : ""}
       ${o.status === "new" ? `<button class="primary" data-a="ready">Prête</button>` : ""}
-      ${o.status === "new" || o.status === "ready" ? `<button class="ok" data-a="done">Servie ✓</button>` : `<button data-a="new">Remettre en cours</button>`}
+      ${o.status === "new" || o.status === "ready" ? `<button class="ok" data-a="done">Servie ✓</button>` : ""}
+      ${o.status === "done" ? `<button class="blue" data-a="paid">Encaissée €</button>` : ""}
+      ${opts.reopen && o.status !== "new" ? `<button data-a="new">Remettre en cours</button>` : ""}
+      ${opts.cancel && o.status !== "cancelled" && o.status !== "paid" ? `<button class="danger" data-a="cancelled">Annuler</button>` : ""}
     </div></div>`;
-  $("#list").innerHTML = (act.length ? act.map(card).join("") : `<div class="empty">Aucune commande en cours.</div>`)
-    + (showDone && old.length ? `<h2 class="col-title">Servies</h2>` + old.map(card).join("") : "");
-  ORDERS.forEach(o => o._flash = false);
+}
+function render(){
+  const showDone = $("#showDone").checked;
+  const act = ORDERS.filter(o => o.status === "new" || o.status === "ready").reverse();
+  const served = ORDERS.filter(o => o.status === "done");
+  $("#list").innerHTML = (act.length ? act.map(o => orderCard(o, {cancel: true})).join("") : `<div class="empty">Aucune commande en cours.</div>`)
+    + (showDone && served.length ? `<h2 class="col-title">Servies, pas encore encaissées</h2>` + served.map(o => orderCard(o, {reopen: true})).join("") : "");
+  const nNew = ORDERS.filter(o => o.status === "new").length;
+  $("#bOrders").hidden = !act.length; $("#bOrders").textContent = act.length;
+  $("#bOrders").style.background = nNew ? "var(--accent)" : "var(--green)";
+  renderTables();
 }
 
+/* ---------- onglet Plan des tables ---------- */
+const OPEN = ["new", "ready", "done"];
+function tableState(t){
+  const list = ORDERS.filter(o => o.table_no === String(t) && OPEN.includes(o.status));
+  const state = !list.length ? "free" : list.some(o => o.status === "new") ? "new" : list.some(o => o.status === "ready") ? "ready" : "done";
+  return {list, state, total: list.reduce((n, o) => n + o.total, 0), since: list.length ? list.map(o => o.created_at).sort()[0] : null};
+}
+const LAB = {free: "Libre", new: "En préparation", ready: "Prête à servir", done: "À encaisser"};
+function minutes(iso){ const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0"); }
+function renderTables(){
+  const extra = [...new Set(ORDERS.filter(o => OPEN.includes(o.status)).map(o => +o.table_no))].filter(n => n > TABLES);
+  const nums = [...Array.from({length: TABLES}, (_, i) => i + 1), ...extra];
+  let busy = 0;
+  $("#tables").innerHTML = nums.map(t => {
+    const s = tableState(t); if (s.state !== "free") busy++;
+    return `<button class="tbl ${s.state}" data-t="${t}"><span class="num">${t}</span><span class="lab">${LAB[s.state]}</span>
+      ${s.list.length ? `<span class="amt">${eur(s.total)}</span><span class="since">depuis ${minutes(s.since)}</span>` : ""}</button>`;
+  }).join("");
+  $("#bTables").hidden = !busy; $("#bTables").textContent = busy;
+  if (openTable !== null) renderTableSheet();
+}
+function renderTableSheet(){
+  const t = openTable, s = tableState(t);
+  $("#tableBox").innerHTML = `<div class="oh" style="margin-bottom:12px"><span class="t">Table ${t}</span><span class="st ${s.state === "free" ? "paid" : s.state}">${LAB[s.state]}</span><button id="tClose" style="margin-left:auto">Fermer</button></div>
+    ${s.list.length ? `<div class="cols" style="grid-template-columns:1fr">${s.list.slice().reverse().map(o => orderCard(o, {cancel: true})).join("")}</div>
+      <div class="of" style="margin-top:16px"><span class="tot" style="font-size:1.4rem">Total table : ${eur(s.total)}</span>
+        <button id="tBill">🖨 Imprimer l'addition</button>
+        <button class="blue" id="tPaid">€ Encaissée · libérer la table</button></div>`
+      : `<p class="empty">Aucune commande en cours sur cette table.</p>`}`;
+  $("#tClose").onclick = () => { openTable = null; $("#tableSheet").classList.remove("on"); };
+  if (s.list.length) {
+    $("#tBill").onclick = () => printHtml(billHtml(t, s.list));
+    $("#tPaid").onclick = async (e) => {
+      e.target.disabled = true;
+      await api(`/api/orders/table/${t}/paid`, {method: "POST"});
+      markSeen(s.list.map(o => o.id)); openTable = null; $("#tableSheet").classList.remove("on"); load();
+    };
+  }
+}
+$("#tables").addEventListener("click", (e) => { const b = e.target.closest("[data-t]"); if (!b) return; openTable = +b.dataset.t; renderTableSheet(); $("#tableSheet").classList.add("on"); });
+$("#tableSheet").addEventListener("click", (e) => { if (e.target.id === "tableSheet") { openTable = null; e.currentTarget.classList.remove("on"); } });
+
+/* ---------- actions sur une commande ---------- */
+async function orderAction(e){
+  const b = e.target.closest("[data-a]"); if (!b) return;
+  const card = b.closest(".order"); if (!card) return;
+  const id = +card.dataset.id, o = ORDERS.find(x => x.id === id) || HIST.find(x => x.id === id);
+  if (!o) return;
+  const a = b.dataset.a;
+  if (a === "print") return printOrder(o, 1);
+  if (a === "seen") return markSeen([id]);
+  b.disabled = true;
+  markSeen([id]);
+  await api(`/api/orders/${id}/status`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({status: a})});
+  await load();
+  if (tab === "history") loadHistory();
+}
+$("#list").addEventListener("click", orderAction);
+$("#tableBox").addEventListener("click", orderAction);
+$("#hBody").addEventListener("click", orderAction);
+$("#showDone").onchange = render;
+
+/* ---------- onglet Historique ---------- */
+let HIST = [], HSTATS = null;
+const paris = () => new Intl.DateTimeFormat("en-CA", {timeZone: "Europe/Paris"}).format(new Date());
+function shiftDay(d, n){ const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); }
+async function loadHistory(){
+  const day = $("#hDay").value || paris();
+  $("#hBody").innerHTML = `<p class="empty">Chargement…</p>`;
+  try {
+    const r = await api("/api/orders?day=" + day, {cache: "no-store"}); const j = await r.json(); if (!r.ok) throw new Error(j.error);
+    HIST = j.orders;
+  } catch (e) { $("#hBody").innerHTML = `<p class="empty">Impossible de charger : ${esc(e.message)}</p>`; return; }
+  const ok = HIST.filter(o => o.status !== "cancelled");
+  const total = ok.reduce((n, o) => n + o.total, 0), paid = HIST.filter(o => o.status === "paid").reduce((n, o) => n + o.total, 0);
+  const prod = {};
+  for (const o of ok) for (const l of o.lines) { const p = prod[l.name] ||= {name: l.name, qty: 0, amount: 0}; p.qty += l.qty; p.amount += l.unit * l.qty; }
+  const top = Object.values(prod).sort((a, b) => b.qty - a.qty || b.amount - a.amount);
+  const hours = {}; for (const o of ok) { const h = new Date(o.created_at).toLocaleTimeString("fr-FR", {hour: "2-digit", timeZone: "Europe/Paris"}); hours[h] = (hours[h] || 0) + 1; }
+  const peak = Object.entries(hours).sort((a, b) => b[1] - a[1])[0];
+  HSTATS = {count: ok.length, total, avg: ok.length ? total / ok.length : 0, cancelled: HIST.length - ok.length, top};
+  $("#hBody").innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="k">Chiffre des commandes</div><div class="v">${eur(total)}</div></div>
+      <div class="stat"><div class="k">Déjà encaissé</div><div class="v">${eur(paid)}</div></div>
+      <div class="stat"><div class="k">Commandes</div><div class="v">${ok.length}</div></div>
+      <div class="stat"><div class="k">Panier moyen</div><div class="v">${eur(HSTATS.avg)}</div></div>
+      <div class="stat"><div class="k">Heure la plus chargée</div><div class="v">${peak ? peak[0].replace(/\D/g, "") + " h" : "–"}</div></div>
+      <div class="stat"><div class="k">Annulées</div><div class="v">${HSTATS.cancelled}</div></div>
+    </div>
+    ${top.length ? `<h3>Produits les plus vendus</h3><table class="top"><tr><th>Produit</th><th class="r">Quantité</th><th class="r">Montant</th></tr>
+      ${top.map(p => `<tr><td>${esc(p.name)}</td><td class="r">${p.qty}</td><td class="r">${eur(p.amount)}</td></tr>`).join("")}</table>` : ""}
+    <h3>Toutes les commandes</h3>
+    <div class="cols">${HIST.length ? HIST.map(o => orderCard(o, {reopen: true, cancel: true})).join("") : `<div class="empty">Aucune commande ce jour-là.</div>`}</div>`;
+}
+$("#hDay").onchange = loadHistory;
+$("#hPrev").onclick = () => { $("#hDay").value = shiftDay($("#hDay").value || paris(), -1); loadHistory(); };
+$("#hNext").onclick = () => { $("#hDay").value = shiftDay($("#hDay").value || paris(), 1); loadHistory(); };
+$("#hToday").onclick = () => { $("#hDay").value = paris(); loadHistory(); };
+$("#hPrint").onclick = () => { if (HSTATS) printHtml(reportHtml($("#hDay").value || paris(), HSTATS)); };
+
+/* ---------- onglets ---------- */
+$("#tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-tab]"); if (!b) return;
+  tab = b.dataset.tab;
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("on", s.id === "s-" + tab));
+  if (tab === "history") loadHistory();
+});
+
+/* ---------- chargement ---------- */
+let INFO = {};
+async function loadMenu(){
+  try { const m = await (await fetch("/api/menu", {cache: "no-store"})).json(); TABLES = parseInt(m.ordering && m.ordering.tables) || 10; INFO = m.info || {}; } catch {}
+}
 async function load(){
   try {
     const r = await api("/api/orders", {cache: "no-store"});
     if (r.status === 401) { location.reload(); return; }
     const j = await r.json(); if (!r.ok) throw new Error(j.error);
     const known = new Set(ORDERS.map(o => o.id));
-    const fresh = j.orders.filter(o => !known.has(o.id) && o.status === "new");
     ORDERS = j.orders;
-    if (!firstLoad && fresh.length) { beep(); fresh.forEach(o => { const x = ORDERS.find(y => y.id === o.id); x._flash = true; }); }
-    if (started && $("#autoPrint").checked) ORDERS.filter(o => o.status === "new" && !printed.has(o.id)).reverse().forEach(printOrder);
+    const fresh = firstLoad ? [] : ORDERS.filter(o => !known.has(o.id) && o.status === "new" && !seen.has(o.id));
+    if (started && S.autoPrint) ORDERS.filter(o => o.status === "new" && !printed.has(o.id)).reverse().forEach(o => printOrder(o));
     firstLoad = false;
     $("#live").classList.add("on"); $("#liveTxt").textContent = "En ligne · " + new Date().toLocaleTimeString("fr-FR");
     render();
+    alarmTick(fresh.length > 0);
   } catch (e) {
     $("#live").classList.remove("on"); $("#liveTxt").textContent = "Connexion perdue, nouvel essai…";
   }
 }
-
-$("#list").addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-a]"); if (!b) return;
-  const o = ORDERS.find(x => x.id === +b.closest(".order").dataset.id);
-  if (b.dataset.a === "print") return printOrder(o);
-  b.disabled = true;
-  await api(`/api/orders/${o.id}/status`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({status: b.dataset.a})});
-  load();
-});
-$("#showDone").onchange = render;
 $("#startBtn").onclick = () => {
-  started = true;
-  try { audio = new (window.AudioContext || window.webkitAudioContext)(); beep(); } catch {}
-  // les commandes déjà là ne sont pas réimprimées
-  ORDERS.forEach(o => { if (!printed.has(o.id)) printed.add(o.id); }); ls.set("mado-printed", [...printed].slice(-300).join(","));
-  $("#start").style.display = "none";
+  started = true; unlockAudio(); playSound();
+  // les commandes de plus de 15 min ne sont pas réimprimées au démarrage
+  ORDERS.forEach(o => { if (Date.now() - new Date(o.created_at) > 15 * 60000) printed.add(o.id); }); saveSet("mado-printed", printed);
+  $("#start").style.display = "none"; pills(); render(); alarmTick(true); load();
 };
 
 async function start(){
   $("#login").style.display = "none"; $("#app").style.display = "block";
-  await load(); setInterval(load, 4000);
+  $("#hDay").value = paris();
+  bindSettings();
+  await loadMenu(); await load();
+  setInterval(load, 4000); setInterval(() => alarmTick(), 1000); setInterval(loadMenu, 120000);
 }
 $("#loginForm").onsubmit = async (e) => {
   e.preventDefault(); token = $("#pw").value;

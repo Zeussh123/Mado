@@ -2,7 +2,7 @@
 // Les prix sont recalculés ici à partir du menu, le client ne peut pas les modifier.
 
 const MAX_LINES = 40;
-const STATUSES = ["new", "ready", "done", "cancelled"];
+const STATUSES = ["new", "ready", "done", "paid", "cancelled"];
 
 let schemaReady = false;
 async function ensureSchema(db) {
@@ -106,10 +106,13 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
   // Page Cuisine : liste des commandes du jour
   if (path === "/api/orders" && m === "GET") {
     return withAuth(request, env, async () => {
-      const day = parisNow().date;
-      const { results } = await env.DB.prepare(
-        "SELECT id,num,table_no,status,total,lines,note,created_at,updated_at FROM orders WHERE day=? OR status IN ('new','ready') ORDER BY id DESC LIMIT 200"
-      ).bind(day).all();
+      // ?day=AAAA-MM-JJ pour l'historique ; sinon le jour même + tout ce qui n'est pas encore encaissé
+      const q = new URL(request.url).searchParams.get("day");
+      const day = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? q : parisNow().date;
+      const stmt = q
+        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
+        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
+      const { results } = await stmt.all();
       return json({ orders: results.map((o) => ({ ...o, lines: JSON.parse(o.lines) })) }, 200, { "cache-control": "no-store" });
     });
   }
@@ -121,6 +124,15 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const { status } = await request.json().catch(() => ({}));
       if (!STATUSES.includes(status)) return json({ error: "statut inconnu" }, 400);
       await env.DB.prepare("UPDATE orders SET status=?, updated_at=? WHERE id=?").bind(status, new Date().toISOString(), +mSet[1]).run();
+      return json({ ok: true });
+    });
+  }
+
+  // Plan des tables : encaisser / libérer toutes les commandes servies d'une table
+  const mTable = path.match(/^\/api\/orders\/table\/(\d{1,3})\/paid$/);
+  if (mTable && m === "POST") {
+    return withAuth(request, env, async () => {
+      await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE table_no=? AND status IN ('new','ready','done')").bind(new Date().toISOString(), mTable[1]).run();
       return json({ ok: true });
     });
   }

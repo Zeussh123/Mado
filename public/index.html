@@ -585,7 +585,7 @@ async function sendOrder(btn){
     err.textContent = e.message || ui("sendError");
   }
 }
-const STATUS_TXT = {new: "stNew", ready: "stReady", done: "stDone", cancelled: "stCancelled"};
+const STATUS_TXT = {new: "stNew", ready: "stReady", done: "stDone", paid: "stDone", cancelled: "stCancelled"};
 function drawSent(fresh){
   const o = ORDERS[0]; if (!o) return closeSheet();
   $("#shScroll").innerHTML = `<div class="sent ${fresh ? "fresh" : ""}">
