@@ -505,6 +505,12 @@
    "en": "Table ordering is closed at this time. You can order at the counter.",
    "tr": "Şu anda masadan sipariş kapalı. Kasadan sipariş verebilirsiniz.",
    "de": "Tischbestellungen sind zu dieser Zeit geschlossen. Sie können an der Theke bestellen."
+  },
+  "tbSplit": {
+   "fr": "Chacun paie sa part",
+   "en": "Everyone pays their own share",
+   "tr": "Herkes kendi payını öder",
+   "de": "Jeder zahlt seinen Anteil"
   }
  },
  "categories": [

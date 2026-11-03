@@ -79,6 +79,8 @@ label.sw input{width:20px;height:20px;accent-color:var(--accent)}
 .tbl .lab{font-size:.85rem;font-weight:800}
 .tbl .amt{font-size:1.05rem;font-weight:900}
 .tbl .older{font-size:.75rem;font-weight:800;color:#ffd38a}
+.per{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.per span{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
 .addition{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:14px}
 .addition.old{border-style:dashed;opacity:.85}
 .ah{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
@@ -393,6 +395,19 @@ function reportHtml(day, st){
     <table>${st.top.map(p => row(`${p.qty} x ${esc(p.name)}`, eur(p.amount))).join("")}</table><div class="sep"></div>
     <table class="tot">${row("TOTAL", eur(st.total))}</table>`;
 }
+// Reçus séparés : un ticket par personne (prénom saisi dans le panier commun, sinon « Invité 1, 2… »)
+function people(orders){
+  const by = {};
+  for (const o of orders) for (const l of o.lines) { const w = l.who || "Table"; (by[w] ||= []).push(l); }
+  return Object.entries(by).map(([who, lines]) => ({who, lines, total: lines.reduce((n, l) => n + l.unit * l.qty, 0)}));
+}
+function receiptHtml(t, p){
+  return `<div class="resto">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big" style="font-size:20pt">TABLE ${esc(t)}</div>
+    <div class="c" style="font-size:14pt;font-weight:900">${esc(p.who.toUpperCase())}</div>
+    <div class="c">Reçu · ${new Date().toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"})}</div><div class="sep"></div>
+    <table>${p.lines.map(l => row(`${l.qty} x ${esc(l.name)}`, eur(l.unit * l.qty))).join("")}</table><div class="sep"></div>
+    <table class="tot">${row("TOTAL TTC", eur(p.total))}</table><div class="c" style="margin-top:3mm">Merci de votre visite !</div>`;
+}
 function printHtml(html, copies = 1){ for (let i = 0; i < copies; i++) queue.push(html); runQueue(); }
 function printOrder(o, copies = S.copies){
   printHtml(ticketHtml(o), copies);
@@ -409,7 +424,8 @@ function orderCard(o, opts = {}){
   const isNew = o.status === "new" && !seen.has(o.id);
   return `<div class="order ${o.status} ${isNew && started ? "unseen" : ""}" data-id="${o.id}">
     <div class="oh"><span class="t">${isEmp(o.table_no) ? "🛍 " : ""}${esc(tName(o.table_no))}</span><span class="n">n° ${o.num}</span><span class="st ${o.status}">${STATUS[o.status] || o.status}</span><span class="time">${hm(o.created_at)}</span></div>
-    ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${detailsHtml(l)}</div>`).join("")}
+    ${o.split ? `<div class="note">💳 Paiement séparé</div>` : ""}
+    ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.who ? ` <small style="color:var(--muted)">· ${esc(l.who)}</small>` : ""}${detailsHtml(l)}</div>`).join("")}
     ${o.note ? `<div class="note">📝 ${esc(o.note)}</div>` : ""}
     <div class="of"><span class="tot">${eur(o.total)}</span>
       <button data-a="print">🖨</button>
@@ -474,10 +490,13 @@ function renderTableSheet(){
   $("#tableBox").innerHTML = `<div class="oh" style="margin-bottom:12px"><span class="t">Table ${t}</span><span class="st ${s.state === "free" ? "paid" : s.state}">${LAB[s.state]}</span><button id="tClose" style="margin-left:auto">Fermer</button></div>
     ${n ? s.groups.map((g, i) => `<div class="addition ${i ? "old" : ""}" data-g="${g.g}">
         <div class="ah"><b>${i === 0 ? (n > 1 ? "Addition actuelle" : "Addition") : "Addition d'avant"}</b><span class="st ${g.state}">${LAB[g.state]}</span><span class="time">depuis ${hm(g.since)}</span></div>
+        ${g.orders.some(o => o.split) ? `<div class="note">💳 Les clients ont demandé à payer chacun leur part</div>` : ""}
+        ${people(g.orders).length > 1 ? `<div class="per">${people(g.orders).map(p => `<span><b>${esc(p.who)}</b> ${eur(p.total)}</span>`).join("")}</div>` : ""}
         <div class="cols" style="grid-template-columns:1fr">${g.orders.slice().reverse().map((o, k) => orderCard(o, {cancel: true, split: g.orders.length > 1 && o.id !== g.orders[0].id})).join("")}</div>
         <div class="of" style="margin-top:12px"><span class="tot" style="font-size:1.3rem">Total : ${eur(g.total)}</span>
           ${s.groups[i + 1] ? `<button data-ga="merge" title="Même client qui a recommandé">⤵ Regrouper avec l'addition d'avant</button>` : ""}
           <button data-ga="bill">🖨 Imprimer l'addition</button>
+          ${people(g.orders).length > 1 ? `<button data-ga="receipts">🖨 Reçus séparés (${people(g.orders).length})</button>` : ""}
           <button class="blue" data-ga="paid">€ Encaissée</button></div></div>`).join("")
       : `<p class="empty">Aucune commande en cours sur cette table.</p>`}`;
   $("#tClose").onclick = () => { openTable = null; $("#tableSheet").classList.remove("on"); };
@@ -486,6 +505,7 @@ $("#tableBox").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-ga]"); if (!b) return;
   const s = tableState(openTable), i = s.groups.findIndex(x => x.g === +b.closest(".addition").dataset.g), g = s.groups[i]; if (!g) return;
   if (b.dataset.ga === "bill") return printHtml(billHtml(openTable, g.orders));
+  if (b.dataset.ga === "receipts") return people(g.orders).forEach(p => printHtml(receiptHtml(openTable, p)));
   b.disabled = true;
   if (b.dataset.ga === "merge") await api(`/api/orders/${g.orders[0].id}/merge`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({into: s.groups[i + 1].g})});
   if (b.dataset.ga === "paid") { await api(`/api/orders/group/${g.g}/paid`, {method: "POST"}); markSeen(g.orders.map(o => o.id)); if (s.groups.length === 1) { openTable = null; $("#tableSheet").classList.remove("on"); } }

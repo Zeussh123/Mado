@@ -13,6 +13,8 @@ async function ensureSchema(db) {
   await db.exec("CREATE INDEX IF NOT EXISTS orders_day ON orders(day)");
   // « grp » = numéro d'addition : les commandes d'un même client à une table partagent le même grp
   try { await db.exec("ALTER TABLE orders ADD COLUMN grp INTEGER"); } catch {}
+  // split = les clients de la table ont demandé à payer chacun sa part
+  try { await db.exec("ALTER TABLE orders ADD COLUMN split INTEGER"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS table_baskets (table_no TEXT PRIMARY KEY, data TEXT NOT NULL, version INTEGER NOT NULL, updated_at TEXT NOT NULL)");
   schemaReady = true;
 }
@@ -59,10 +61,12 @@ function priceLine(menu, line, promos) {
   }
   const qty = Math.max(1, Math.min(20, parseInt(line.qty) || 1));
   unit = Math.round(unit * 100) / 100;
-  return { id: item.id, name: item.name.fr, qty, unit, details, cat: cat.name.fr, catOrder };
+  const out = { id: item.id, name: item.name.fr, qty, unit, details, cat: cat.name.fr, catOrder };
+  if (line.who) out.who = String(line.who).slice(0, 24);   // qui a commandé (panier commun), pour les reçus séparés
+  return out;
 }
 
-async function createOrder(env, menu, table, rawLines, rawNote) {
+async function createOrder(env, menu, table, rawLines, rawNote, split) {
   const lines = (Array.isArray(rawLines) ? rawLines : []).slice(0, MAX_LINES);
   const now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
   const priced = lines.map((l) => priceLine(menu, l, promos)).filter(Boolean);
@@ -75,6 +79,7 @@ async function createOrder(env, menu, table, rawLines, rawNote) {
     "INSERT INTO orders (day,num,table_no,status,total,lines,note,token,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)"
   ).bind(now.date, row.n, table, "new", total, JSON.stringify(priced), note, token, iso, iso).run();
   const id = res.meta.last_row_id;
+  if (split) await env.DB.prepare("UPDATE orders SET split=1 WHERE id=?").bind(id).run();
   // même addition que la commande précédente de la table seulement si elle n'est pas encore servie (mêmes clients) ;
   // sinon c'est une nouvelle addition (nouveau client), regroupable à la main sur le PC
   const prev = table === "EMP" ? null : await env.DB.prepare("SELECT COALESCE(grp,id) AS g FROM orders WHERE table_no=? AND id<? AND status IN ('new','ready') ORDER BY id DESC LIMIT 1").bind(table, id).first();
@@ -160,7 +165,10 @@ async function handleBasket(request, env, table, action, { json, menuText, check
     if (action === "send") {
       if (!orderingOpen(menu)) return { error: "hours", status: 403 };
       if (!d.lines.length) return { error: "Commande vide", status: 400 };
-      const o = await createOrder(env, menu, table, d.lines, body.note);
+      // prénom de chacun sur ses plats (« Invité 1, 2… » pour ceux qui n'en ont pas mis)
+      let gi = 0; const names = {};
+      for (const x of d.members) if (d.lines.some((l) => l.m === x.id)) names[x.id] = x.name || `Invité ${++gi}`;
+      const o = await createOrder(env, menu, table, d.lines.map((l) => ({ ...l, who: names[l.m] })), body.note, !!body.split);
       if (!o) return { error: "Commande vide", status: 400 };
       d.last = { id: o.id, num: o.num, token: o.token, total: o.total, by: m.name, at: now, n: d.lines.reduce((n, l) => n + l.qty, 0) };
       d.lines = []; d.members.forEach((x) => (x.ready = false));
@@ -240,8 +248,8 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const q = new URL(request.url).searchParams.get("day");
       const day = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? q : parisNow().date;
       const stmt = q
-        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
-        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
+        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp,split FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
+        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp,split FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
       const { results } = await stmt.all();
       return json({ orders: results.map((o) => ({ ...o, lines: JSON.parse(o.lines) })) }, 200, { "cache-control": "no-store" });
     });
