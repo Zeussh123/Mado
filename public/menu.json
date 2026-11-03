@@ -183,7 +183,8 @@
      "hidden": false,
      "photo": "",
      "options": [
-      "viande",
+      "viande-tacos",
+      "crudites",
       "sauces",
       "sauce-frites"
      ]
@@ -232,8 +233,6 @@
      "hidden": false,
      "photo": "",
      "options": [
-      "crudites",
-      "sauces",
       "sauce-frites"
      ]
     },
@@ -281,6 +280,7 @@
      "hidden": false,
      "photo": "",
      "options": [
+      "viande",
       "crudites",
       "sauces",
       "sauce-frites"
@@ -305,7 +305,8 @@
      "hidden": false,
      "photo": "",
      "options": [
-      "viande",
+      "viande-tacos",
+      "crudites",
       "sauces",
       "sauce-frites"
      ]
@@ -497,7 +498,8 @@
       "de": ""
      },
      "options": [
-      "viande",
+      "viande-tacos",
+      "crudites",
       "sauces"
      ]
     },
@@ -566,6 +568,7 @@
       "de": ""
      },
      "options": [
+      "viande",
       "crudites",
       "sauces"
      ]
@@ -589,7 +592,8 @@
       "de": ""
      },
      "options": [
-      "viande",
+      "viande-tacos",
+      "crudites",
       "sauces"
      ]
     },
@@ -652,15 +656,12 @@
      "hidden": false,
      "photo": "",
      "description": {
-      "fr": "",
-      "en": "",
-      "tr": "",
-      "de": ""
+      "fr": "Salade, tomate, oignons, sauce burger, cheddar",
+      "en": "Lettuce, tomato, onions, burger sauce, cheddar",
+      "tr": "Marul, domates, soğan, burger sos, çedar",
+      "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar"
      },
-     "options": [
-      "crudites",
-      "sauces"
-     ]
+     "options": []
     },
     {
      "name": {
@@ -675,15 +676,12 @@
      "hidden": false,
      "photo": "",
      "description": {
-      "fr": "",
-      "en": "",
-      "tr": "",
-      "de": ""
+      "fr": "Salade, tomate, oignons, sauce burger, cheddar",
+      "en": "Lettuce, tomato, onions, burger sauce, cheddar",
+      "tr": "Marul, domates, soğan, burger sos, çedar",
+      "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar"
      },
-     "options": [
-      "crudites",
-      "sauces"
-     ]
+     "options": []
     },
     {
      "name": {
@@ -2224,10 +2222,10 @@
   {
    "id": "viande",
    "name": {
-    "fr": "Viande",
-    "en": "Meat",
-    "tr": "Et",
-    "de": "Fleisch"
+    "fr": "Viande kebab",
+    "en": "Kebab meat",
+    "tr": "Döner eti",
+    "de": "Döner-Fleisch"
    },
    "multi": false,
    "max": 1,
@@ -2235,10 +2233,10 @@
     {
      "id": "boeuf",
      "name": {
-      "fr": "Bœuf",
-      "en": "Beef",
-      "tr": "Dana",
-      "de": "Rind"
+      "fr": "Kebab bœuf",
+      "en": "Beef kebab",
+      "tr": "Dana döner",
+      "de": "Rind-Döner"
      },
      "icon": "boeuf",
      "photo": "",
@@ -2248,10 +2246,10 @@
     {
      "id": "poulet",
      "name": {
-      "fr": "Poulet",
-      "en": "Chicken",
-      "tr": "Tavuk",
-      "de": "Hähnchen"
+      "fr": "Kebab poulet",
+      "en": "Chicken kebab",
+      "tr": "Tavuk döner",
+      "de": "Hähnchen-Döner"
      },
      "icon": "poulet",
      "photo": "",
@@ -2261,12 +2259,103 @@
     {
      "id": "mixte",
      "name": {
-      "fr": "Mixte",
-      "en": "Mixed",
-      "tr": "Karışık",
-      "de": "Gemischt"
+      "fr": "Kebab mixte",
+      "en": "Mixed kebab",
+      "tr": "Karışık döner",
+      "de": "Gemischter Döner"
      },
      "icon": "mixte",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    }
+   ]
+  },
+  {
+   "id": "viande-tacos",
+   "name": {
+    "fr": "Viande",
+    "en": "Meat",
+    "tr": "Et",
+    "de": "Fleisch"
+   },
+   "multi": false,
+   "max": 1,
+   "choices": [
+    {
+     "id": "t-boeuf",
+     "name": {
+      "fr": "Kebab bœuf",
+      "en": "Beef kebab",
+      "tr": "Dana döner",
+      "de": "Rind-Döner"
+     },
+     "icon": "boeuf",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "t-poulet",
+     "name": {
+      "fr": "Kebab poulet",
+      "en": "Chicken kebab",
+      "tr": "Tavuk döner",
+      "de": "Hähnchen-Döner"
+     },
+     "icon": "poulet",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "t-mixte",
+     "name": {
+      "fr": "Kebab mixte",
+      "en": "Mixed kebab",
+      "tr": "Karışık döner",
+      "de": "Gemischter Döner"
+     },
+     "icon": "mixte",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "t-escalope",
+     "name": {
+      "fr": "Escalope de poulet",
+      "en": "Chicken escalope",
+      "tr": "Tavuk şinitzel",
+      "de": "Hähnchenschnitzel"
+     },
+     "icon": "escalope",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "t-tenders",
+     "name": {
+      "fr": "Tenders",
+      "en": "Tenders",
+      "tr": "Tenders",
+      "de": "Tenders"
+     },
+     "icon": "tenders",
+     "photo": "",
+     "price": 0,
+     "hidden": false
+    },
+    {
+     "id": "t-nuggets",
+     "name": {
+      "fr": "Nuggets",
+      "en": "Nuggets",
+      "tr": "Nuggets",
+      "de": "Nuggets"
+     },
+     "icon": "nuggets",
      "photo": "",
      "price": 0,
      "hidden": false

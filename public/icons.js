@@ -36,6 +36,24 @@
       <path d="M38 34 L30 46" stroke="#f4ead8" stroke-width="5" stroke-linecap="round"/>
       <circle cx="28" cy="45" r="3.5" fill="#f4ead8"/><circle cx="32" cy="49" r="3.5" fill="#f4ead8"/>`),
 
+    escalope: svg(`
+      <ellipse cx="32" cy="54" rx="22" ry="4" fill="#000" opacity=".18"/>
+      <path d="M10 34 C8 22 22 14 34 16 C48 16 58 26 54 38 C50 48 30 52 18 46 C12 43 10 39 10 34 Z" fill="#d98b3a"/>
+      <path d="M14 34 C13 25 24 19 34 20 C45 20 52 28 49 37 C46 44 30 47 20 42 C16 40 14 37 14 34 Z" fill="#e9a54f"/>
+      <g fill="#c4762b"><circle cx="24" cy="28" r="1.6"/><circle cx="33" cy="25" r="1.4"/><circle cx="42" cy="30" r="1.6"/><circle cx="28" cy="38" r="1.4"/><circle cx="39" cy="39" r="1.5"/></g>`),
+    tenders: svg(`
+      <ellipse cx="32" cy="55" rx="22" ry="4" fill="#000" opacity=".18"/>
+      <path d="M8 40 C6 32 20 26 30 30 C34 32 34 40 30 42 C22 46 10 46 8 40 Z" fill="#e0a052" transform="rotate(-18 20 37)"/>
+      <path d="M28 32 C26 22 42 16 52 20 C58 23 56 31 52 33 C44 37 30 38 28 32 Z" fill="#d98b3a" transform="rotate(-8 42 27)"/>
+      <path d="M22 46 C22 40 36 38 46 42 C52 45 50 51 46 52 C38 54 24 52 22 46 Z" fill="#eab060"/>
+      <g fill="#c4762b"><circle cx="16" cy="38" r="1.3"/><circle cx="40" cy="25" r="1.3"/><circle cx="47" cy="27" r="1.2"/><circle cx="32" cy="46" r="1.3"/><circle cx="40" cy="47" r="1.2"/></g>`),
+    nuggets: svg(`
+      <ellipse cx="32" cy="55" rx="22" ry="4" fill="#000" opacity=".18"/>
+      <path d="M8 40 C6 30 16 26 24 30 C30 33 30 44 24 47 C17 50 10 47 8 40 Z" fill="#e0a052"/>
+      <path d="M28 26 C28 16 40 12 47 18 C53 23 50 34 42 35 C34 36 28 33 28 26 Z" fill="#d98b3a"/>
+      <path d="M32 44 C32 36 44 34 50 39 C56 44 52 53 44 53 C37 53 32 50 32 44 Z" fill="#eab060"/>
+      <g fill="#c4762b"><circle cx="15" cy="36" r="1.3"/><circle cx="20" cy="42" r="1.2"/><circle cx="38" cy="22" r="1.3"/><circle cx="44" cy="27" r="1.2"/><circle cx="41" cy="44" r="1.3"/><circle cx="46" cy="48" r="1.2"/></g>`),
+
     // ---------- Crudités ----------
     tout: svg(`
       <ellipse cx="32" cy="54" rx="22" ry="4" fill="#000" opacity=".18"/>
