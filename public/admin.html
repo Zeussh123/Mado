@@ -172,6 +172,15 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <b>📺 Écran TV</b>
         <p class="small">Ouvrez <a href="/ecran" target="_blank" style="color:var(--accent)">/ecran</a> en plein écran (touche F11) sur la TV du restaurant. Les promos en cours s'affichent en grand avec un visuel animé et le temps restant, puis la carte défile. Tout se met à jour seul quand vous enregistrez une promo.</p>
         <p class="small">Options : <code>/ecran?promos=1</code> (seulement les promos) · <code>/ecran?lang=en</code> (en anglais) · <code>/ecran?duree=15</code> (15 secondes par écran).</p>
+        <div class="lbl">Style de l'écran</div>
+        <div id="scrThemes" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        <div class="lbl">Arrière-plan personnalisé (photo, idéalement 1920 × 1080)</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div id="scrBgPrev" style="width:160px;height:90px;border-radius:8px;background:#222 center/cover;border:1px solid #444"></div>
+          <button id="scrBgPick" type="button">Choisir une image</button>
+          <button id="scrBgDel" type="button" class="danger">Retirer</button>
+        </div>
+        <p class="small">L'image remplace le fond du style choisi (la colonne de gauche et les couleurs restent). Pensez à enregistrer.</p>
       </div>
     </section>
 
@@ -398,7 +407,25 @@ function itemHtml(c, ci, it, ii){
   </div>`;
 }
 
+const SCR_THEMES = [["nuit","🌙 Nuit"],["ardoise","🖍️ Ardoise"],["braise","🔥 Braise"],["neon","💡 Néon"],["prestige","✨ Prestige"]];
+function renderScreen(){
+  const sc = menu.screen || {};
+  $("#scrThemes").innerHTML = SCR_THEMES.map(([id, label]) => `<button type="button" data-scr="${id}" style="${(sc.theme || "nuit") === id ? "outline:3px solid var(--accent)" : ""}">${label}</button> <a href="/ecran?theme=${id}" target="_blank" class="small" style="align-self:center;margin-right:8px">aperçu</a>`).join("");
+  $("#scrBgPrev").style.backgroundImage = sc.bg ? `url("${sc.bg}")` : "";
+  $("#scrBgDel").style.display = sc.bg ? "" : "none";
+}
+$("#scrThemes").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-scr]"); if (!b) return;
+  menu.screen = {...(menu.screen || {}), theme: b.dataset.scr}; renderScreen(); updateStatus();
+});
+$("#scrBgDel").onclick = () => { menu.screen = {...(menu.screen || {}), bg: ""}; renderScreen(); updateStatus(); };
+$("#scrBgPick").onclick = () => {
+  const holder = {photo: ""};
+  pickPhoto(holder, $("#scrBgPrev"), () => { menu.screen = {...(menu.screen || {}), bg: holder.photo}; renderScreen(); }, 1920);
+};
+
 function renderInfo(){
+  renderScreen();
   const info = menu.info || (menu.info = {address:"",phone:"",hours:blankL()});
   $("#infoAddress").value = info.address || "";
   $("#infoPhone").value = info.phone || "";
@@ -689,13 +716,13 @@ $("#addGroup").onclick = async () => {
 };
 
 /* ---------- Photos ---------- */
-function pickPhoto(it, phEl, after = render){
+function pickPhoto(it, phEl, after = render, max = 900){
   const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
   inp.onchange = async () => {
     const f = inp.files[0]; if (!f) return;
     phEl.classList.add("busy");
     try {
-      const blob = await resize(f, 900, 0.82);
+      const blob = await resize(f, max, 0.82);
       if (DEMO) {
         it.photo = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(blob); });
       } else {
