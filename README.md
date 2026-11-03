@@ -23,5 +23,12 @@
 Ensuite, chaque modification poussée sur GitHub est mise en ligne automatiquement.
 Les prix, photos et promos se changent depuis `/admin`, sans toucher au code.
 
+## Commandes à table et impression
+- Admin → Infos du restaurant : cocher « Accepter les commandes » et indiquer le nombre de tables.
+- Admin → QR code : « Imprimer les QR codes des tables » (un QR par table, adresse `/?t=N`).
+- Sur l'ordinateur relié à l'imprimante ticket (ZJ-8250, 80 mm) : ouvrir `/cuisine`, se connecter, toucher « Démarrer ».
+- Impression sans fenêtre : lancer Chrome avec l'option `--kiosk-printing` et mettre l'imprimante ticket par défaut.
+- Les commandes sont stockées dans la base D1 `mado-commandes` (créée automatiquement au déploiement).
+
 ## Tester sur son ordinateur
 Créer `.dev.vars` avec `ADMIN_PASSWORD=motdepasse`, puis `npx wrangler dev`.

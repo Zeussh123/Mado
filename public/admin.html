@@ -97,6 +97,19 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px;font-size:.88rem}
 .chip button{border:0;background:transparent;padding:2px 6px;color:var(--muted)}
+#qrSheet{display:none}
+@media print{
+  @page{size:A4;margin:10mm}
+  body{background:#fff!important}
+  body > *:not(#qrSheet){display:none!important}
+  #qrSheet{display:grid!important;grid-template-columns:repeat(3,1fr);gap:6mm}
+  .qcard{border:1px dashed #999;border-radius:4mm;padding:4mm;text-align:center;color:#111;break-inside:avoid;font-family:Arial,sans-serif}
+  .qcard img.lg{height:12mm;margin:0 auto 2mm}
+  .qcard .qr{display:flex;justify-content:center}
+  .qcard .qr img,.qcard .qr canvas{width:42mm!important;height:42mm!important}
+  .qcard .tn{font-size:16pt;font-weight:900;margin-top:2mm}
+  .qcard .tx{font-size:9pt}
+}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#333;padding:10px 16px;border-radius:10px;z-index:50;display:none;max-width:90vw}
 </style>
 </head>
@@ -158,6 +171,12 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <div class="grid4" id="infoHours"></div>
         <p class="small">Ces infos s'affichent en bas du menu.</p>
       </div>
+      <div class="panel">
+        <b>Commandes depuis les tables</b>
+        <div class="toggles"><label><input type="checkbox" id="ordEnabled"> Accepter les commandes envoyées depuis les tables</label></div>
+        <div class="lbl">Nombre de tables</div><input id="ordTables" inputmode="numeric" style="max-width:140px">
+        <p class="small">Les commandes arrivent sur la page <a href="cuisine" target="_blank" style="color:var(--accent)">Cuisine</a> (à ouvrir sur l'ordinateur relié à l'imprimante). Décochez pour couper les commandes, par exemple quand c'est fermé : le client verra « montrez cet écran au comptoir ».</p>
+      </div>
     </section>
 
     <section id="tab-qr" style="display:none">
@@ -167,6 +186,11 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <input id="qrUrl">
         <div style="margin:16px 0"><div id="qrbox"></div></div>
         <div class="actions"><button class="primary" id="qrDl" type="button">Télécharger le QR code (PNG)</button></div>
+      </div>
+      <div class="panel">
+        <b>QR codes des tables</b>
+        <p class="small">Un QR code par table : le client qui le scanne peut envoyer sa commande en cuisine avec le bon numéro de table. Imprimez la planche, découpez et collez sur chaque table.</p>
+        <div class="actions"><button class="primary" id="qrTables" type="button">Imprimer les QR codes des tables</button></div>
       </div>
     </section>
   </div>
@@ -180,6 +204,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<div id="qrSheet"></div>
 <div id="modal" hidden><div class="mbox"><p id="mMsg"></p><input id="mInput" hidden><div class="actions" style="justify-content:flex-end"><button id="mNo" type="button">Annuler</button><button id="mYes" class="primary" type="button">OK</button></div></div></div>
 
 <script src="vendor/qrcode.min.js"></script>
@@ -223,6 +248,7 @@ async function withDefaults(m){
     m.optionGroups.push(...added);
     const addedIds = new Set(added.map(g => g.id));
     m.ui = {...def.ui, ...m.ui};
+    if (m.ordering === undefined) m.ordering = def.ordering;
     const di = {}, dc = {};
     for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
     for (const c of m.categories) {
@@ -342,6 +368,8 @@ function renderInfo(){
   $("#infoAddress").value = info.address || "";
   $("#infoPhone").value = info.phone || "";
   $("#infoHours").innerHTML = LANGS.map(l=>`<input data-hl="${l}" placeholder="${LNAME[l]}" value="${esc((info.hours||{})[l])}">`).join("");
+  const ord = menu.ordering || (menu.ordering = {enabled:false, tables:10});
+  $("#ordEnabled").checked = !!ord.enabled; $("#ordTables").value = ord.tables || "";
 }
 
 function dirty(){ return JSON.stringify(menu) !== saved; }
@@ -432,6 +460,8 @@ $("#tab-info").addEventListener("input", (e) => {
   if (e.target.id === "infoAddress") info.address = e.target.value;
   else if (e.target.id === "infoPhone") info.phone = e.target.value;
   else if (e.target.dataset.hl) { info.hours = info.hours || blankL(); info.hours[e.target.dataset.hl] = e.target.value; }
+  else if (e.target.id === "ordEnabled") menu.ordering.enabled = e.target.checked;
+  else if (e.target.id === "ordTables") menu.ordering.tables = Math.max(0, Math.min(200, parseInt(e.target.value) || 0));
   updateStatus();
 });
 
@@ -669,6 +699,19 @@ $("#qrDl").onclick = () => {
   const g = out.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0,0,out.width,out.height); g.drawImage(cv, pad, pad);
   g.fillStyle = "#1c1c1c"; g.font = "bold 22px Arial"; g.textAlign = "center"; g.fillText("Menu · Mado", out.width/2, out.height - 28);
   const a = document.createElement("a"); a.download = "qr-menu-mado.png"; a.href = out.toDataURL("image/png"); a.click();
+};
+
+$("#qrTables").onclick = () => {
+  const n = (menu.ordering && menu.ordering.tables) || 0;
+  if (!n) { toast("Indiquez d'abord le nombre de tables (onglet Infos du restaurant)."); return; }
+  if (!window.QRCode) { toast("Générateur de QR indisponible."); return; }
+  const base = ($("#qrUrl").value || location.origin + "/").replace(/\?.*$/, "");
+  const sheet = $("#qrSheet"); sheet.innerHTML = "";
+  for (let i = 1; i <= n; i++) {
+    sheet.insertAdjacentHTML("beforeend", `<div class="qcard"><img class="lg" src="img/logo.png" alt=""><div class="qr" id="q${i}"></div><div class="tn">Table ${i}</div><div class="tx">Scannez pour voir le menu et commander</div></div>`);
+    new QRCode(document.getElementById("q" + i), {text: base + "?t=" + i, width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M});
+  }
+  setTimeout(() => window.print(), 400);
 };
 
 /* ---------- Démarrage ---------- */

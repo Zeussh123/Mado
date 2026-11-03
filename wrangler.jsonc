@@ -4,5 +4,7 @@
   "compatibility_date": "2025-09-01",
   "assets": { "directory": "./public", "binding": "ASSETS" },
   // Pas d'id : Cloudflare crée l'espace KV automatiquement au premier déploiement
-  "kv_namespaces": [{ "binding": "MADO" }]
+  "kv_namespaces": [{ "binding": "MADO" }],
+  // Base des commandes à table : créée automatiquement au premier déploiement
+  "d1_databases": [{ "binding": "DB", "database_name": "mado-commandes" }]
 }

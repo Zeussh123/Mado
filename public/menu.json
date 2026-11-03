@@ -235,6 +235,90 @@
    "en": "Swipe an item left or right to remove it.",
    "tr": "Kaldırmak için ürünü sola veya sağa kaydırın.",
    "de": "Zum Entfernen einen Artikel nach links oder rechts wischen."
+  },
+  "table": {
+   "fr": "Table",
+   "en": "Table",
+   "tr": "Masa",
+   "de": "Tisch"
+  },
+  "sendOrder": {
+   "fr": "Envoyer la commande",
+   "en": "Send my order",
+   "tr": "Siparişi gönder",
+   "de": "Bestellung senden"
+  },
+  "notePh": {
+   "fr": "Une remarque ? (sans oignons, allergie…)",
+   "en": "Any note? (no onions, allergy…)",
+   "tr": "Not ekleyin (soğansız, alerji…)",
+   "de": "Anmerkung? (ohne Zwiebeln, Allergie…)"
+  },
+  "sending": {
+   "fr": "Envoi…",
+   "en": "Sending…",
+   "tr": "Gönderiliyor…",
+   "de": "Wird gesendet…"
+  },
+  "orderSent": {
+   "fr": "Commande envoyée !",
+   "en": "Order sent!",
+   "tr": "Sipariş gönderildi!",
+   "de": "Bestellung gesendet!"
+  },
+  "orderNum": {
+   "fr": "Commande n° {n} · Table {t}",
+   "en": "Order #{n} · Table {t}",
+   "tr": "Sipariş no {n} · Masa {t}",
+   "de": "Bestellung Nr. {n} · Tisch {t}"
+  },
+  "stNew": {
+   "fr": "En préparation…",
+   "en": "Being prepared…",
+   "tr": "Hazırlanıyor…",
+   "de": "Wird zubereitet…"
+  },
+  "stReady": {
+   "fr": "C'est prêt, on vous l'apporte !",
+   "en": "Ready, we're bringing it to you!",
+   "tr": "Hazır, masanıza getiriyoruz!",
+   "de": "Fertig, wir bringen es Ihnen!"
+  },
+  "stDone": {
+   "fr": "Bon appétit !",
+   "en": "Enjoy your meal!",
+   "tr": "Afiyet olsun!",
+   "de": "Guten Appetit!"
+  },
+  "stCancelled": {
+   "fr": "Commande annulée, voyez avec l'équipe.",
+   "en": "Order cancelled, please ask our staff.",
+   "tr": "Sipariş iptal edildi, lütfen personele danışın.",
+   "de": "Bestellung storniert, bitte fragen Sie das Personal."
+  },
+  "payAtCounter": {
+   "fr": "Le paiement se fait au comptoir.",
+   "en": "Payment is made at the counter.",
+   "tr": "Ödeme kasada yapılır.",
+   "de": "Bezahlt wird an der Theke."
+  },
+  "orderAgain": {
+   "fr": "Commander autre chose",
+   "en": "Order something else",
+   "tr": "Başka bir şey sipariş et",
+   "de": "Noch etwas bestellen"
+  },
+  "sendError": {
+   "fr": "La commande n'est pas partie. Réessayez ou appelez l'équipe.",
+   "en": "The order was not sent. Try again or call our staff.",
+   "tr": "Sipariş gönderilemedi. Tekrar deneyin veya personeli çağırın.",
+   "de": "Die Bestellung wurde nicht gesendet. Bitte erneut versuchen oder Personal rufen."
+  },
+  "closedNow": {
+   "fr": "Les commandes depuis la table sont fermées pour le moment. Montrez cet écran au comptoir.",
+   "en": "Table ordering is closed right now. Show this screen at the counter.",
+   "tr": "Masadan sipariş şu anda kapalı. Bu ekranı kasada gösterin.",
+   "de": "Bestellen am Tisch ist gerade geschlossen. Zeigen Sie diesen Bildschirm an der Theke."
   }
  },
  "categories": [
@@ -3450,5 +3534,9 @@
    ]
   }
  ],
- "schema": 2
+ "schema": 2,
+ "ordering": {
+  "enabled": false,
+  "tables": 10
+ }
 }

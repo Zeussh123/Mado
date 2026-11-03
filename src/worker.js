@@ -3,6 +3,8 @@
 // - stocke le menu (JSON) et les photos dans le namespace KV "MADO"
 // - protège les modifications par le mot de passe ADMIN_PASSWORD (secret Cloudflare)
 
+import { handleOrders } from "./orders.js";
+
 const MENU_KEY = "menu";
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
 
@@ -19,6 +21,8 @@ export default {
       if (path.startsWith("/api/photo/") && request.method === "DELETE")
         return withAuth(request, env, () => deletePhoto(path.slice(11), env));
       if (path.startsWith("/photos/") && request.method === "GET") return getPhoto(path.slice(8), env);
+      if (path.startsWith("/api/orders")) return handleOrders(request, env, path, { withAuth, json, menuText });
+      if (path === "/cuisine") return env.ASSETS.fetch(new Request(new URL("/cuisine.html", url), request));
       if (path === "/admin") return env.ASSETS.fetch(new Request(new URL("/admin.html", url), request));
     } catch (e) {
       return json({ error: String(e && e.message || e) }, 500);
@@ -34,7 +38,7 @@ function json(data, status = 200, extra = {}) {
   });
 }
 
-async function withAuth(request, env, fn) {
+export async function withAuth(request, env, fn) {
   const expected = env.ADMIN_PASSWORD;
   if (!expected) return json({ error: "ADMIN_PASSWORD non configuré" }, 500);
   const given = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
@@ -58,6 +62,14 @@ async function safeEqual(a, b) {
 }
 
 async function getMenu(request, env) {
+  const body = await menuText(request, env);
+  return new Response(body, {
+    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+  });
+}
+
+// Menu courant (enregistré dans KV, complété avec les nouveautés par défaut)
+export async function menuText(request, env) {
   let body = await env.MADO.get(MENU_KEY);
   const loadDefault = async () => (await env.ASSETS.fetch(new Request(new URL("/menu.json", request.url)))).text();
   if (!body) {
@@ -72,6 +84,7 @@ async function getMenu(request, env) {
     saved.optionGroups.push(...added);
     const addedIds = new Set(added.map((g) => g.id));
     saved.ui = { ...def.ui, ...saved.ui };
+    if (saved.ordering === undefined) saved.ordering = def.ordering;
     const di = {}, dc = {};
     for (const c of def.categories) { dc[c.id] = c; for (const it of c.items) di[it.id] = it; }
     for (const c of saved.categories) {
@@ -85,9 +98,7 @@ async function getMenu(request, env) {
     }
     body = JSON.stringify(saved);
   }
-  return new Response(body, {
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
-  });
+  return body;
 }
 
 async function putMenu(request, env) {
