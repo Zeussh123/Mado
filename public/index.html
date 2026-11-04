@@ -92,9 +92,10 @@ footer .info{margin-bottom:8px;color:var(--text)}
 .game-btn{display:flex;align-items:center;gap:12px;margin:16px auto 0;max-width:340px;width:100%;padding:14px 16px;border-radius:16px;border:2px solid #f3c969;background:linear-gradient(135deg,#3a2a10,#24190b);color:#ffe9b0;font:inherit;font-weight:800;text-align:left;cursor:pointer;animation:gpulse 2.2s ease-in-out infinite}
 .game-btn .gw{flex:none;width:40px;height:40px;border-radius:50%;border:3px solid #f3c969;background:conic-gradient(#f39200 0 60deg,#2c2620 0 120deg,#4caf50 0 180deg,#2c2620 0 240deg,#e8505b 0 300deg,#2c2620 0);display:inline-block;animation:gspin 6s linear infinite}
 @keyframes gspin{to{transform:rotate(360deg)}}@keyframes gpulse{50%{box-shadow:0 0 0 6px rgba(243,201,105,.18)}}
-.game-ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:16px}
-.game-box{position:relative;width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;text-align:center}
-.game-box h2{margin:0 0 10px;font-size:1.25rem}
+.game-ov{position:fixed;inset:0;z-index:200;background:var(--g-ov,rgba(0,0,0,.78));display:flex;align-items:center;justify-content:center;padding:16px}
+.game-box{position:relative;width:100%;max-width:380px;background:var(--g-box,var(--surface));border:2px solid var(--g-line,var(--line));box-shadow:0 20px 60px rgba(0,0,0,.5);border-radius:22px;padding:18px;text-align:center}
+.game-box .btn.grow{background:var(--g-btn,var(--accent));color:var(--g-btn-txt,var(--accent-ink))}
+.game-box h2{margin:0 0 10px;font-size:1.35rem;color:var(--g-title,inherit);letter-spacing:.02em}
 .game-box .wheel{width:100%;max-width:320px;display:block;margin:0 auto}
 .game-box #wheelG{transform-origin:160px 160px;transform-box:view-box}
 .game-res p{margin:10px 0 0}.game-res .win{font-size:1.25rem;font-weight:900;color:#f3c969}
@@ -759,24 +760,32 @@ function wheelSegs(){
   for (let i = 0; i < n; i++) segs.push(i % 2 === 0 && pz[i / 2] ? {id: pz[i / 2].id, label: t(pz[i / 2].name)} : {id: null, label: ui("gameLose")});
   return segs;
 }
+// 3 styles de roue (admin › Roue) : fond, cadre, couleurs des lots et des cases « Perdu »
+const WHEEL_THEMES = {
+  casino: {ov: "radial-gradient(circle at 50% 35%,#7a1418,#1c0405 75%)", box: "#2b0709", line: "#e0b84a", title: "#ffe7a3", prize: ["#d62828", "#b3121b"], prizeTxt: "#fff", lose: "#f7ecd4", loseTxt: "#8a1c1c", rim: "#e0b84a", bulb: "#fff6c9", hub: "#7a1418", ptr: "#ffd75e", sep: "#5a0d10", btn: "#e0b84a", btnTxt: "#2b0709"},
+  fete: {ov: "linear-gradient(160deg,#4b1d8f,#b0175a)", box: "#2a1450", line: "#ffffff55", title: "#fff", prize: ["#ff4d6d", "#ffb703", "#06d6a0", "#4cc9f0", "#b388ff"], prizeTxt: "#fff", lose: "#ffffff", loseTxt: "#5a3d8a", rim: "#ffffff", bulb: "#ff8fab", hub: "#4b1d8f", ptr: "#ffffff", sep: "#2a1450", btn: "#ff4d6d", btnTxt: "#fff"},
+  mado: {ov: "radial-gradient(circle at 50% 35%,#2d5520,#0b1607 75%)", box: "#132410", line: "#c9a24a", title: "#e9d38f", prize: ["#8cc63f", "#d4a537"], prizeTxt: "#13240e", lose: "#f4ecd8", loseTxt: "#3c5a2a", rim: "#c9a24a", bulb: "#fff3c4", hub: "#1d3a14", ptr: "#e9c46a", sep: "#0f1d0b", btn: "#8cc63f", btnTxt: "#13240e"},
+};
+const wheelTheme = () => WHEEL_THEMES[(MENU.game || {}).theme] || WHEEL_THEMES.mado;
 function wheelSvg(segs){
-  const n = segs.length, R = 150, C = 160, a = 2 * Math.PI / n, cols = ["#f39200", "#2c2620", "#4caf50", "#2c2620", "#e8505b", "#2c2620", "#3d8bfd", "#2c2620"];
+  const n = segs.length, R = 150, C = 160, a = 2 * Math.PI / n, T = wheelTheme(); let pi = 0;
   return `<svg viewBox="0 0 320 320" class="wheel"><g id="wheelG">${segs.map((s, i) => {
     const a0 = i * a - Math.PI / 2 - a / 2, a1 = a0 + a, x0 = C + R * Math.cos(a0), y0 = C + R * Math.sin(a0), x1 = C + R * Math.cos(a1), y1 = C + R * Math.sin(a1);
     const mid = (a0 + a1) / 2, tx = C + R * .62 * Math.cos(mid), ty = C + R * .62 * Math.sin(mid), deg = mid * 180 / Math.PI;
-    const col = s.id ? cols[(i) % cols.length] === "#2c2620" ? "#f39200" : cols[i % cols.length] : "#2c2620";
+    const col = s.id ? T.prize[pi++ % T.prize.length] : T.lose;
     const words = s.label.split(" "), l1 = words.slice(0, Math.ceil(words.length / 2)).join(" "), l2 = words.slice(Math.ceil(words.length / 2)).join(" ");
-    return `<path d="M${C} ${C} L${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${col}" stroke="#16130f" stroke-width="2"/>
-      <text transform="translate(${tx.toFixed(1)} ${ty.toFixed(1)}) rotate(${(deg + 90).toFixed(1)})" text-anchor="middle" font-size="${s.id ? 12.5 : 11}" font-weight="800" fill="${s.id ? "#fff" : "#a9a39a"}"><tspan x="0" dy="${l2 ? -2 : 4}">${esc(l1)}</tspan>${l2 ? `<tspan x="0" dy="14">${esc(l2)}</tspan>` : ""}</text>`;
-  }).join("")}</g><circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="#f3c969" stroke-width="6"/>
-  ${Array.from({length: n * 2}, (_, i) => { const b = i * Math.PI / n; return `<circle cx="${(C + (R + 0) * Math.cos(b)).toFixed(1)}" cy="${(C + R * Math.sin(b)).toFixed(1)}" r="3.2" fill="#fff8e1"/>`; }).join("")}
-  <circle cx="${C}" cy="${C}" r="24" fill="#16130f" stroke="#f3c969" stroke-width="4"/><text x="${C}" y="${C + 6}" text-anchor="middle" font-size="18">🎁</text>
-  <path d="M${C - 14} 2 L${C + 14} 2 L${C} 30 Z" fill="#fff" stroke="#16130f" stroke-width="2"/></svg>`;
+    return `<path d="M${C} ${C} L${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${col}" stroke="${T.sep}" stroke-width="2"/>
+      <text transform="translate(${tx.toFixed(1)} ${ty.toFixed(1)}) rotate(${(deg + 90).toFixed(1)})" text-anchor="middle" font-size="${s.id ? 12.5 : 11}" font-weight="800" fill="${s.id ? T.prizeTxt : T.loseTxt}"><tspan x="0" dy="${l2 ? -2 : 4}">${esc(l1)}</tspan>${l2 ? `<tspan x="0" dy="14">${esc(l2)}</tspan>` : ""}</text>`;
+  }).join("")}</g><circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="${T.rim}" stroke-width="9"/>
+  ${Array.from({length: n * 2}, (_, i) => { const b = i * Math.PI / n; return `<circle cx="${(C + (R + 0) * Math.cos(b)).toFixed(1)}" cy="${(C + R * Math.sin(b)).toFixed(1)}" r="3.6" fill="${T.bulb}"/>`; }).join("")}
+  <circle cx="${C}" cy="${C}" r="24" fill="${T.hub}" stroke="${T.rim}" stroke-width="4"/><text x="${C}" y="${C + 6}" text-anchor="middle" font-size="18">🎁</text>
+  <path d="M${C - 14} 2 L${C + 14} 2 L${C} 30 Z" fill="${T.ptr}" stroke="${T.sep}" stroke-width="2"/></svg>`;
 }
 function openGame(){
   const o = ORDERS[0]; if (!gameOn(o)) return;
   const segs = wheelSegs(), done = GAME_DONE[o.id];
-  const ov = document.createElement("div"); ov.className = "game-ov"; ov.innerHTML = `<div class="game-box"><h2>${esc(ui("gameTitle"))}</h2>${wheelSvg(segs)}
+  const ov = document.createElement("div"); ov.className = "game-ov"; const T = wheelTheme();
+  ov.style.cssText = `--g-ov:${T.ov};--g-box:${T.box};--g-line:${T.line};--g-title:${T.title};--g-btn:${T.btn};--g-btn-txt:${T.btnTxt}`; ov.innerHTML = `<div class="game-box"><h2>${esc(ui("gameTitle"))}</h2>${wheelSvg(segs)}
     <div class="game-res">${done ? gameMsg(done, o) : ""}</div>
     <div class="game-act">${done ? "" : `<button class="btn grow pulse" data-g="spin">${esc(ui("gameSpin"))}</button>`}<button class="btn ghost" data-g="close">${esc(ui("gameClose"))}</button></div></div>`;
   document.body.appendChild(ov);

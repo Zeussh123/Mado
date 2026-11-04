@@ -23,6 +23,7 @@ button:disabled{opacity:.5;cursor:default}
 .wrap{max-width:820px;margin:0 auto;padding:0 16px}
 /* ---------- plan de salle ---------- */
 .toggles .so.on{color:#ff8d86;font-weight:800}
+#gmThemes button.on{border-color:var(--accent);background:#2b2214}
 .gm-row{display:grid;grid-template-columns:1fr 110px 44px;gap:8px;align-items:center;margin-bottom:10px}
 .gm-row details{grid-column:1/-1;margin-top:-4px}
 .av-msg{border-top:1px solid var(--line);padding:10px 0}.av-msg p{margin:6px 0 0;white-space:pre-wrap}
@@ -276,6 +277,8 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <p class="small">Après sa commande à table, le client peut faire tourner une roue pour gagner un lot. Le tirage est fait par le serveur (impossible de tricher depuis le téléphone). Un lot gagné s'affiche sur la commande dans /cuisine et un petit ticket cadeau s'imprime.</p>
       <div class="panel">
         <label style="display:flex;gap:8px;align-items:center;font-weight:800"><input type="checkbox" id="gmOn" style="width:auto;margin:0"> Activer la roue de la chance</label>
+        <div class="lbl">Style de la roue</div>
+        <div id="gmThemes" style="display:flex;gap:10px;flex-wrap:wrap"></div>
         <div class="lbl">Une partie par commande, et une partie par téléphone toutes les… (heures)</div>
         <input id="gmHours" type="number" min="1" max="48" step="1" style="max-width:120px">
         <div class="lbl">Lots à gagner et chance de gagner chacun (%)</div>
@@ -896,6 +899,9 @@ function gm(){ menu.game = menu.game || {enabled: false, resetHours: 3, prizes: 
 function renderGame(){
   const g = gm();
   $("#gmOn").checked = !!g.enabled; $("#gmHours").value = g.resetHours || 3;
+  const TH = [["mado", "Mado (vert et or)", "#8cc63f,#f4ecd8,#d4a537,#f4ecd8", "#132410"], ["casino", "Casino (rouge et or)", "#d62828,#f7ecd4,#b3121b,#f7ecd4", "#2b0709"], ["fete", "Fête (multicolore)", "#ff4d6d,#fff,#ffb703,#fff,#06d6a0,#fff", "#4b1d8f"]];
+  $("#gmThemes").innerHTML = TH.map(([id, name, cols, bg]) => { const c = cols.split(","), st = 360 / c.length;
+    return `<button type="button" data-gt="${id}" class="${(g.theme || "mado") === id ? "on" : ""}" style="display:flex;align-items:center;gap:10px;padding:8px 12px"><span style="width:34px;height:34px;border-radius:50%;border:3px solid ${id === "fete" ? "#fff" : id === "casino" ? "#e0b84a" : "#c9a24a"};outline:6px solid ${bg};background:conic-gradient(${c.map((x, i) => `${x} ${i * st}deg ${(i + 1) * st}deg`).join(",")})"></span>${name}</button>`; }).join("");
   $("#gmPrizes").innerHTML = g.prizes.map((p, i) => `<div class="gm-row" data-i="${i}">
     <input data-k="fr" value="${esc(p.name.fr || "")}" placeholder="Lot (ex. Boisson offerte)">
     <div style="display:flex;align-items:center;gap:6px"><input data-k="chance" inputmode="decimal" value="${String(p.chance ?? "").replace(".", ",")}"><span>%</span></div>
@@ -907,6 +913,7 @@ function gmSum(){
   const tot = gm().prizes.reduce((n, p) => n + (+p.chance || 0), 0);
   $("#gmSum").innerHTML = tot > 100 ? `<b style="color:var(--red)">Total ${tot.toLocaleString("fr-FR")} % : il faut 100 % maximum.</b>` : `Chance de gagner un lot : <b>${tot.toLocaleString("fr-FR")} %</b> · Perdu : <b>${(100 - tot).toLocaleString("fr-FR")} %</b>. Sur 100 parties, environ ${Math.round(tot)} lots offerts.`;
 }
+$("#gmThemes").addEventListener("click", (e) => { const b = e.target.closest("[data-gt]"); if (!b) return; gm().theme = b.dataset.gt; renderGame(); updateStatus(); });
 $("#gmOn").onchange = (e) => { gm().enabled = e.target.checked; updateStatus(); };
 $("#gmHours").oninput = (e) => { gm().resetHours = Math.min(48, Math.max(1, parseInt(e.target.value) || 3)); updateStatus(); };
 $("#gmAdd").onclick = () => { gm().prizes.push({id: "p" + Date.now().toString(36), name: {fr: "", en: "", tr: "", de: ""}, chance: 5}); renderGame(); updateStatus(); };
