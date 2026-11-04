@@ -315,6 +315,15 @@ function applyMigrations(m){
     }
     m.applied.push("boissons-2026-11");
   }
+  if (!m.applied.includes("capri-sun-2026-11")) {
+    // Capri-Sun ajouté à la carte (1 €, demande momo)
+    const c = (m.categories || []).find((x) => x.id === "boissons");
+    if (c && !c.items.some((i) => i.id === "boissons-capri-sun")) {
+      const at = c.items.findIndex((i) => i.id === "boissons-cristaline");
+      c.items.splice(at < 0 ? c.items.length : at + 1, 0, {"name": {"fr": "Capri-Sun", "en": "Capri-Sun", "tr": "Capri-Sun", "de": "Capri-Sun"}, "price": 1, "id": "boissons-capri-sun", "bestseller": false, "hidden": false, "photo": "/img/produits/capri-sun.jpg", "description": {"fr": "", "en": "", "tr": "", "de": ""}, "options": [], "upgrade": ""});
+    }
+    m.applied.push("capri-sun-2026-11");
+  }
   m.applied = [...new Set(m.applied)];
   return m;
 }
