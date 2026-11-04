@@ -889,7 +889,8 @@ function applyTB(b, iSent){
   }
   drawPill();
   const open = $("#sheet").classList.contains("on");
-  if (open && STEP === "cart" && !window.SWIPING) { const y = $("#shScroll").scrollTop, note = ($("#orderNote") || {}).value; drawTableCart(); $("#shScroll").scrollTop = y; if (note && $("#orderNote")) $("#orderNote").value = note; }
+  const typing = document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName) && $("#sheet").contains(document.activeElement);
+  if (open && STEP === "cart" && !window.SWIPING && !typing) { const y = $("#shScroll").scrollTop, note = ($("#orderNote") || {}).value; drawTableCart(); $("#shScroll").scrollTop = y; if (note && $("#orderNote")) $("#orderNote").value = note; }
   if (open && STEP === "join") drawJoin(true);
   // tout le monde a fini : chaque téléphone propose d'envoyer
   const owners = tbOwners();
@@ -934,7 +935,15 @@ function drawJoin(refresh){
   const html = `<div class="join"><h2>${esc(fill(ui("tbJoinH"), {t: TABLE}))}</h2><p>${esc(ui("tbJoinP"))}</p>
     ${others.length ? `<div class="who">${esc(ui("tbAlready"))} ${others.map(m => `${avatar(m)}<span>${esc(mname(m))}</span>`).join("")}</div>` : ""}
     <input id="tbName" maxlength="20" autocomplete="given-name" placeholder="${esc(ui("tbNamePh"))}" value="${esc(ss.get("mado-name") || "")}"></div>`;
-  if (refresh) { const v = $("#tbName") && $("#tbName").value; $("#shScroll").innerHTML = html; if (v) $("#tbName").value = v; return; }
+  if (refresh && $("#tbName")) {
+    // ne touche pas au champ du prénom (sinon le clavier du téléphone se ferme) : on met à jour seulement « Déjà là »
+    const box = document.createElement("div"); box.innerHTML = html;
+    const nw = box.querySelector(".who"), old = $("#shScroll .who");
+    if (old && nw) { if (old.innerHTML !== nw.innerHTML) old.replaceWith(nw); }
+    else if (old) old.remove();
+    else if (nw) $("#tbName").before(nw);
+    return;
+  }
   $("#shScroll").innerHTML = html;
   $("#shBar").innerHTML = `<button class="btn grow" data-sh="tbJoin">${esc(ui("tbGo"))}</button>`;
 }
