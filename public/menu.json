@@ -696,7 +696,7 @@
      "bestseller": true,
      "id": "menus-menu-kebab",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/kebab.jpg",
      "options": [
       "viande",
       "crudites",
@@ -780,7 +780,7 @@
      "id": "menus-menu-hamburger",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/menu-hamburger.jpg",
      "options": [
       "sauce-frites",
       "boisson"
@@ -804,7 +804,7 @@
      "id": "menus-menu-assiette",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/assiette-kebab.jpg",
      "options": [
       "viande",
       "accompagnement",
@@ -914,7 +914,7 @@
      "id": "menus-menu-bowl",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/kebab-bowl.jpg",
      "options": [
       "bowl",
       "crudites",
@@ -981,7 +981,7 @@
      "bestseller": true,
      "id": "pokebowl-pokebowl",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/kebab-bowl.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -1028,7 +1028,7 @@
      "bestseller": true,
      "id": "sandwichs-kebab",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/kebab.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -1378,7 +1378,7 @@
      "id": "assiettes-assiette-doner-buf",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/assiette-kebab.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -1404,7 +1404,7 @@
      "id": "assiettes-assiette-doner-poulet",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/assiette-kebab.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -1430,7 +1430,7 @@
      "bestseller": true,
      "id": "assiettes-assiette-doner-mix-buf-poulet",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/assiette-kebab.jpg",
      "description": {
       "fr": "",
       "en": "",

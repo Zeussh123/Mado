@@ -217,6 +217,15 @@ const PRODUCT_PHOTOS = {
   "menus-menu-yufka": "/img/produits/menu-yufka.jpg",
   "pizzas-pizza-4-fromages": "/img/produits/pizza-4-fromages.jpg",
   "pizzas-pizza-4-saisons": "/img/produits/pizza-4-saisons.jpg",
+  "menus-menu-hamburger": "/img/produits/menu-hamburger.jpg",
+  "pokebowl-pokebowl": "/img/produits/kebab-bowl.jpg",
+  "menus-menu-bowl": "/img/produits/kebab-bowl.jpg",
+  "assiettes-assiette-doner-buf": "/img/produits/assiette-kebab.jpg",
+  "assiettes-assiette-doner-poulet": "/img/produits/assiette-kebab.jpg",
+  "assiettes-assiette-doner-mix-buf-poulet": "/img/produits/assiette-kebab.jpg",
+  "menus-menu-assiette": "/img/produits/assiette-kebab.jpg",
+  "sandwichs-kebab": "/img/produits/kebab.jpg",
+  "menus-menu-kebab": "/img/produits/kebab.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
