@@ -251,6 +251,12 @@ function applyMigrations(m){
     for (const c of m.categories || []) for (const it of c.items || []) if (U[it.id] && !it.uses) it.uses = U[it.id];
     m.applied.push("uses-2026-11");
   }
+  if (!m.applied.includes("review-2026-11")) {
+    // lien Google envoyé par momo (fiche Maps) pour le bouton « Laisser un avis »
+    m.info = m.info || {};
+    if (!m.info.reviewUrl) m.info.reviewUrl = "https://maps.app.goo.gl/qoaJDFyepE72QLpT8";
+    m.applied.push("review-2026-11");
+  }
   m.applied = [...new Set(m.applied)];
   return m;
 }
