@@ -511,6 +511,18 @@
    "en": "Everyone pays their own share",
    "tr": "Herkes kendi payını öder",
    "de": "Jeder zahlt seinen Anteil"
+  },
+  "keptChoices": {
+   "fr": "Votre {name} est déjà prêt",
+   "en": "Your {name} is all set",
+   "tr": "{name} seçimleriniz hazır",
+   "de": "Ihr {name} ist schon fertig"
+  },
+  "editChoices": {
+   "fr": "Modifier",
+   "en": "Edit",
+   "tr": "Değiştir",
+   "de": "Ändern"
   }
  },
  "categories": [
