@@ -240,6 +240,7 @@ const PRODUCT_PHOTOS = {
   "alcools-biere-bavaria-50-cl": "/img/produits/biere-86.jpg",
   "pides-pide-sucuk": "/img/produits/pide-sucuk.jpg",
   "alcools-bouteille-de-vin": "/img/produits/vin-rose-bouteille.jpg",
+  "alcools-bouteille-de-vin-rouge": "/img/produits/vin-rouge-bouteille.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
@@ -252,13 +253,6 @@ function applyMigrations(m){
     if (sa && !sa.choices.some((c) => c.id === "piment-poudre"))
       sa.choices.push({ id: "piment-poudre", name: { fr: "Piment en poudre", en: "Spicy (chili powder)", tr: "Pul biber", de: "Chilipulver (scharf)" }, icon: "piment-poudre", photo: "", price: 0, hidden: false, apart: true });
     m.applied.push("piment-2026-11");
-  }
-  // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
-  if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");
-  for (const [id, url] of Object.entries(PRODUCT_PHOTOS)) {
-    if (m.applied.includes("photo:" + id)) continue;
-    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === id && !it.photo) it.photo = url;
-    m.applied.push("photo:" + id);
   }
   // plan de salle de départ, d'après le croquis du gérant (modifiable dans l'admin > Plan de salle)
   if (!m.applied.includes("floor-2026-11")) {
@@ -352,6 +346,16 @@ function applyMigrations(m){
     if (g && !g.choices.some((c) => c.id === "supp-feta")) g.choices.push({"id": "supp-feta", "name": {"fr": "Supplément feta", "en": "Extra feta", "tr": "Ekstra beyaz peynir", "de": "Extra Feta"}, "icon": "supp-feta", "photo": "", "price": 1, "hidden": false});
     for (const c of m.categories || []) for (const it of c.items || []) if (["accompagnements-supplement-feta", "accompagnements-supplement-viande"].includes(it.id)) it.hidden = true;
     m.applied.push("supp-feta-2026-11");
+  }
+  // (en dernier, pour les produits créés par les migrations ci-dessus)
+  // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
+  if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");
+  for (const [id, url] of Object.entries(PRODUCT_PHOTOS)) {
+    if (m.applied.includes("photo:" + id)) continue;
+    let found = false;
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === id) { found = true; if (!it.photo) it.photo = url; }
+    if (found) m.applied.push("photo:" + id);   // produit pas encore créé : on réessaiera
+
   }
   m.applied = [...new Set(m.applied)];
   return m;
