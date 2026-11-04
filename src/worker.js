@@ -4,6 +4,7 @@
 // - protège les modifications par le mot de passe ADMIN_PASSWORD (secret Cloudflare)
 
 import { handleOrders, stats } from "./orders.js";
+import { stockState } from "./stock.js";
 
 const MENU_KEY = "menu";
 const STAFF_KEY = "staff-code";
@@ -153,7 +154,8 @@ async function setSoldOut(request, env) {
   const set = new Set(await loadSoldOut(env));
   if (b.out) set.add(b.id); else set.delete(b.id);
   await env.MADO.put("soldout", JSON.stringify([...set]));
-  return json({ ok: true, soldOut: [...set] });
+  const m = JSON.parse(await menuText(request, env));
+  return json({ ok: true, soldOut: m.soldOut, outItems: m.outItems, outChoices: m.outChoices, ingredients: m.ingredients });
 }
 async function getMenu(request, env) {
   const body = await menuText(request, env);
@@ -193,8 +195,10 @@ export async function menuText(request, env) {
     applyMigrations(saved);
     body = JSON.stringify(saved);
   }
-  const so = await loadSoldOut(env);
-  if (so.length) { const m = JSON.parse(body); m.soldOut = so; body = JSON.stringify(m); }
+  // ruptures (plats et ingrédients) : état calculé à chaque lecture
+  const m = JSON.parse(body);
+  Object.assign(m, stockState(m, await loadSoldOut(env)));
+  body = JSON.stringify(m);
   return body;
 }
 
@@ -239,6 +243,14 @@ function applyMigrations(m){
     }
     m.applied.push("floor-2026-11");
   }
+  if (!m.applied.includes("uses-2026-11")) {
+    // ingrédients contenus dans les plats sans option de viande (pour la rupture par ingrédient)
+    const U = { "assiettes-assiette-doner-buf": ["boeuf"], "assiettes-assiette-doner-poulet": ["poulet"], "assiettes-assiette-doner-mix-buf-poulet": ["boeuf", "poulet"],
+      "assiettes-assiette-kofte": ["kofte"], "sandwichs-kofte": ["kofte"], "assiettes-assiette-escalope-de-poulet": ["escalope"], "sandwichs-escalope-de-poulet": ["escalope"],
+      "assiettes-assiette-sucuk": ["sucuk"], "sandwichs-falafel": ["falafel"], "assiettes-assiette-falafel": ["falafel"], "menus-menu-falafel": ["falafel"] };
+    for (const c of m.categories || []) for (const it of c.items || []) if (U[it.id] && !it.uses) it.uses = U[it.id];
+    m.applied.push("uses-2026-11");
+  }
   m.applied = [...new Set(m.applied)];
   return m;
 }
@@ -248,7 +260,7 @@ async function putMenu(request, env) {
   let data;
   try { data = JSON.parse(text); } catch { return json({ error: "JSON invalide" }, 400); }
   if (!data || !Array.isArray(data.categories)) return json({ error: "Menu invalide" }, 400);
-  delete data.soldOut; // géré à part (/api/soldout)
+  for (const k of ["soldOut", "outItems", "outChoices", "ingredients"]) delete data[k]; // géré à part (/api/soldout)
   data.updatedAt = new Date().toISOString();
   const out = JSON.stringify(data);
   // garde la version précédente en sauvegarde

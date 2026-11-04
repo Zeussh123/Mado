@@ -129,6 +129,8 @@ footer .info{margin-bottom:8px;color:var(--text)}
 .tile.on{border-color:var(--accent);background:#2b2214}
 .tile.on::after{content:"✓";position:absolute;top:5px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center}
 .tile.pop .ic{animation:pop .28s ease}
+.tile.out{opacity:.45;border-style:dashed;cursor:not-allowed}.tile.out .ic{filter:grayscale(1)}
+.tile.out .so{font-size:.68rem;font-weight:800;color:#ff8d86}
 @keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.22) rotate(-6deg)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.tile.pop .ic{animation:none}.sh,#sheet{transition:none}}
 .sh-bar{border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;background:var(--bg)}
@@ -513,7 +515,14 @@ const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
 
 const findItem = (id) => { for (const c of MENU.categories) for (const it of c.items) if (it.id === id) return [it, c]; return [null, null]; };
 // rupture de stock (un clic dans l'admin ou la cuisine) : le plat reste affiché mais ne peut plus être commandé
-const isOut = (id) => !!(MENU && MENU.soldOut && MENU.soldOut.includes(id));
+const isOut = (id) => !!(MENU && (MENU.outItems || MENU.soldOut || []).includes(id));
+// ingrédient épuisé (ex. bœuf) : les options qui l'utilisent sont grisées (bœuf, mixte…)
+const choiceOut = (id) => !!(MENU && (MENU.outChoices || []).includes(id));
+function selOut(it, sel){
+  return itemGroups(it).some(g => { const ids = (sel || {})[g.id] || [], all = g.choices.some(c => c.all && ids.includes(c.id));
+    return ids.some(id => { const c = g.choices.find(c => c.id === id); return c && choiceOut(id) && !(all && !(+c.price) && !c.apart); }); });
+}
+const lineOut = (l) => { const it = findItem(l.id)[0]; return isOut(l.id) || (!!it && selOut(it, l.sel)); };
 const visibleItem = (id) => { const [it, c] = findItem(id); return it && !it.hidden && !c.hidden && !isOut(id) ? it : null; };
 function itemGroups(it){
   const all = MENU.optionGroups || [];
@@ -641,6 +650,8 @@ function drawSheet(){
     return;
   }
   // fiche produit
+  // une option épuisée entre-temps (ex. bœuf) est retirée des choix déjà faits
+  for (const g of itemGroups(it)) if (SEL[g.id]) SEL[g.id] = SEL[g.id].filter(id => !choiceOut(id));
   const groups = itemGroups(it).filter(g => !FOCUS || FOCUS.has(g.id));
   const kept = FOCUS ? choiceSummary(it, Object.fromEntries(Object.entries(SEL).filter(([g]) => !FOCUS.has(g)))) : "";
   $("#shScroll").innerHTML = `<div class="sh-hero${FOCUS ? " compact" : ""}">${it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="big">${ICONS[findItem(it.id)[1].id] || "🍴"}</span>`}<button class="sh-close" data-sh="close" aria-label="Fermer">←</button></div>
@@ -650,7 +661,7 @@ function drawSheet(){
       const ids = SEL[g.id] || [];
       const n = ids.filter(id => { const c = g.choices.find(c => c.id === id); return c && !c.all && !c.apart; }).length;
       return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(groupHint(g))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
-        <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
+        <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => choiceOut(c.id) ? `<button class="tile out" data-c="${esc(c.id)}" disabled aria-disabled="true"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span><span class="so">${esc(ui("soldOut"))}</span></button>` : `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
     }).join("")}</div>`;
   drawBar();
 }
@@ -664,7 +675,7 @@ function drawCart(){
   $("#shScroll").innerHTML = `<div class="cart">
     <div class="cart-h"><h2>${esc(ui("myOrder"))}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
     <p class="hint">${esc(ui("orderHint"))}${CART.length ? `<br><small>↔ ${esc(ui("swipeHint"))}</small>` : ""}</p>
-    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-k="${esc(l.key)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl${isOut(l.id) ? " out" : ""}">
+    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-k="${esc(l.key)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl${lineOut(l) ? " out" : ""}">
       <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>
       <div class="ct"><div class="cn" data-out="${esc(ui("soldOut"))}">${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div>
       <div class="cp">${esc(fmtPrice(l.price * l.qty))}</div></div></div>`; }).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
@@ -812,7 +823,8 @@ function burst(el){
 function toggleChoice(gid, cid, tileEl){
   const g = (MENU.optionGroups || []).find(g => g.id === gid), c = g.choices.find(c => c.id === cid);
   let ids = SEL[gid] || [];
-  const plain = g.choices.filter(x => !x.hidden && !x.all && !x.apart && !(+x.price));
+  if (choiceOut(cid)) return;
+  const plain = g.choices.filter(x => !x.hidden && !x.all && !x.apart && !(+x.price) && !choiceOut(x.id));
   if (!g.multi) ids = ids.includes(cid) ? [] : [cid];
   else if (c.all) ids = ids.includes(cid) ? ids.filter(id => !plain.some(p => p.id === id) && id !== cid) : [...new Set([...ids, cid, ...plain.map(p => p.id)])];
   else {
@@ -823,7 +835,7 @@ function toggleChoice(gid, cid, tileEl){
   }
   SEL[gid] = ids;
   const box = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`);
-  box.querySelectorAll(".tile").forEach(b => { const on = ids.includes(b.dataset.c); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  box.querySelectorAll(".tile:not(.out)").forEach(b => { const on = ids.includes(b.dataset.c); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
   const n = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
   const cnt = box.querySelector(".cnt"); cnt.textContent = n + (g.multi ? "" : "/1"); cnt.classList.toggle("ok", n > 0);
   tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
@@ -994,7 +1006,7 @@ function drawTableCart(){
     const s = choiceSummary(it, l.sel || {});
     const body = `<div class="ct"><div class="cn" data-out="${esc(ui("soldOut"))}">${l.qty} × ${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div><div class="cp">${esc(fmtPrice(l.price * l.qty))}</div>`;
     if (!editable) return `<div class="oline">${body}</div>`;
-    return `<div class="clw" data-k="${esc(l.k)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl${isOut(l.id) ? " out" : ""}">
+    return `<div class="clw" data-k="${esc(l.k)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl${lineOut(l) ? " out" : ""}">
       <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>${body.replace(`${l.qty} × `, "")}</div></div>`;
   };
   const people = owners.length ? owners : [];
@@ -1118,9 +1130,9 @@ $("#q").oninput = renderMenu;
 // ruptures de stock : on regarde toutes les 45 s si la cuisine a marqué un plat épuisé (ou de nouveau disponible)
 async function refreshSoldOut(){
   try {
-    const m = await (await fetch("/api/menu", {cache: "no-store"})).json(), so = m.soldOut || [];
-    if (JSON.stringify(so) === JSON.stringify(MENU.soldOut || [])) return;
-    MENU.soldOut = so;
+    const m = await (await fetch("/api/menu", {cache: "no-store"})).json(), key = (x) => JSON.stringify([x.outItems || x.soldOut || [], x.outChoices || []]);
+    if (key(m) === key(MENU)) return;
+    MENU.soldOut = m.soldOut || []; MENU.outItems = m.outItems || []; MENU.outChoices = m.outChoices || [];
     if ($("#app").style.display === "block") { const y = scrollY; renderMenu(); scrollTo(0, y); }
     if ($("#sheet").classList.contains("on") && STEP === "cart") drawSheet();
   } catch {}

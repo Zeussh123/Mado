@@ -56,7 +56,8 @@ function priceLine(menu, line, promos) {
     const counted = chosen.filter((c) => !c.all && !c.apart).length;
     if (+g.free && +g.extraPrice) unit += Math.max(0, counted - g.free) * g.extraPrice;
     const all = chosen.find((c) => c.all);
-    const names = [all ? all.name.fr : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price) && !c.apart)).map((c) => c.name.fr)].filter(Boolean);
+    const missing = all ? g.choices.filter((c) => (menu.outChoices || []).includes(c.id) && !c.all && !c.apart && !(+c.price) && !c.hidden).map((c) => c.name.fr) : [];
+    const names = [all ? all.name.fr + (missing.length ? " sauf " + missing.join(", ") : "") : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price) && !c.apart)).map((c) => c.name.fr)].filter(Boolean);
     if (names.length) details.push({ gid: g.id, group: g.name.fr, choices: names });
   }
   const qty = Math.max(1, Math.min(20, parseInt(line.qty) || 1));
@@ -184,8 +185,18 @@ async function handleBasket(request, env, table, action, { json, menuText, check
 
 // plats en rupture de stock dans une commande (noms en français)
 function soldOutIn(menu, lines) {
-  const so = new Set(menu.soldOut || []), out = [];
-  for (const l of lines || []) if (so.has(l.id)) for (const c of menu.categories) for (const it of c.items) if (it.id === l.id && !out.includes(it.name.fr)) out.push(it.name.fr);
+  const so = new Set(menu.outItems || menu.soldOut || []), oc = new Set(menu.outChoices || []), out = [];
+  const push = (x) => { if (!out.includes(x)) out.push(x); };
+  for (const l of lines || []) for (const c of menu.categories) for (const it of c.items) if (it.id === l.id) {
+    if (so.has(l.id)) { push(it.name.fr); continue; }
+    const sel = l.sel && typeof l.sel === "object" ? l.sel : {};
+    for (const gid of it.options || []) {
+      const g = (menu.optionGroups || []).find((x) => x.id === gid); if (!g) continue;
+      const ids = Array.isArray(sel[gid]) ? sel[gid] : [], all = g.choices.some((x) => x.all && ids.includes(x.id));
+      // « Tout » : les crudités épuisées sont simplement absentes, pas de blocage
+      for (const cid of ids) if (oc.has(cid)) { const ch = g.choices.find((x) => x.id === cid); if (ch && !(all && !(+ch.price) && !ch.apart)) push(ch.name.fr); }
+    }
+  }
   return out;
 }
 function randomToken() {

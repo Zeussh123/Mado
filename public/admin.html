@@ -106,6 +106,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 .savebar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(22,22,22,.96);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
 .savebar .wrap{display:flex;gap:10px;align-items:center;padding:0}
 .savebar .status{flex:1}
+.ing-panel summary{cursor:pointer}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
 #qrbox{background:#fff;padding:18px;border-radius:12px;display:inline-block}
 #qrbox canvas,#qrbox img{display:block}
@@ -192,6 +193,10 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 
     <section id="tab-menu">
       <p class="small">Touchez une catégorie pour l'ouvrir. Décochez « Visible » pour retirer un produit de la carte sans le perdre, ou supprimez-le définitivement avec « Plus ». N'oubliez pas d'enregistrer en bas de l'écran.</p>
+      <details class="panel ing-panel" id="ingPanel"><summary><b>Ingrédients épuisés</b> <span class="small" id="ingCount"></span></summary>
+        <p class="small">Cochez ce qui manque (ex. bœuf) : les options qui l'utilisent deviennent indisponibles sur tous les plats (kebab bœuf et mixte dans le kebab, tacos, yufka, assiette…). Enregistré tout de suite. Aussi disponible sur la page Cuisine, onglet « Épuisés ».</p>
+        <div id="ingList"></div>
+      </details>
       <div id="cats"></div>
       <button id="addCat" type="button" style="margin-top:8px">+ Ajouter une catégorie</button>
     </section>
@@ -380,9 +385,11 @@ async function loadMenu(){
   }
   const r = await fetch("/api/menu", {cache:"no-store"}); const m = await r.json();
   // ruptures de stock : gérées à part, enregistrées tout de suite (pas besoin de cliquer Enregistrer)
-  SOLD = new Set(m.soldOut || []); delete m.soldOut; return m;
+  SOLD = new Set(m.soldOut || []); INGS = m.ingredients || [];
+  for (const k of ["soldOut", "outItems", "outChoices", "ingredients"]) delete m[k];
+  return m;
 }
-let SOLD = new Set();
+let SOLD = new Set(), INGS = [];
 
 function uid(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 const blankL = () => Object.fromEntries(LANGS.map(l => [l, ""]));
@@ -435,6 +442,7 @@ function render(){
   renderInfo();
   renderPromos();
   renderGroups();
+  renderIngs();
   updateStatus();
 }
 
@@ -460,6 +468,8 @@ function itemHtml(c, ci, it, ii){
       <div class="grid4">${["en","tr","de"].map(l=>`<input data-f="name.${l}" placeholder="${LNAME[l]}" value="${esc(it.name[l])}">`).join("")}</div>
       <div class="lbl">Options proposées au client</div>
       <div class="toggles">${(menu.optionGroups||[]).map(g=>`<label><input type="checkbox" data-opt="${esc(g.id)}" ${(it.options||[]).includes(g.id)?"checked":""}> ${esc(g.name.fr)}</label>`).join("") || '<span class="small">Aucun groupe d\'options</span>'}</div>
+      ${INGS.some(i => i.section === "Viandes") ? `<div class="lbl">Contient (si cet ingrédient est épuisé, le plat devient indisponible)</div>
+      <div class="toggles">${INGS.filter(i => i.section === "Viandes").map(i => `<label><input type="checkbox" data-use="${esc(i.id)}" ${(it.uses||[]).includes(i.id)?"checked":""}> ${esc(i.name)}</label>`).join("")}</div>` : ""}
       <div class="lbl">Après ce produit, proposer de passer en menu (« seulement +X € »)</div>
       <select data-f="upgrade"><option value="">Ne rien proposer</option>${allItemOptions(it.upgrade, it.id)}</select>
       <div class="lbl">Description / composition</div>
@@ -540,7 +550,11 @@ function parsePrice(v){ v = v.trim().replace(",", ".").replace("€",""); if (v 
 /* ---------- Événements ---------- */
 $("#cats").addEventListener("input", (e) => {
   const el = e.target, itemEl = el.closest(".item"), catEl = el.closest(".cat");
-  if (itemEl && el.dataset.opt) {
+  if (itemEl && el.dataset.use) {
+    const it = menu.categories[itemEl.dataset.ci].items[itemEl.dataset.ii];
+    const set = new Set(it.uses || []); el.checked ? set.add(el.dataset.use) : set.delete(el.dataset.use);
+    it.uses = [...set]; if (!it.uses.length) delete it.uses;
+  } else if (itemEl && el.dataset.opt) {
     const it = menu.categories[itemEl.dataset.ci].items[itemEl.dataset.ii];
     const order = (menu.optionGroups||[]).map(g => g.id);
     const set = new Set(it.options || []); el.checked ? set.add(el.dataset.opt) : set.delete(el.dataset.opt);
@@ -848,12 +862,19 @@ $("#stBody").addEventListener("pointermove", (e) => {
 $("#stBody").addEventListener("pointerleave", () => stTip.style.display = "none");
 
 /* ---------- Rupture de stock ---------- */
+function renderIngs(){
+  const secs = []; for (const i of INGS) { let s = secs.find(x => x.name === i.section); if (!s) secs.push(s = {name: i.section, list: []}); s.list.push(i); }
+  const n = INGS.filter(i => SOLD.has("ing:" + i.id)).length;
+  $("#ingCount").textContent = n ? `· ${n} épuisé${n > 1 ? "s" : ""}` : "· tout est disponible";
+  $("#ingList").innerHTML = secs.map(s => `<div class="lbl">${esc(s.name)}</div><div class="toggles">${s.list.map(i => `<label class="so ${SOLD.has("ing:"+i.id)?"on":""}"><input type="checkbox" data-so="ing:${esc(i.id)}" ${SOLD.has("ing:"+i.id)?"checked":""}> ${esc(i.name)}</label>`).join("")}</div>`).join("") || '<p class="small">Disponible une fois le site en ligne.</p>';
+}
+$("#ingList").addEventListener("change", (e) => { if (e.target.dataset.so) toggleSoldOut(e.target).then(renderIngs); });
 async function toggleSoldOut(box){
   const id = box.dataset.so, out = box.checked;
   if (DEMO) { out ? SOLD.add(id) : SOLD.delete(id); return; }
   const r = await api("/api/soldout", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({id, out})}).catch(() => null);
   if (!r || !r.ok) { box.checked = !out; toast("Erreur, réessayez."); return; }
-  SOLD = new Set((await r.json()).soldOut); box.closest(".so").classList.toggle("on", out);
+  const j = await r.json(); SOLD = new Set(j.soldOut); if (j.ingredients) INGS = j.ingredients; box.closest(".so").classList.toggle("on", out);
   toast(out ? "Marqué épuisé : les clients ne peuvent plus le commander." : "De nouveau disponible.");
 }
 

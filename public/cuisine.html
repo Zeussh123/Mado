@@ -78,6 +78,9 @@ label.sw input{width:20px;height:20px;accent-color:var(--accent)}
 .stk .chips{display:flex;flex-wrap:wrap;gap:8px}
 .stk button{border:2px solid var(--line);background:var(--surface);color:inherit;border-radius:12px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer}
 .stk button.out{border-color:#c0392b;background:#3a1512;color:#ffb3ad;text-decoration:line-through}
+.stk-t{margin:22px 0 0;font-size:1.25rem}
+.stk button.auto{opacity:.5;border-style:dashed;text-decoration:line-through}
+.stk button.auto::after{content:" · indispo (ingrédient)";text-decoration:none;display:inline-block;margin-left:4px;font-size:.75em;font-weight:600}
 .stk button.out::after{content:" · ÉPUISÉ";text-decoration:none;display:inline-block;margin-left:4px;font-size:.8em}
 .flh{margin:18px 0 8px;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.flh:first-child{margin-top:0}
 .fl-view{background:#1d1f22;border:1px solid var(--line);margin-bottom:8px;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}
@@ -203,7 +206,7 @@ input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
   </section>
 
   <section id="s-stock">
-    <p class="stock-hint">Touchez un plat quand il n'y en a plus : il passe en <b>Épuisé</b> et les clients ne peuvent plus le commander (il reste visible, grisé). Touchez-le de nouveau quand il revient.</p>
+    <p class="stock-hint"><b>Ingrédients</b> : touchez ce qui manque (ex. bœuf). Toutes les options qui l'utilisent deviennent indisponibles, sur tous les plats (bœuf → kebab bœuf et mixte dans le kebab, le tacos, le yufka, l'assiette…), le reste reste commandable. <b>Plats</b> : touchez un plat pour le marquer épuisé en entier. Touchez de nouveau quand ça revient.</p>
     <div id="stockList"></div>
   </section>
 
@@ -634,17 +637,19 @@ $("#tabs").addEventListener("click", (e) => {
 
 /* ---------- onglet Épuisés (rupture de stock) ---------- */
 function renderStock(){
-  const so = new Set((MENUC && MENUC.soldOut) || []);
+  const so = new Set((MENUC && MENUC.soldOut) || []), auto = new Set((MENUC && MENUC.outItems) || []);
   $("#bStock").hidden = !so.size; $("#bStock").textContent = so.size;
   if (!MENUC) return;
-  $("#stockList").innerHTML = MENUC.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden)).map(c => `<div class="stk"><h3>${esc(c.name.fr)}</h3><div class="chips">${c.items.filter(i => !i.hidden).map(i => `<button data-so="${esc(i.id)}" class="${so.has(i.id) ? "out" : ""}">${esc(i.name.fr)}</button>`).join("")}</div></div>`).join("");
+  const secs = []; for (const i of MENUC.ingredients || []) { let s = secs.find(x => x.name === i.section); if (!s) secs.push(s = {name: i.section, list: []}); s.list.push(i); }
+  $("#stockList").innerHTML = `<h2 class="stk-t">Ingrédients</h2>` + secs.map(s => `<div class="stk"><h3>${esc(s.name)}</h3><div class="chips">${s.list.map(i => `<button data-so="ing:${esc(i.id)}" class="${so.has("ing:" + i.id) ? "out" : ""}">${esc(i.name)}</button>`).join("")}</div></div>`).join("")
+    + `<h2 class="stk-t">Plats</h2>` + MENUC.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden)).map(c => `<div class="stk"><h3>${esc(c.name.fr)}</h3><div class="chips">${c.items.filter(i => !i.hidden).map(i => `<button data-so="${esc(i.id)}" class="${so.has(i.id) ? "out" : auto.has(i.id) ? "auto" : ""}" ${auto.has(i.id) && !so.has(i.id) ? 'title="Indisponible à cause d\'un ingrédient épuisé"' : ""}>${esc(i.name.fr)}</button>`).join("")}</div></div>`).join("");
 }
 $("#stockList").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-so]"); if (!b) return;
   const out = !b.classList.contains("out"); b.disabled = true;
   try {
     const r = await api("/api/soldout", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({id: b.dataset.so, out})});
-    if (r.ok) { MENUC.soldOut = (await r.json()).soldOut; renderStock(); }
+    if (r.ok) { Object.assign(MENUC, await r.json()); renderStock(); }
   } finally { b.disabled = false; }
 });
 
