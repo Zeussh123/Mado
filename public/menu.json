@@ -702,8 +702,7 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -730,8 +729,7 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -758,8 +756,7 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -782,8 +779,7 @@
      "hidden": false,
      "photo": "/img/produits/menu-hamburger.jpg",
      "options": [
-      "sauce-frites",
-      "boisson"
+      "sauce-frites"
      ],
      "upgrade": ""
     },
@@ -810,8 +806,7 @@
       "accompagnement",
       "crudites",
       "sauces",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -838,8 +833,7 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -866,8 +860,7 @@
       "crudites",
       "sauces",
       "sauce-frites",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -892,8 +885,7 @@
      "options": [
       "crudites",
       "sauces",
-      "sauce-frites",
-      "boisson"
+      "sauce-frites"
      ],
      "upgrade": ""
     },
@@ -919,8 +911,7 @@
       "bowl",
       "crudites",
       "sauces",
-      "supplement",
-      "boisson"
+      "supplement"
      ],
      "upgrade": ""
     },
@@ -2426,7 +2417,7 @@
      "bestseller": true,
      "id": "boissons-carola",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/carola.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2447,7 +2438,7 @@
      "id": "boissons-cristaline",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/cristaline.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2459,42 +2450,42 @@
     },
     {
      "name": {
-      "fr": "Canette 33 cl (Coca-Cola, Fanta, Lipton…)",
-      "en": "Can 33 cl (Coca-Cola, Fanta, Lipton…)",
-      "tr": "Kutu 33 cl (Coca-Cola, Fanta, Lipton…)",
-      "de": "Dose 33 cl (Coca-Cola, Fanta, Lipton…)"
+      "fr": "Boisson 33 cl",
+      "en": "Drink 33 cl",
+      "tr": "İçecek 33 cl",
+      "de": "Getränk 33 cl"
      },
      "price": 2,
      "id": "boissons-canette-33-cl-coca-cola-fanta-lipton",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/boisson-33cl.jpg",
      "description": {
-      "fr": "",
-      "en": "",
-      "tr": "",
-      "de": ""
+      "fr": "Au choix dans le frigo : Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
+      "en": "Your pick from the fridge: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
+      "tr": "Buzdolabından seçin: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
+      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…"
      },
      "options": [],
      "upgrade": ""
     },
     {
      "name": {
-      "fr": "Bouteille 50 cl (Coca-Cola, Oasis, San Pellegrino…)",
-      "en": "Bottle 50 cl (Coca-Cola, Oasis, San Pellegrino…)",
-      "tr": "Şişe 50 cl (Coca-Cola, Oasis, San Pellegrino…)",
-      "de": "Flasche 50 cl (Coca-Cola, Oasis, San Pellegrino…)"
+      "fr": "Boisson 50 cl",
+      "en": "Drink 50 cl",
+      "tr": "İçecek 50 cl",
+      "de": "Getränk 50 cl"
      },
      "price": 2.5,
      "id": "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/boisson-50cl.jpg",
      "description": {
-      "fr": "",
-      "en": "",
-      "tr": "",
-      "de": ""
+      "fr": "Au choix dans le frigo : Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
+      "en": "Your pick from the fridge: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
+      "tr": "Buzdolabından seçin: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
+      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…"
      },
      "options": [],
      "upgrade": ""
@@ -2509,7 +2500,7 @@
      "price": 4,
      "id": "boissons-coca-cola-1-25-l",
      "bestseller": false,
-     "hidden": false,
+     "hidden": true,
      "photo": "",
      "description": {
       "fr": "",
@@ -2522,21 +2513,21 @@
     },
     {
      "name": {
-      "fr": "Coca-Cola 1,5 L",
-      "en": "Coca-Cola 1,5 L",
-      "tr": "Coca-Cola 1,5 L",
-      "de": "Coca-Cola 1,5 L"
+      "fr": "Boisson 1,5 L",
+      "en": "Drink 1.5 L",
+      "tr": "İçecek 1,5 L",
+      "de": "Getränk 1,5 L"
      },
      "price": 4,
      "id": "boissons-coca-cola-1-5-l",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/boisson-1l5.jpg",
      "description": {
-      "fr": "",
-      "en": "",
-      "tr": "",
-      "de": ""
+      "fr": "Au choix dans le frigo : Coca-Cola, Fanta, Lipton Ice Tea…",
+      "en": "Your pick from the fridge: Coca-Cola, Fanta, Lipton Ice Tea…",
+      "tr": "Buzdolabından seçin: Coca-Cola, Fanta, Lipton Ice Tea…",
+      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Fanta, Lipton Ice Tea…"
      },
      "options": [],
      "upgrade": ""
@@ -2552,7 +2543,7 @@
      "id": "boissons-red-bull",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/red-bull.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2614,7 +2605,7 @@
      "id": "alcools-biere-1664-50-cl",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/1664.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2656,7 +2647,7 @@
      "id": "alcools-biere-desperados-50-cl",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/desperados.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2698,7 +2689,7 @@
      "id": "alcools-biere-heineken-50-cl",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/heineken.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2719,7 +2710,7 @@
      "id": "alcools-biere-kronenbourg-50-cl",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/kronenbourg.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2907,7 +2898,7 @@
      "id": "desserts-tiramisu",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/tiramisu.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3890,10 +3881,11 @@
   "tables": 10
  },
  "applied": [
-  "piment-2026-11",
+  "boissons-2026-11",
   "photo-margherita-2026-11",
+  "photo:pizzas-pizza-kebab",
   "photo:pizzas-pizza-margherita",
-  "photo:pizzas-pizza-kebab"
+  "piment-2026-11"
  ],
  "game": {
   "enabled": false,

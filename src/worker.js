@@ -226,6 +226,17 @@ const PRODUCT_PHOTOS = {
   "menus-menu-assiette": "/img/produits/assiette-kebab.jpg",
   "sandwichs-kebab": "/img/produits/kebab.jpg",
   "menus-menu-kebab": "/img/produits/kebab.jpg",
+  "boissons-canette-33-cl-coca-cola-fanta-lipton": "/img/produits/boisson-33cl.jpg",
+  "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino": "/img/produits/boisson-50cl.jpg",
+  "boissons-coca-cola-1-5-l": "/img/produits/boisson-1l5.jpg",
+  "boissons-cristaline": "/img/produits/cristaline.jpg",
+  "boissons-carola": "/img/produits/carola.jpg",
+  "boissons-red-bull": "/img/produits/red-bull.jpg",
+  "desserts-tiramisu": "/img/produits/tiramisu.jpg",
+  "alcools-biere-kronenbourg-50-cl": "/img/produits/kronenbourg.jpg",
+  "alcools-biere-heineken-50-cl": "/img/produits/heineken.jpg",
+  "alcools-biere-1664-50-cl": "/img/produits/1664.jpg",
+  "alcools-biere-desperados-50-cl": "/img/produits/desperados.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
@@ -292,6 +303,16 @@ function applyMigrations(m){
     m.info = m.info || {};
     if (!m.info.reviewUrl || m.info.reviewUrl.includes("maps.app.goo.gl/qoaJDFyepE72QLpT8")) m.info.reviewUrl = "https://g.page/r/CbD3MvtAG53rEBE/review";
     m.applied.push("review2-2026-11");
+  }
+  if (!m.applied.includes("boissons-2026-11")) {
+    // boissons regroupées par format (demande momo) : le client se sert au frigo, plus de choix du parfum, même dans les menus
+    const D = {"boissons-canette-33-cl-coca-cola-fanta-lipton": {"name": {"fr": "Boisson 33 cl", "en": "Drink 33 cl", "tr": "İçecek 33 cl", "de": "Getränk 33 cl"}, "description": {"fr": "Au choix dans le frigo : Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…", "en": "Your pick from the fridge: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…", "tr": "Buzdolabından seçin: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…", "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…"}}, "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino": {"name": {"fr": "Boisson 50 cl", "en": "Drink 50 cl", "tr": "İçecek 50 cl", "de": "Getränk 50 cl"}, "description": {"fr": "Au choix dans le frigo : Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…", "en": "Your pick from the fridge: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…", "tr": "Buzdolabından seçin: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…", "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…"}}, "boissons-coca-cola-1-5-l": {"name": {"fr": "Boisson 1,5 L", "en": "Drink 1.5 L", "tr": "İçecek 1,5 L", "de": "Getränk 1,5 L"}, "description": {"fr": "Au choix dans le frigo : Coca-Cola, Fanta, Lipton Ice Tea…", "en": "Your pick from the fridge: Coca-Cola, Fanta, Lipton Ice Tea…", "tr": "Buzdolabından seçin: Coca-Cola, Fanta, Lipton Ice Tea…", "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Fanta, Lipton Ice Tea…"}}};
+    for (const c of m.categories || []) for (const it of c.items || []) {
+      if (D[it.id]) Object.assign(it, D[it.id]);
+      if (it.id === "boissons-coca-cola-1-25-l") it.hidden = true;
+      if (c.id === "menus" && Array.isArray(it.options)) it.options = it.options.filter((o) => o !== "boisson");
+    }
+    m.applied.push("boissons-2026-11");
   }
   m.applied = [...new Set(m.applied)];
   return m;
