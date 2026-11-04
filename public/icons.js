@@ -145,6 +145,13 @@
       <path d="M10 44 Q22 37 34 42 L32 49 Q22 45 12 51 Z" fill="#7a3f22"/>
       <circle cx="46" cy="22" r="13" fill="#f39200"/>
       <path d="M46 15 V29 M39 22 H53" stroke="#1a1100" stroke-width="4" stroke-linecap="round"/>`),
+    "supp-feta": svg(`
+      <ellipse cx="30" cy="54" rx="20" ry="4" fill="#000" opacity=".18"/>
+      <path d="M8 36 L20 30 L32 35 L20 41 Z" fill="#fffdf6"/><path d="M8 36 L20 41 L20 51 L8 46 Z" fill="#ece6d6"/><path d="M20 41 L32 35 L32 45 L20 51 Z" fill="#ddd5c0"/>
+      <path d="M24 26 L35 21 L46 26 L35 31 Z" fill="#fffdf6"/><path d="M24 26 L35 31 L35 40 L24 35 Z" fill="#ece6d6"/><path d="M35 31 L46 26 L46 35 L35 40 Z" fill="#ddd5c0"/>
+      <g fill="#cfc6ad"><circle cx="13" cy="42" r=".9"/><circle cx="16" cy="46" r=".8"/><circle cx="27" cy="42" r=".9"/><circle cx="29" cy="31" r=".8"/><circle cx="40" cy="31" r=".9"/></g>
+      <circle cx="48" cy="44" r="11" fill="#f39200"/>
+      <path d="M48 38 V50 M42 44 H54" stroke="#1a1100" stroke-width="3.6" stroke-linecap="round"/>`),
 
     // ---------- Accompagnements ----------
     frites: svg(`

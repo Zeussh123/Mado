@@ -344,6 +344,13 @@ function applyMigrations(m){
     }
     m.applied.push("vin-rouge-2026-11");
   }
+  if (!m.applied.includes("supp-feta-2026-11")) {
+    // suppléments seulement dans les sandwichs / assiettes (demande momo) : feta ajoutée aux options, plus vendus seuls en accompagnement
+    const g = (m.optionGroups || []).find((x) => x.id === "supplement");
+    if (g && !g.choices.some((c) => c.id === "supp-feta")) g.choices.push({"id": "supp-feta", "name": {"fr": "Supplément feta", "en": "Extra feta", "tr": "Ekstra beyaz peynir", "de": "Extra Feta"}, "icon": "supp-feta", "photo": "", "price": 1, "hidden": false});
+    for (const c of m.categories || []) for (const it of c.items || []) if (["accompagnements-supplement-feta", "accompagnements-supplement-viande"].includes(it.id)) it.hidden = true;
+    m.applied.push("supp-feta-2026-11");
+  }
   m.applied = [...new Set(m.applied)];
   return m;
 }
