@@ -209,6 +209,7 @@ export async function menuText(request, env) {
 const PRODUCT_PHOTOS = {
   "pizzas-pizza-margherita": "/img/produits/pizza-margherita.jpg",
   "pizzas-pizza-kebab": "/img/produits/pizza-kebab.jpg",
+  "menus-menu-tacos": "/img/produits/menu-tacos.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
