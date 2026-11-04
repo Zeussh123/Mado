@@ -165,6 +165,8 @@ async function handleBasket(request, env, table, action, { json, menuText, check
     if (action === "send") {
       if (!orderingOpen(menu)) return { error: "hours", status: 403 };
       if (!d.lines.length) return { error: "Commande vide", status: 400 };
+      const so = soldOutIn(menu, d.lines);
+      if (so.length) return { error: "soldout", items: so, status: 409 };
       // prénom de chacun sur ses plats (« Invité 1, 2… » pour ceux qui n'en ont pas mis)
       let gi = 0; const names = {};
       for (const x of d.members) if (d.lines.some((l) => l.m === x.id)) names[x.id] = x.name || `Invité ${++gi}`;
@@ -176,10 +178,16 @@ async function handleBasket(request, env, table, action, { json, menuText, check
     }
     return { error: "introuvable", status: 404 };
   });
-  if (out.error) return json({ error: out.error }, out.status || 400);
+  if (out.error) return json({ error: out.error, ...(out.items ? { items: out.items } : {}) }, out.status || 400);
   return json({ ok: true, ...(out.result || {}), basket: publicBasket(out.data, out.version) }, 200, nocache);
 }
 
+// plats en rupture de stock dans une commande (noms en français)
+function soldOutIn(menu, lines) {
+  const so = new Set(menu.soldOut || []), out = [];
+  for (const l of lines || []) if (so.has(l.id)) for (const c of menu.categories) for (const it of c.items) if (it.id === l.id && !out.includes(it.name.fr)) out.push(it.name.fr);
+  return out;
+}
 function randomToken() {
   const b = new Uint8Array(12); crypto.getRandomValues(b);
   return [...b].map((x) => x.toString(16).padStart(2, "0")).join("");
@@ -223,6 +231,8 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
     if (!takeaway && (!/^\d{1,3}$/.test(table) || +table < 1 || (maxT && +table > maxT))) return json({ error: "Table inconnue" }, 400);
     if (!staff && !(await checkTableKey(env, table, body.k))) return json({ error: "badkey" }, 403);
     if (!staff && !orderingOpen(menu)) return json({ error: "hours" }, 403);
+    const so = staff ? [] : soldOutIn(menu, body.lines);
+    if (so.length) return json({ error: "soldout", items: so }, 409);
     const o = await createOrder(env, menu, table, body.lines, body.note);
     if (!o) return json({ error: "Commande vide" }, 400);
     return json({ ok: true, ...o });
@@ -305,4 +315,35 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
   }
 
   return json({ error: "introuvable" }, 404);
+}
+
+// ---------- Statistiques (admin) ----------
+// ?from=AAAA-MM-JJ&to=AAAA-MM-JJ (92 jours max). Commandes annulées exclues.
+// Panier moyen = chiffre d'affaires / nombre d'additions (une table ou un client qui commande en plusieurs fois compte une fois).
+export async function stats(env, url) {
+  await ensureSchema(env.DB);
+  const today = parisNow().date, re = /^\d{4}-\d{2}-\d{2}$/;
+  let to = url.searchParams.get("to"); if (!re.test(to || "")) to = today;
+  let from = url.searchParams.get("from"); if (!re.test(from || "")) from = new Date(Date.parse(to) - 29 * 864e5).toISOString().slice(0, 10);
+  if (Date.parse(to) - Date.parse(from) > 92 * 864e5) from = new Date(Date.parse(to) - 92 * 864e5).toISOString().slice(0, 10);
+  const { results } = await env.DB.prepare("SELECT day,table_no,total,lines,created_at,COALESCE(grp,id) AS grp FROM orders WHERE day>=? AND day<=? AND status!='cancelled' LIMIT 20000").bind(from, to).all();
+  const hourFmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", hour: "2-digit", hourCycle: "h23", weekday: "short" });
+  const days = {}, items = {}, hours = Array.from({ length: 24 }, () => 0), wd = Array.from({ length: 7 }, () => 0), grps = new Set();
+  let revenue = 0, takeaway = 0;
+  for (const o of results) {
+    const d = (days[o.day] ||= { day: o.day, orders: 0, revenue: 0, grps: new Set() });
+    d.orders++; d.revenue += o.total; d.grps.add(o.grp); grps.add(o.grp); revenue += o.total;
+    if (o.table_no === "EMP") takeaway++;
+    const p = Object.fromEntries(hourFmt.formatToParts(new Date(o.created_at)).map((x) => [x.type, x.value]));
+    hours[+p.hour]++; wd[["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(p.weekday)]++;
+    let lines = []; try { lines = JSON.parse(o.lines); } catch {}
+    for (const l of lines) { const it = (items[l.id] ||= { id: l.id, name: l.name, qty: 0, revenue: 0 }); it.qty += l.qty; it.revenue += l.qty * l.unit; }
+  }
+  const r2 = (n) => Math.round(n * 100) / 100;
+  return {
+    from, to, orders: results.length, revenue: r2(revenue), baskets: grps.size, avg: grps.size ? r2(revenue / grps.size) : 0, takeaway,
+    days: Object.values(days).sort((a, b) => a.day.localeCompare(b.day)).map((d) => ({ day: d.day, orders: d.orders, revenue: r2(d.revenue), avg: r2(d.revenue / d.grps.size) })),
+    items: Object.values(items).sort((a, b) => b.qty - a.qty || b.revenue - a.revenue).map((x) => ({ ...x, revenue: r2(x.revenue) })),
+    hours, weekdays: wd,
+  };
 }

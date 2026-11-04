@@ -88,6 +88,11 @@ footer{max-width:760px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font
 footer .info{margin-bottom:8px;color:var(--text)}
 
 /* ---------- Fiche produit personnalisable ---------- */
+.review{display:flex;flex-direction:column;align-items:center;gap:4px;margin:18px auto 0;max-width:320px;padding:14px 18px;border-radius:16px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);text-decoration:none;font-weight:700;text-align:center}
+.review .stars{color:#fbbc04;font-size:1.3rem;letter-spacing:3px}
+.item.out{opacity:.55}.item.out .ph{filter:grayscale(1)}
+.badge.soldout{background:#5a2a27;color:#ffb3ad;border-color:#5a2a27}
+.cl.out .cn::after{content:" · " attr(data-out);color:#ff8d86;font-weight:800;font-size:.85em}
 .item.custom{cursor:pointer;transition:border-color .15s,transform .1s}
 .item.custom:hover{border-color:#555}
 .item.custom:active{transform:scale(.985)}
@@ -418,6 +423,11 @@ function itemCard(it, catId){
   const desc = t(it.description);
   const pp = promoPrice(it, PROMOS);
   const groups = itemGroups(it);
+  if (isOut(it.id)) return `<article class="item out" aria-disabled="true">
+    <div class="ph">${ph}</div>
+    <div class="tx"><h3>${esc(t(it.name))}</h3>${desc ? `<p>${esc(desc)}</p>` : ""}
+      <div class="meta"><span class="price">${esc(fmtPrice(pp !== null && pp < +it.price ? pp : it.price))}</span><span class="badge soldout">${esc(ui("soldOut"))}</span></div></div>
+  </article>`;
   return `<article class="item custom" data-id="${esc(it.id)}" role="button" tabindex="0">
     <div class="ph">${ph}</div>
     <div class="tx">
@@ -502,7 +512,9 @@ const saveCart = () => { try { sessionStorage.setItem("mado-cart", JSON.stringif
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
 
 const findItem = (id) => { for (const c of MENU.categories) for (const it of c.items) if (it.id === id) return [it, c]; return [null, null]; };
-const visibleItem = (id) => { const [it, c] = findItem(id); return it && !it.hidden && !c.hidden ? it : null; };
+// rupture de stock (un clic dans l'admin ou la cuisine) : le plat reste affiché mais ne peut plus être commandé
+const isOut = (id) => !!(MENU && MENU.soldOut && MENU.soldOut.includes(id));
+const visibleItem = (id) => { const [it, c] = findItem(id); return it && !it.hidden && !c.hidden && !isOut(id) ? it : null; };
 function itemGroups(it){
   const all = MENU.optionGroups || [];
   return (it.options || []).map(id => all.find(g => g.id === id)).filter(g => g && g.choices.some(c => !c.hidden));
@@ -652,9 +664,9 @@ function drawCart(){
   $("#shScroll").innerHTML = `<div class="cart">
     <div class="cart-h"><h2>${esc(ui("myOrder"))}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
     <p class="hint">${esc(ui("orderHint"))}${CART.length ? `<br><small>↔ ${esc(ui("swipeHint"))}</small>` : ""}</p>
-    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-k="${esc(l.key)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl">
+    ${CART.length ? CART.map((l, i) => { const it = findItem(l.id)[0]; if (!it) return ""; const s = choiceSummary(it, l.sel); return `<div class="clw" data-k="${esc(l.key)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl${isOut(l.id) ? " out" : ""}">
       <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>
-      <div class="ct"><div class="cn">${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div>
+      <div class="ct"><div class="cn" data-out="${esc(ui("soldOut"))}">${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div>
       <div class="cp">${esc(fmtPrice(l.price * l.qty))}</div></div></div>`; }).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
     ${CART.length ? `<div class="big-total"><span>${esc(ui("total"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>` : ""}
   </div>`;
@@ -677,6 +689,7 @@ async function sendOrder(btn){
       body: JSON.stringify({table: TABLE, k: TKEY, note, lines: CART.map(l => ({id: l.id, qty: l.qty, sel: l.sel}))})});
     const j = await r.json().catch(() => ({}));
     if (STAFF && r.status === 401) { staffLogout(); return; }
+    if (j.error === "soldout") { refreshSoldOut(); throw new Error(fill(ui("soldOutErr"), {items: (j.items || []).join(", ")})); }
     if (!r.ok) throw new Error(j.error === "closed" ? ui("closedNow") : (STAFF && j.error) || ui("sendError"));
     ORDERS.unshift({id: j.id, num: j.num, token: j.token, table: TABLE, status: "new", at: Date.now()}); ORDERS = ORDERS.slice(0, 5); saveOrders();
     CART = []; saveCart(); drawPill();
@@ -696,7 +709,8 @@ function drawSent(fresh){
     ${o.shared && o.by ? `<p class="onum">${esc(fill(ui("tbSentBy"), {name: o.by}))}</p>` : ""}
     <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
-    <p class="hint">${esc(ui("payAtCounter"))}</p></div>`;
+    <p class="hint">${esc(ui("payAtCounter"))}</p>
+    ${!STAFF && /^https:\/\//.test((MENU.info || {}).reviewUrl || "") ? `<a class="review" href="${esc(MENU.info.reviewUrl)}" target="_blank" rel="noopener"><span class="stars">★★★★★</span><span>${esc(ui("reviewAsk"))}</span></a>` : ""}</div>`;
   $("#shBar").innerHTML = STAFF ? `<button class="btn grow" data-sh="staffNext">Nouvelle commande</button>` : `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
   if (STAFF) $("#shScroll .sent .status").remove();
   if (fresh) burst($("#shScroll .sent"));
@@ -842,6 +856,7 @@ async function tbPost(action, data){
     const j = await r.json().catch(() => ({}));
     if (j.error === "badkey") { badKey(); return null; }
     if (j.error === "hours") { toast(meM(), ui("tbHours")); return null; }
+    if (j.error === "soldout") { refreshSoldOut(); toast(meM(), fill(ui("soldOutErr"), {items: (j.items || []).join(", ")})); return null; }
     if (j.basket) applyTB(j.basket, action === "send");
     return r.ok ? j : null;
   } catch { return null; } finally { tbBusy--; }
@@ -977,9 +992,9 @@ function drawTableCart(){
   const line = (l, editable) => {
     const it = findItem(l.id)[0]; if (!it) return "";
     const s = choiceSummary(it, l.sel || {});
-    const body = `<div class="ct"><div class="cn">${l.qty} × ${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div><div class="cp">${esc(fmtPrice(l.price * l.qty))}</div>`;
+    const body = `<div class="ct"><div class="cn" data-out="${esc(ui("soldOut"))}">${l.qty} × ${esc(t(it.name))}</div>${s ? `<div class="cs">${esc(s)}</div>` : ""}</div><div class="cp">${esc(fmtPrice(l.price * l.qty))}</div>`;
     if (!editable) return `<div class="oline">${body}</div>`;
-    return `<div class="clw" data-k="${esc(l.k)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl">
+    return `<div class="clw" data-k="${esc(l.k)}"><div class="cl-bg"><span>🗑 ${esc(ui("remove"))}</span><span>${esc(ui("remove"))} 🗑</span></div><div class="cl${isOut(l.id) ? " out" : ""}">
       <div class="cq"><button data-sh="minus" aria-label="-">−</button><b>${l.qty}</b><button data-sh="plus" aria-label="+">+</button></div>${body.replace(`${l.qty} × `, "")}</div></div>`;
   };
   const people = owners.length ? owners : [];
@@ -1100,6 +1115,17 @@ function staffTables(){
   $("#staffOut").onclick = staffLogout;
 }
 $("#q").oninput = renderMenu;
+// ruptures de stock : on regarde toutes les 45 s si la cuisine a marqué un plat épuisé (ou de nouveau disponible)
+async function refreshSoldOut(){
+  try {
+    const m = await (await fetch("/api/menu", {cache: "no-store"})).json(), so = m.soldOut || [];
+    if (JSON.stringify(so) === JSON.stringify(MENU.soldOut || [])) return;
+    MENU.soldOut = so;
+    if ($("#app").style.display === "block") { const y = scrollY; renderMenu(); scrollTo(0, y); }
+    if ($("#sheet").classList.contains("on") && STEP === "cart") drawSheet();
+  } catch {}
+}
+setInterval(() => { if (MENU) refreshSoldOut(); }, 45000);
 // les promos changent selon l'heure : on vérifie chaque minute
 setInterval(() => { if (MENU && $("#app").style.display === "block") { const ids = activePromos().map(p=>p.id).join(); if (ids !== PROMOS.map(p=>p.id).join()) { const y = scrollY; renderMenu(); scrollTo(0, y); } } }, 60000);
 

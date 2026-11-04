@@ -73,6 +73,12 @@ label.sw input{width:20px;height:20px;accent-color:var(--accent)}
 /* plan des tables */
 .legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-bottom:14px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.stock-hint{color:var(--muted);margin:0 0 14px}
+.stk h3{margin:18px 0 8px;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stk .chips{display:flex;flex-wrap:wrap;gap:8px}
+.stk button{border:2px solid var(--line);background:var(--surface);color:inherit;border-radius:12px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer}
+.stk button.out{border-color:#c0392b;background:#3a1512;color:#ffb3ad;text-decoration:line-through}
+.stk button.out::after{content:" · ÉPUISÉ";text-decoration:none;display:inline-block;margin-left:4px;font-size:.8em}
 .flh{margin:18px 0 8px;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.flh:first-child{margin-top:0}
 .fl-view{background:#1d1f22;border:1px solid var(--line);margin-bottom:8px;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}
 .fl-view .tbl{position:absolute;aspect-ratio:auto;padding:2px;gap:2px;container-type:size;border-radius:10px;overflow:visible}
@@ -168,6 +174,7 @@ input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
     <nav id="tabs">
       <button data-tab="orders" class="on">Commandes en cours<span class="badge" id="bOrders" hidden></span></button>
       <button data-tab="tables">Plan des tables<span class="badge" id="bTables" hidden></span></button>
+      <button data-tab="stock">Épuisés<span class="badge" id="bStock" hidden></span></button>
       <button data-tab="history">Historique</button>
       <button data-tab="settings">Réglages</button>
     </nav>
@@ -193,6 +200,11 @@ input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
       <span><i style="background:var(--blue)"></i>Servie, à encaisser</span>
     </div>
     <div class="tables" id="tables"></div>
+  </section>
+
+  <section id="s-stock">
+    <p class="stock-hint">Touchez un plat quand il n'y en a plus : il passe en <b>Épuisé</b> et les clients ne peuvent plus le commander (il reste visible, grisé). Touchez-le de nouveau quand il revient.</p>
+    <div id="stockList"></div>
   </section>
 
   <section id="s-history">
@@ -565,6 +577,7 @@ async function orderAction(e){
   await api(`/api/orders/${id}/status`, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({status: a})});
   await load();
   if (tab === "history") loadHistory();
+  if (tab === "stock") { loadMenu().then(renderStock); }
 }
 $("#list").addEventListener("click", orderAction);
 $("#tableBox").addEventListener("click", orderAction);
@@ -619,10 +632,26 @@ $("#tabs").addEventListener("click", (e) => {
   if (tab === "history") loadHistory();
 });
 
+/* ---------- onglet Épuisés (rupture de stock) ---------- */
+function renderStock(){
+  const so = new Set((MENUC && MENUC.soldOut) || []);
+  $("#bStock").hidden = !so.size; $("#bStock").textContent = so.size;
+  if (!MENUC) return;
+  $("#stockList").innerHTML = MENUC.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden)).map(c => `<div class="stk"><h3>${esc(c.name.fr)}</h3><div class="chips">${c.items.filter(i => !i.hidden).map(i => `<button data-so="${esc(i.id)}" class="${so.has(i.id) ? "out" : ""}">${esc(i.name.fr)}</button>`).join("")}</div></div>`).join("");
+}
+$("#stockList").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-so]"); if (!b) return;
+  const out = !b.classList.contains("out"); b.disabled = true;
+  try {
+    const r = await api("/api/soldout", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({id: b.dataset.so, out})});
+    if (r.ok) { MENUC.soldOut = (await r.json()).soldOut; renderStock(); }
+  } finally { b.disabled = false; }
+});
+
 /* ---------- chargement ---------- */
 let INFO = {}, MENUC = null;
 async function loadMenu(){
-  try { const m = await (await fetch("/api/menu", {cache: "no-store"})).json(); TABLES = parseInt(m.ordering && m.ordering.tables) || 10; INFO = m.info || {}; MENUC = m; } catch {}
+  try { const m = await (await fetch("/api/menu", {cache: "no-store"})).json(); TABLES = parseInt(m.ordering && m.ordering.tables) || 10; INFO = m.info || {}; MENUC = m; renderStock(); } catch {}
 }
 async function load(){
   try {

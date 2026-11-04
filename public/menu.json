@@ -523,6 +523,24 @@
    "en": "Edit",
    "tr": "Değiştir",
    "de": "Ändern"
+  },
+  "soldOut": {
+   "fr": "Épuisé",
+   "en": "Sold out",
+   "tr": "Tükendi",
+   "de": "Ausverkauft"
+  },
+  "soldOutErr": {
+   "fr": "Plus disponible : {items}. Retirez-le de la commande pour l’envoyer.",
+   "en": "No longer available: {items}. Remove it from the order to send it.",
+   "tr": "Artık mevcut değil: {items}. Göndermek için siparişten çıkarın.",
+   "de": "Nicht mehr verfügbar: {items}. Bitte aus der Bestellung entfernen, um sie zu senden."
+  },
+  "reviewAsk": {
+   "fr": "Vous avez aimé ? Laissez-nous un avis Google",
+   "en": "Enjoyed it? Leave us a Google review",
+   "tr": "Beğendiniz mi? Bize Google yorumu bırakın",
+   "de": "Hat es geschmeckt? Hinterlassen Sie uns eine Google-Bewertung"
   }
  },
  "categories": [

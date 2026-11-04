@@ -3,7 +3,7 @@
 // - stocke le menu (JSON) et les photos dans le namespace KV "MADO"
 // - protège les modifications par le mot de passe ADMIN_PASSWORD (secret Cloudflare)
 
-import { handleOrders } from "./orders.js";
+import { handleOrders, stats } from "./orders.js";
 
 const MENU_KEY = "menu";
 const STAFF_KEY = "staff-code";
@@ -17,6 +17,8 @@ export default {
 
     try {
       if (path === "/api/menu" && request.method === "GET") return getMenu(request, env);
+      if (path === "/api/soldout" && request.method === "POST") return setSoldOut(request, env);
+      if (path === "/api/stats" && request.method === "GET") return withAuth(request, env, async () => env.DB ? json(await stats(env, url)) : json({ error: "Commandes non activées" }, 503));
       if (path === "/api/menu" && request.method === "PUT") return withAuth(request, env, () => putMenu(request, env));
       if (path === "/api/login" && request.method === "POST") return withAuth(request, env, () => json({ ok: true }));
       if (path === "/api/photo" && request.method === "POST") return withAuth(request, env, () => postPhoto(request, env));
@@ -142,6 +144,17 @@ async function safeEqual(a, b) {
   return diff === 0;
 }
 
+// Ruptures de stock : liste d'ids à part (un clic dans l'admin ou la cuisine, sans toucher au menu enregistré)
+async function loadSoldOut(env) { try { return JSON.parse((await env.MADO.get("soldout")) || "[]"); } catch { return []; } }
+async function setSoldOut(request, env) {
+  if (!(await staffAuth(request, env))) return json({ error: "Non autorisé" }, 401);
+  let b = {}; try { b = await request.json(); } catch {}
+  if (!b.id || typeof b.id !== "string") return json({ error: "id manquant" }, 400);
+  const set = new Set(await loadSoldOut(env));
+  if (b.out) set.add(b.id); else set.delete(b.id);
+  await env.MADO.put("soldout", JSON.stringify([...set]));
+  return json({ ok: true, soldOut: [...set] });
+}
 async function getMenu(request, env) {
   const body = await menuText(request, env);
   return new Response(body, {
@@ -180,6 +193,8 @@ export async function menuText(request, env) {
     applyMigrations(saved);
     body = JSON.stringify(saved);
   }
+  const so = await loadSoldOut(env);
+  if (so.length) { const m = JSON.parse(body); m.soldOut = so; body = JSON.stringify(m); }
   return body;
 }
 
@@ -233,6 +248,7 @@ async function putMenu(request, env) {
   let data;
   try { data = JSON.parse(text); } catch { return json({ error: "JSON invalide" }, 400); }
   if (!data || !Array.isArray(data.categories)) return json({ error: "Menu invalide" }, 400);
+  delete data.soldOut; // géré à part (/api/soldout)
   data.updatedAt = new Date().toISOString();
   const out = JSON.stringify(data);
   // garde la version précédente en sauvegarde

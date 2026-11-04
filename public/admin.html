@@ -22,6 +22,25 @@ button.ghost{background:transparent}
 button:disabled{opacity:.5;cursor:default}
 .wrap{max-width:820px;margin:0 auto;padding:0 16px}
 /* ---------- plan de salle ---------- */
+.toggles .so.on{color:#ff8d86;font-weight:800}
+.st-range{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.st-range button.on{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.st-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.st-tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.st-tile small{display:block;color:var(--muted);font-size:.8rem;margin-bottom:4px}
+.st-tile b{font-size:1.6rem;font-variant-numeric:tabular-nums}
+.st-card h3{margin:0 0 4px;font-size:1rem}.st-card .sub{color:var(--muted);font-size:.82rem;margin:0 0 12px}
+.st-bars{display:flex;align-items:flex-end;gap:2px;height:160px;border-bottom:1px solid var(--line)}
+.st-bars .b{flex:1;min-width:0;height:100%;display:flex;align-items:flex-end;position:relative}
+.st-bars .b i{display:block;width:100%;background:var(--accent);border-radius:4px 4px 0 0;min-height:0}
+.st-bars .b:hover i{filter:brightness(1.25)}
+.st-bars .b.peak i{background:#ffb347}
+.st-axis{display:flex;gap:2px;margin-top:4px}.st-axis span{flex:1;min-width:0;text-align:center;font-size:.68rem;color:var(--muted);white-space:nowrap;overflow:hidden}
+.st-tip{position:fixed;z-index:50;pointer-events:none;background:#111;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:.82rem;white-space:nowrap;display:none}
+.st-top{width:100%;border-collapse:collapse;font-size:.92rem}
+.st-top td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+.st-top td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.st-top .bar{height:8px;border-radius:0 4px 4px 0;background:var(--accent);min-width:2px}
 #tab-floor{width:min(1200px,calc(100vw - 32px));position:relative;left:50%;transform:translateX(-50%)}
 .fl-zones{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .fl-zones button.on{background:var(--accent);border-color:var(--accent);color:var(--ink)}
@@ -163,6 +182,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <button data-tab="promos">Promos</button>
       <button data-tab="info">Infos du restaurant</button>
       <button data-tab="floor">Plan de salle</button>
+      <button data-tab="stats">Statistiques</button>
       <button data-tab="qr">QR code</button>
     </div>
   </header>
@@ -206,6 +226,8 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <div class="panel">
         <div class="lbl">Adresse</div><input id="infoAddress">
         <div class="lbl">Téléphone</div><input id="infoPhone">
+        <div class="lbl">Lien pour laisser un avis Google</div><input id="infoReview" type="url" placeholder="https://g.page/r/…/review">
+        <p class="small" style="margin-top:4px">Après l'envoi de sa commande, le client voit un bouton « Laisser un avis Google ». Pour obtenir le lien : sur Google Maps ou dans votre fiche Google Business, cliquez « Demander des avis » puis copiez le lien.</p>
         <div class="lbl">Horaires (FR · EN · TR · DE)</div>
         <div class="grid4" id="infoHours"></div>
         <p class="small">Ces infos s'affichent en bas du menu.</p>
@@ -237,6 +259,13 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <div class="fl-canvas"><div class="fl-zone fl-edit" id="flCanvas"></div></div>
         <div id="flPanel"></div>
       </div>
+    </section>
+
+    <section id="tab-stats" style="display:none">
+      <div class="st-range" id="stRange">
+        <button type="button" data-days="1">Aujourd'hui</button><button type="button" data-days="7" class="on">7 jours</button><button type="button" data-days="30">30 jours</button><button type="button" data-days="90">90 jours</button>
+      </div>
+      <div id="stBody"><p class="small">Chargement…</p></div>
     </section>
 
     <section id="tab-qr" style="display:none">
@@ -349,8 +378,11 @@ async function loadMenu(){
     if (local) return withDefaults(JSON.parse(local));
     const r = await fetch("menu.json", {cache:"no-store"}); return r.json();
   }
-  const r = await fetch("/api/menu", {cache:"no-store"}); return r.json();
+  const r = await fetch("/api/menu", {cache:"no-store"}); const m = await r.json();
+  // ruptures de stock : gérées à part, enregistrées tout de suite (pas besoin de cliquer Enregistrer)
+  SOLD = new Set(m.soldOut || []); delete m.soldOut; return m;
 }
+let SOLD = new Set();
 
 function uid(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 const blankL = () => Object.fromEntries(LANGS.map(l => [l, ""]));
@@ -419,6 +451,7 @@ function itemHtml(c, ci, it, ii){
       <div class="toggles">
         <label><input type="checkbox" data-f="visible" ${it.hidden?"":"checked"}> Visible sur la carte</label>
         <label><input type="checkbox" data-f="bestseller" ${it.bestseller?"checked":""}> ★ Meilleure vente</label>
+        <label class="so ${SOLD.has(it.id)?"on":""}"><input type="checkbox" data-so="${esc(it.id)}" ${SOLD.has(it.id)?"checked":""}> Épuisé</label>
         <button class="ghost" data-act="toggleItem" style="padding:2px 8px;font-size:.85rem">${open?"Moins ▲":"Plus ▼"}</button>
       </div>
     </div>
@@ -465,6 +498,7 @@ function renderInfo(){
   const info = menu.info || (menu.info = {address:"",phone:"",hours:blankL()});
   $("#infoAddress").value = info.address || "";
   $("#infoPhone").value = info.phone || "";
+  $("#infoReview").value = info.reviewUrl || "";
   $("#infoHours").innerHTML = LANGS.map(l=>`<input data-hl="${l}" placeholder="${LNAME[l]}" value="${esc((info.hours||{})[l])}">`).join("");
   const ord = menu.ordering || (menu.ordering = {enabled:false, tables:10});
   $("#ordEnabled").checked = !!ord.enabled; $("#ordTables").value = ord.tables || "";
@@ -532,7 +566,8 @@ $("#cats").addEventListener("toggle", (e) => {
   const c = menu.categories[e.target.closest(".cat").dataset.ci];
   e.target.open ? openSettings.add(c.id) : openSettings.delete(c.id);
 }, true);
-$("#cats").addEventListener("change", (e) => {
+$("#cats").addEventListener("change", async (e) => {
+  if (e.target.dataset.so) return toggleSoldOut(e.target);
   const el = e.target;
   if (el.dataset.act === "move" && el.value !== "") {
     const itemEl = el.closest(".item"), c = menu.categories[itemEl.dataset.ci];
@@ -579,6 +614,7 @@ $("#tab-info").addEventListener("input", (e) => {
   const info = menu.info;
   if (e.target.id === "infoAddress") info.address = e.target.value;
   else if (e.target.id === "infoPhone") info.phone = e.target.value;
+  else if (e.target.id === "infoReview") { info.reviewUrl = e.target.value.trim(); e.target.style.borderColor = info.reviewUrl && !/^https:\/\//.test(info.reviewUrl) ? "var(--red)" : ""; }
   else if (e.target.dataset.hl) { info.hours = info.hours || blankL(); info.hours[e.target.dataset.hl] = e.target.value; }
   else if (e.target.id === "ordEnabled") menu.ordering.enabled = e.target.checked;
   else if (e.target.id === "ordUseSched") { menu.ordering.useSchedule = e.target.checked; $("#ordSched").style.display = e.target.checked ? "" : "none";
@@ -752,6 +788,75 @@ $("#addGroup").onclick = async () => {
 };
 
 
+
+/* ---------- Statistiques ---------- */
+let stDays = 7;
+const eurS = (n) => (+n).toLocaleString("fr-FR", {style: "currency", currency: "EUR"});
+const isoDay = (d) => new Intl.DateTimeFormat("en-CA", {timeZone: "Europe/Paris"}).format(d);
+async function loadStats(){
+  if (DEMO) { $("#stBody").innerHTML = `<p class="small">Disponible une fois le site en ligne.</p>`; return; }
+  const to = isoDay(new Date()), from = isoDay(new Date(Date.now() - (stDays - 1) * 864e5));
+  $("#stBody").innerHTML = `<p class="small">Chargement…</p>`;
+  const r = await api(`/api/stats?from=${from}&to=${to}`).catch(() => null);
+  if (!r || !r.ok) { $("#stBody").innerHTML = `<p class="small">Statistiques indisponibles pour le moment.</p>`; return; }
+  drawStats(await r.json());
+}
+$("#stRange").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-days]"); if (!b) return;
+  stDays = +b.dataset.days; $$("#stRange button").forEach(x => x.classList.toggle("on", x === b)); loadStats();
+});
+// barres verticales, une seule série : pas de légende, le titre dit ce que c'est ; survol = valeur exacte
+function bars(vals, labels, tips, showEvery = 1){
+  const max = Math.max(1, ...vals), peak = vals.indexOf(Math.max(...vals));
+  return `<div class="st-bars">${vals.map((v, i) => `<div class="b ${v && i === peak ? "peak" : ""}" data-tip="${esc(tips[i])}"><i style="height:${v / max * 100}%"></i></div>`).join("")}</div>
+    <div class="st-axis">${labels.map((l, i) => `<span>${i % showEvery ? "" : esc(l)}</span>`).join("")}</div>`;
+}
+function drawStats(d){
+  if (!d.orders) { $("#stBody").innerHTML = `<div class="panel"><p style="margin:0">Aucune commande sur cette période.</p><p class="small">Les statistiques se remplissent avec les commandes passées par QR code et par les serveurs.</p></div>`; return; }
+  const H = d.hours.map((v, h) => [h, v]), first = H.findIndex(x => x[1]), last = 23 - [...H].reverse().findIndex(x => x[1]);
+  const hrs = H.slice(Math.max(0, first - 1), Math.min(24, last + 2));
+  const top = d.items.slice(0, 12), topMax = Math.max(...top.map(x => x.qty));
+  const peakH = H.reduce((a, b) => b[1] > a[1] ? b : a);
+  const WD = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+  const fmtDay = (s) => new Date(s + "T12:00:00").toLocaleDateString("fr-FR", {weekday: "short", day: "numeric", month: "short"});
+  $("#stBody").innerHTML = `
+    <div class="st-tiles">
+      <div class="st-tile"><small>Chiffre d'affaires</small><b>${eurS(d.revenue)}</b></div>
+      <div class="st-tile"><small>Commandes</small><b>${d.orders}</b></div>
+      <div class="st-tile"><small>Panier moyen (par table ou client)</small><b>${eurS(d.avg)}</b></div>
+      <div class="st-tile"><small>À emporter</small><b>${d.takeaway}</b></div>
+    </div>
+    <div class="panel st-card"><h3>Plats les plus vendus</h3><p class="sub">Nombre vendus sur la période</p>
+      <table class="st-top">${top.map((x, i) => `<tr><td style="width:28px;color:var(--muted)">${i + 1}</td><td>${esc(x.name)}</td><td style="width:35%"><div class="bar" style="width:${x.qty / topMax * 100}%"></div></td><td class="n"><b>${x.qty}</b></td><td class="n" style="color:var(--muted)">${eurS(x.revenue)}</td></tr>`).join("")}</table></div>
+    <div class="panel st-card"><h3>Heures de pointe</h3><p class="sub">Commandes par heure · le plus de monde vers <b>${peakH[0]} h</b></p>
+      ${bars(hrs.map(x => x[1]), hrs.map(x => x[0] + "h"), hrs.map(x => `${x[0]} h – ${x[0] + 1} h : ${x[1]} commande${x[1] > 1 ? "s" : ""}`))}</div>
+    <div class="panel st-card"><h3>Jours de la semaine</h3><p class="sub">Commandes par jour de la semaine</p>
+      ${bars(d.weekdays, WD, d.weekdays.map((v, i) => `${WD[i]} : ${v} commande${v > 1 ? "s" : ""}`))}</div>
+    ${d.days.length > 1 ? `<div class="panel st-card"><h3>Chiffre d'affaires par jour</h3><p class="sub">Survolez une barre pour le détail</p>
+      ${bars(d.days.map(x => x.revenue), d.days.map(x => x.day.slice(8) + "/" + x.day.slice(5, 7)), d.days.map(x => `${fmtDay(x.day)} : ${eurS(x.revenue)} · ${x.orders} cde · panier moyen ${eurS(x.avg)}`), Math.ceil(d.days.length / 12))}</div>` : ""}
+    <div class="panel st-card"><h3>Détail par jour</h3>
+      <table class="st-top"><tr style="color:var(--muted)"><td>Jour</td><td class="n">Commandes</td><td class="n">Chiffre d'affaires</td><td class="n">Panier moyen</td></tr>
+      ${d.days.slice().reverse().map(x => `<tr><td>${fmtDay(x.day)}</td><td class="n">${x.orders}</td><td class="n">${eurS(x.revenue)}</td><td class="n">${eurS(x.avg)}</td></tr>`).join("")}</table></div>`;
+}
+// bulle au survol (souris ou doigt)
+const stTip = document.createElement("div"); stTip.className = "st-tip"; document.body.appendChild(stTip);
+$("#stBody").addEventListener("pointermove", (e) => {
+  const b = e.target.closest("[data-tip]"); if (!b) { stTip.style.display = "none"; return; }
+  stTip.textContent = b.dataset.tip; stTip.style.display = "block";
+  const w = stTip.offsetWidth; stTip.style.left = Math.min(innerWidth - w - 8, Math.max(8, e.clientX - w / 2)) + "px"; stTip.style.top = (e.clientY - 44) + "px";
+});
+$("#stBody").addEventListener("pointerleave", () => stTip.style.display = "none");
+
+/* ---------- Rupture de stock ---------- */
+async function toggleSoldOut(box){
+  const id = box.dataset.so, out = box.checked;
+  if (DEMO) { out ? SOLD.add(id) : SOLD.delete(id); return; }
+  const r = await api("/api/soldout", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({id, out})}).catch(() => null);
+  if (!r || !r.ok) { box.checked = !out; toast("Erreur, réessayez."); return; }
+  SOLD = new Set((await r.json()).soldOut); box.closest(".so").classList.toggle("on", out);
+  toast(out ? "Marqué épuisé : les clients ne peuvent plus le commander." : "De nouveau disponible.");
+}
+
 /* ---------- Plan de salle ---------- */
 const FL = window.MADO_FLOOR; FL.injectCss();
 let flZone = null, flSel = null;
@@ -919,8 +1024,9 @@ window.addEventListener("beforeunload", (e) => { if (menu && dirty()) { e.preven
 $("#tabs").onclick = (e) => {
   const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
-  for (const t of ["menu","options","promos","info","floor","qr"]) $("#tab-"+t).style.display = t === b.dataset.tab ? "block" : "none";
+  for (const t of ["menu","options","promos","info","floor","stats","qr"]) $("#tab-"+t).style.display = t === b.dataset.tab ? "block" : "none";
   if (b.dataset.tab === "floor") drawFloor();
+  if (b.dataset.tab === "stats") loadStats();
   if (b.dataset.tab === "qr") drawQr();
 };
 function drawQr(){
