@@ -115,6 +115,10 @@ async function updateBasket(env, table, fn) {
   }
   return { error: "Réessayez", status: 409 };
 }
+// table libérée : panier et convives vidés (version +1 pour que les téléphones déjà ouverts suivent)
+async function resetBasket(env, table) {
+  await env.DB.prepare("UPDATE table_baskets SET data=?, version=version+1, updated_at=? WHERE table_no=?").bind(JSON.stringify(emptyBasket()), new Date().toISOString(), String(table)).run();
+}
 const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, last: data.last });
 const cleanStr = (x, n) => String(x || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, n);
 
@@ -127,7 +131,12 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   if (!(await checkTableKey(env, table, new URL(request.url).searchParams.get("k")))) return json({ error: "badkey" }, 403);
   if (!action) {
     if (request.method !== "GET") return json({ error: "introuvable" }, 404);
-    const b = await readBasket(env, table);
+    let b = await readBasket(env, table);
+    // commandes de la table déjà annulées ou encaissées (ex. avant la correction) : on repart d'un panier vide
+    if (b.data.last && b.data.last.id) {
+      const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready','done')").bind(String(table)).first();
+      if (!left.n) { await resetBasket(env, table); b = await readBasket(env, table); }
+    }
     return json(publicBasket(b.data, b.version), 200, nocache);
   }
   if (request.method !== "POST") return json({ error: "introuvable" }, 404);
@@ -285,6 +294,14 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const { status } = await request.json().catch(() => ({}));
       if (!STATUSES.includes(status)) return json({ error: "statut inconnu" }, 400);
       await env.DB.prepare("UPDATE orders SET status=?, updated_at=? WHERE id=?").bind(status, new Date().toISOString(), +mSet[1]).run();
+      // commande annulée ou encaissée : s'il ne reste rien en cours sur la table, on vide le panier et la liste des convives
+      if (status === "cancelled" || status === "paid") {
+        const o = await env.DB.prepare("SELECT table_no FROM orders WHERE id=?").bind(+mSet[1]).first();
+        if (o && o.table_no && o.table_no !== "EMP") {
+          const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready','done')").bind(o.table_no).first();
+          if (!left.n) await resetBasket(env, o.table_no);
+        }
+      }
       return json({ ok: true });
     });
   }
@@ -297,7 +314,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE COALESCE(grp,id)=? AND status IN ('new','ready','done')").bind(new Date().toISOString(), +mGrp[1]).run();
       // plus rien en cours sur la table : le panier commun repart à zéro
       if (o) { const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready')").bind(o.table_no).first();
-        if (!left.n) await env.DB.prepare("DELETE FROM table_baskets WHERE table_no=?").bind(o.table_no).run(); }
+        if (!left.n) await resetBasket(env, o.table_no); }
       return json({ ok: true });
     });
   }
@@ -322,7 +339,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
     return withAuth(request, env, async () => {
       await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE table_no=? AND status IN ('new','ready','done')").bind(new Date().toISOString(), mTable[1]).run();
       // table libérée : le panier commun repart à zéro pour les clients suivants
-      await env.DB.prepare("DELETE FROM table_baskets WHERE table_no=?").bind(mTable[1]).run();
+      await resetBasket(env, mTable[1]);
       return json({ ok: true });
     });
   }
