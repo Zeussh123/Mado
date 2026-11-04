@@ -242,6 +242,7 @@ const PRODUCT_PHOTOS = {
   "alcools-bouteille-de-vin": "/img/produits/vin-rose-bouteille.jpg",
   "alcools-bouteille-de-vin-rouge": "/img/produits/vin-rouge-bouteille.jpg",
   "desserts-baklava-piece": "/img/produits/baklava.jpg",
+  "pizzas-pizza-poulet-creme": "/img/produits/pizza-poulet-creme.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
