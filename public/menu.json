@@ -2743,16 +2743,16 @@
     },
     {
      "name": {
-      "fr": "Verre de vin",
-      "en": "Glass of wine",
-      "tr": "Kadeh şarap",
-      "de": "Glas Wein"
+      "fr": "Verre de vin rosé",
+      "en": "Glass of rosé wine",
+      "tr": "Kadeh roze şarap",
+      "de": "Glas Roséwein"
      },
      "price": 2.5,
      "id": "alcools-verre-de-vin",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/vin-rose-verre.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2764,16 +2764,37 @@
     },
     {
      "name": {
-      "fr": "Carafe de vin 1/4",
-      "en": "Carafe of wine 1/4",
-      "tr": "Sürahi şarap 1/4",
-      "de": "Karaffe Wein 1/4"
+      "fr": "Verre de vin rouge",
+      "en": "Glass of red wine",
+      "tr": "Kadeh kırmızı şarap",
+      "de": "Glas Rotwein"
+     },
+     "price": 2.5,
+     "id": "alcools-verre-de-vin-rouge",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "/img/produits/vin-rouge-verre.jpg",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     },
+     "options": [],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Carafe de vin rosé 1/4",
+      "en": "Carafe of rosé wine 1/4",
+      "tr": "Sürahi roze şarap 1/4",
+      "de": "Karaffe Roséwein 1/4"
      },
      "price": 6,
      "id": "alcools-carafe-de-vin-1-4",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/vin-rose-quart.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2785,13 +2806,76 @@
     },
     {
      "name": {
-      "fr": "Carafe de vin 1/2",
-      "en": "Carafe of wine 1/2",
-      "tr": "Sürahi şarap 1/2",
-      "de": "Karaffe Wein 1/2"
+      "fr": "Carafe de vin rouge 1/4",
+      "en": "Carafe of red wine 1/4",
+      "tr": "Sürahi kırmızı şarap 1/4",
+      "de": "Karaffe Rotwein 1/4"
+     },
+     "price": 6,
+     "id": "alcools-carafe-de-vin-1-4-rouge",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "/img/produits/vin-rouge-quart.jpg",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     },
+     "options": [],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Carafe de vin rosé 1/2",
+      "en": "Carafe of rosé wine 1/2",
+      "tr": "Sürahi roze şarap 1/2",
+      "de": "Karaffe Roséwein 1/2"
      },
      "price": 9,
      "id": "alcools-carafe-de-vin-1-2",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "/img/produits/vin-rose-demi.jpg",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     },
+     "options": [],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Carafe de vin rouge 1/2",
+      "en": "Carafe of red wine 1/2",
+      "tr": "Sürahi kırmızı şarap 1/2",
+      "de": "Karaffe Rotwein 1/2"
+     },
+     "price": 9,
+     "id": "alcools-carafe-de-vin-1-2-rouge",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "/img/produits/vin-rouge-demi.jpg",
+     "description": {
+      "fr": "",
+      "en": "",
+      "tr": "",
+      "de": ""
+     },
+     "options": [],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Bouteille de vin rosé",
+      "en": "Bottle of rosé wine",
+      "tr": "Şişe roze şarap",
+      "de": "Flasche Roséwein"
+     },
+     "price": 16,
+     "id": "alcools-bouteille-de-vin",
      "bestseller": false,
      "hidden": false,
      "photo": "",
@@ -2806,13 +2890,13 @@
     },
     {
      "name": {
-      "fr": "Bouteille de vin",
-      "en": "Bottle of wine",
-      "tr": "Şişe şarap",
-      "de": "Flasche Wein"
+      "fr": "Bouteille de vin rouge",
+      "en": "Bottle of red wine",
+      "tr": "Şişe kırmızı şarap",
+      "de": "Flasche Rotwein"
      },
      "price": 16,
-     "id": "alcools-bouteille-de-vin",
+     "id": "alcools-bouteille-de-vin-rouge",
      "bestseller": false,
      "hidden": false,
      "photo": "",
@@ -3907,7 +3991,8 @@
   "photo-margherita-2026-11",
   "photo:pizzas-pizza-kebab",
   "photo:pizzas-pizza-margherita",
-  "piment-2026-11"
+  "piment-2026-11",
+  "vin-rouge-2026-11"
  ],
  "game": {
   "enabled": false,

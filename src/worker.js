@@ -324,6 +324,26 @@ function applyMigrations(m){
     }
     m.applied.push("capri-sun-2026-11");
   }
+  if (!m.applied.includes("vin-rouge-2026-11")) {
+    // vin en double : le vin existant devient le rosé (renommé par momo) et on ajoute la même gamme en rouge, au même prix
+    const W = {"alcools-verre-de-vin": {"kind": "verre", "rose": {"fr": "Verre de vin rosé", "en": "Glass of rosé wine", "tr": "Kadeh roze şarap", "de": "Glas Roséwein"}, "rouge": {"fr": "Verre de vin rouge", "en": "Glass of red wine", "tr": "Kadeh kırmızı şarap", "de": "Glas Rotwein"}, "photoRose": "/img/produits/vin-rose-verre.jpg", "photoRouge": "/img/produits/vin-rouge-verre.jpg"}, "alcools-carafe-de-vin-1-4": {"kind": "quart", "rose": {"fr": "Carafe de vin rosé 1/4", "en": "Carafe of rosé wine 1/4", "tr": "Sürahi roze şarap 1/4", "de": "Karaffe Roséwein 1/4"}, "rouge": {"fr": "Carafe de vin rouge 1/4", "en": "Carafe of red wine 1/4", "tr": "Sürahi kırmızı şarap 1/4", "de": "Karaffe Rotwein 1/4"}, "photoRose": "/img/produits/vin-rose-quart.jpg", "photoRouge": "/img/produits/vin-rouge-quart.jpg"}, "alcools-carafe-de-vin-1-2": {"kind": "demi", "rose": {"fr": "Carafe de vin rosé 1/2", "en": "Carafe of rosé wine 1/2", "tr": "Sürahi roze şarap 1/2", "de": "Karaffe Roséwein 1/2"}, "rouge": {"fr": "Carafe de vin rouge 1/2", "en": "Carafe of red wine 1/2", "tr": "Sürahi kırmızı şarap 1/2", "de": "Karaffe Rotwein 1/2"}, "photoRose": "/img/produits/vin-rose-demi.jpg", "photoRouge": "/img/produits/vin-rouge-demi.jpg"}, "alcools-bouteille-de-vin": {"kind": "bouteille", "rose": {"fr": "Bouteille de vin rosé", "en": "Bottle of rosé wine", "tr": "Şişe roze şarap", "de": "Flasche Roséwein"}, "rouge": {"fr": "Bouteille de vin rouge", "en": "Bottle of red wine", "tr": "Şişe kırmızı şarap", "de": "Flasche Rotwein"}, "photoRose": "", "photoRouge": ""}};
+    for (const c of m.categories || []) {
+      if (c.id !== "alcools") continue;
+      const out = [];
+      for (const it of c.items || []) {
+        out.push(it);
+        const g = W[it.id]; if (!g) continue;
+        it.name = it.name || {};
+        if (!/ros/i.test(it.name.fr || "")) it.name.fr = g.rose.fr;
+        for (const L of ["en", "tr", "de"]) if (!/ros/i.test(it.name[L] || "")) it.name[L] = g.rose[L];
+        if (!it.photo) it.photo = g.photoRose;
+        const rid = it.id + "-rouge";
+        if (!c.items.some((x) => x.id === rid)) out.push({ ...JSON.parse(JSON.stringify(it)), id: rid, name: g.rouge, photo: g.photoRouge, bestseller: false });
+      }
+      c.items = out;
+    }
+    m.applied.push("vin-rouge-2026-11");
+  }
   m.applied = [...new Set(m.applied)];
   return m;
 }
