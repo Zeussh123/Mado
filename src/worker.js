@@ -254,8 +254,14 @@ function applyMigrations(m){
   if (!m.applied.includes("review-2026-11")) {
     // lien Google envoyé par momo (fiche Maps) pour le bouton « Laisser un avis »
     m.info = m.info || {};
-    if (!m.info.reviewUrl) m.info.reviewUrl = "https://maps.app.goo.gl/qoaJDFyepE72QLpT8";
+    if (!m.info.reviewUrl) m.info.reviewUrl = "https://g.page/r/CbD3MvtAG53rEBE/review";
     m.applied.push("review-2026-11");
+  }
+  if (!m.applied.includes("review2-2026-11")) {
+    // lien d'avis direct (« Demander des avis ») à la place du lien de fiche Maps
+    m.info = m.info || {};
+    if (!m.info.reviewUrl || m.info.reviewUrl.includes("maps.app.goo.gl/qoaJDFyepE72QLpT8")) m.info.reviewUrl = "https://g.page/r/CbD3MvtAG53rEBE/review";
+    m.applied.push("review2-2026-11");
   }
   m.applied = [...new Set(m.applied)];
   return m;
