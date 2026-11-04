@@ -1811,7 +1811,7 @@
      "id": "pizzas-pizza-4-fromages",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-4-fromages.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -1832,7 +1832,7 @@
      "id": "pizzas-pizza-4-saisons",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-4-saisons.jpg",
      "options": [],
      "upgrade": ""
     },

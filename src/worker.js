@@ -214,6 +214,8 @@ const PRODUCT_PHOTOS = {
   "pizzas-pizza-kebab": "/img/produits/pizza-kebab.jpg",
   "menus-menu-tacos": "/img/produits/menu-tacos.jpg",
   "menus-menu-yufka": "/img/produits/menu-yufka.jpg",
+  "pizzas-pizza-4-fromages": "/img/produits/pizza-4-fromages.jpg",
+  "pizzas-pizza-4-saisons": "/img/produits/pizza-4-saisons.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
