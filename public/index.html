@@ -281,6 +281,7 @@ main{padding-bottom:96px}
 </div>
 
 <script src="icons.js"></script>
+<script src="floor.js"></script>
 <script>
 const LANGS = [
   {code:"fr", flag:"🇫🇷", label:"Français", sub:"Menu en français"},
@@ -493,7 +494,9 @@ let TABLE = STAFF ? "" : (() => {
 let ORDERS = (() => { try { return JSON.parse(sessionStorage.getItem("mado-orders")) || []; } catch { return []; } })();
 const saveOrders = () => { try { sessionStorage.setItem("mado-orders", JSON.stringify(ORDERS)); } catch {} };
 const canOrder = () => TABLE && (STAFF || (MENU.ordering && MENU.ordering.enabled));
-const tableLabel = () => TABLE === "EMP" ? "À emporter" : `${ui("table")} ${TABLE}`;
+// numéro ou nom de la table pour les phrases « à la table {t} »
+const tableNo = () => { const f = window.MADO_FLOOR && MADO_FLOOR.find(MENU, TABLE); return f && f.label && f.label.trim() ? f.label : TABLE; };
+const tableLabel = () => { if (TABLE === "EMP") return "À emporter"; const f = window.MADO_FLOOR && MADO_FLOOR.find(MENU, TABLE); return f && f.label && f.label.trim() ? f.label : `${ui("table")} ${TABLE}`; };
 let CART = (() => { try { return JSON.parse(sessionStorage.getItem("mado-cart")) || []; } catch { return []; } })();
 const saveCart = () => { try { sessionStorage.setItem("mado-cart", JSON.stringify(CART)); } catch {} };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
@@ -943,7 +946,7 @@ function cartClear(){ if (!SHARED()) { CART = []; saveCart(); return; } [...CART
 // écrans
 function drawJoin(refresh){
   const others = TB.members.filter(m => m.id !== ME && (m.name || TB.lines.some(l => l.m === m.id)));
-  const html = `<div class="join"><h2>${esc(fill(ui("tbJoinH"), {t: TABLE}))}</h2><p>${esc(ui("tbJoinP"))}</p>
+  const html = `<div class="join"><h2>${esc(fill(ui("tbJoinH"), {t: tableNo()}))}</h2><p>${esc(ui("tbJoinP"))}</p>
     ${others.length ? `<div class="who">${esc(ui("tbAlready"))} ${others.map(m => `${avatar(m)}<span>${esc(mname(m))}</span>`).join("")}</div>` : ""}
     <input id="tbName" maxlength="20" autocomplete="given-name" placeholder="${esc(ui("tbNamePh"))}" value="${esc(ss.get("mado-name") || "")}"></div>`;
   if (refresh && $("#tbName")) {

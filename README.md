@@ -39,3 +39,6 @@ Créer `.dev.vars` avec `ADMIN_PASSWORD=motdepasse`, puis `npx wrangler dev`.
 
 ### Pass de table (2 h)
 Scanner le QR (`?t=N&k=code`) échange le code contre un pass signé valable 2 h (`POST /api/table/N/session`). Seul ce pass permet de commander ; le code est retiré de l'adresse. Après 2 h, il faut rescanner le QR. Changer le code d'une table dans l'admin coupe aussi les pass en cours.
+
+### Plan de salle
+Admin › Plan de salle : zones (Salle, Terrasse…), tables à glisser/redimensionner, numéro (celui du QR), nom affiché (« Terrasse 1 »), places, forme. Stocké dans `menu.floor` ; `public/floor.js` est partagé par l'admin, la cuisine (plan des tables) et le menu client (nom de la table). `ordering.tables` = plus grand numéro du plan.

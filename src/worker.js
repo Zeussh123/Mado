@@ -207,6 +207,23 @@ function applyMigrations(m){
     for (const c of m.categories || []) for (const it of c.items || []) if (it.id === id && !it.photo) it.photo = url;
     m.applied.push("photo:" + id);
   }
+  // plan de salle de départ, d'après le croquis du gérant (modifiable dans l'admin > Plan de salle)
+  if (!m.applied.includes("floor-2026-11")) {
+    if (!m.floor) {
+      const T = (n, zone, x, y, w, h, seats, label = "") => ({ n, label, zone, x, y, w, h, shape: "rect", seats });
+      m.floor = {
+        zones: [{ id: "salle", name: "Salle", w: 46, h: 16 }, { id: "terrasse", name: "Terrasse", w: 24, h: 8 }],
+        tables: [
+          T(1, "salle", 32, 6, 10, 3, 8), T(2, "salle", 40, 1, 4, 2, 4), T(3, "salle", 21, 1, 3, 3, 2), T(4, "salle", 14, 1, 3, 4, 4),
+          T(5, "salle", 9, 1, 3, 4, 4), T(6, "salle", 8, 7, 3, 8, 6), T(7, "salle", 14, 8, 3, 5, 4), T(8, "salle", 20, 6, 3, 7, 6),
+          T(9, "terrasse", 16, 3, 3, 2, 2, "Terrasse 1"), T(10, "terrasse", 4, 3, 4, 2, 4, "Terrasse 2"),
+        ],
+      };
+      m.ordering = m.ordering || {};
+      m.ordering.tables = Math.max(parseInt(m.ordering.tables) || 0, 10);
+    }
+    m.applied.push("floor-2026-11");
+  }
   m.applied = [...new Set(m.applied)];
   return m;
 }

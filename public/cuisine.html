@@ -73,6 +73,17 @@ label.sw input{width:20px;height:20px;accent-color:var(--accent)}
 /* plan des tables */
 .legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-bottom:14px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.flh{margin:18px 0 8px;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.flh:first-child{margin-top:0}
+.fl-view{background:#1d1f22;border:1px solid var(--line);margin-bottom:8px;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}
+.fl-view .tbl{position:absolute;aspect-ratio:auto;padding:2px;gap:2px;container-type:size;border-radius:10px;overflow:visible}
+.fl-view .tbl.round{border-radius:50%}
+.fl-view .tbl .num{font-size:clamp(11px,30cqmin,34px)}
+.fl-view .tbl .lab,.fl-view .tbl .since,.fl-view .tbl .older{font-size:clamp(9px,13cqmin,14px)}
+.fl-view .tbl .amt{font-size:clamp(10px,16cqmin,18px)}
+.fl-view .chair{width:16px!important;height:9px!important;background:#4b4f55!important}
+@container (max-height:70px){.fl-view .tbl .lab,.fl-view .tbl .since,.fl-view .tbl .older{display:none}}
+@container (max-height:110px){.fl-view .tbl .since,.fl-view .tbl .older{display:none}}
+.tables.flplan{display:block}
 .tables{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .tbl{aspect-ratio:1.15;border-radius:18px;border:2px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px;text-align:center}
 .tbl .num{font-size:2.2rem;font-weight:900;line-height:1}
@@ -249,6 +260,7 @@ input[type=range]{padding:0;flex:1;min-width:160px;accent-color:var(--accent)}
 <div id="tableSheet"><div class="box" id="tableBox"></div></div>
 <div id="ticket"></div>
 
+<script src="floor.js"></script>
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -256,7 +268,7 @@ const eur = (n) => new Intl.NumberFormat("fr-FR", {style:"currency", currency:"E
 const hm = (iso) => new Date(iso).toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit"});
 const ls = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(k,v){try{localStorage.setItem(k,v)}catch{}}, del(k){try{localStorage.removeItem(k)}catch{}} };
 const isEmp = (t) => t === "EMP";
-const tName = (t) => isEmp(t) ? "À emporter" : "Table " + t;
+const tName = (t) => isEmp(t) ? "À emporter" : (window.MADO_FLOOR ? MADO_FLOOR.label(MENUC, t) : "Table " + t);
 const STATUS = {new: "En préparation", ready: "Prête", done: "Servie", paid: "Encaissée", cancelled: "Annulée"};
 let token = (() => { try { return sessionStorage.getItem("mado-admin") || ls.get("mado-kitchen") || ""; } catch { return ""; } })();
 let ORDERS = [], TABLES = 10, started = false, audio = null, firstLoad = true, tab = "orders", openTable = null;
@@ -324,7 +336,7 @@ function alarmTick(force){
   $("#alarm").style.display = u.length && started ? "flex" : "none";
   if (!u.length) { document.title = "Mado · Caisse & cuisine"; return; }
   const tables = [...new Set(u.map(o => o.table_no))];
-  const spoken = tables.map(t => isEmp(t) ? "à emporter" : "table " + t).join(", ");
+  const spoken = tables.map(t => isEmp(t) ? "à emporter" : tName(t).toLowerCase()).join(", ");
   $("#alarmTxt").textContent = `🔔 ${u.length > 1 ? u.length + " nouvelles commandes" : "Nouvelle commande"} · ${spoken}`;
   document.title = `(${u.length}) Nouvelle commande · Mado`;
   if (!started) return;
@@ -472,7 +484,31 @@ function tableState(t){
 }
 const LAB = {free: "Libre", new: "En préparation", ready: "Prête à servir", done: "Servie, à encaisser"};
 function minutes(iso){ const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0"); }
+function tblHtml(t, s, extraCls = "", style = ""){
+  const fl = window.MADO_FLOOR && MADO_FLOOR.find(MENUC, t);
+  return `<button class="tbl ${s.state} ${extraCls}" data-t="${t}" style="${style}">${fl ? MADO_FLOOR.chairsHtml(fl) : ""}<span class="num">${esc(fl && fl.label ? fl.label : t)}</span><span class="lab">${LAB[s.state]}</span>
+      ${s.groups.length ? `<span class="amt">${eur(s.total)}</span><span class="since">depuis ${minutes(s.since)}</span>` : ""}
+      ${s.older ? `<span class="older">+ ${s.older} addition${s.older > 1 ? "s" : ""} d'avant</span>` : ""}</button>`;
+}
 function renderTables(){
+  // plan de salle dessiné dans l'admin : les tables sont placées comme dans le restaurant
+  const fl = window.MADO_FLOOR ? MADO_FLOOR.tables(MENUC) : [];
+  if (fl.length) {
+    MADO_FLOOR.injectCss();
+    let busy = 0; const known = new Set(fl.map(t => String(t.n)));
+    const zones = (MENUC.floor.zones || []).filter(z => fl.some(t => t.zone === z.id));
+    const extra = [...new Set(ORDERS.filter(o => OPEN.includes(o.status) && !isEmp(o.table_no) && !known.has(String(o.table_no))).map(o => o.table_no))];
+    $("#tables").classList.add("flplan");
+    $("#tables").innerHTML = zones.map(z => `<h3 class="flh">${esc(z.name)}</h3><div class="fl-zone fl-view" style="aspect-ratio:${z.w} / ${z.h};width:min(100%, ${z.w * 30}px)">${fl.filter(t => t.zone === z.id).map(t => {
+        const s = tableState(t.n); if (s.state !== "free") busy++;
+        return tblHtml(t.n, s, "fl-t" + (t.shape === "round" ? " round" : ""), `left:${t.x / z.w * 100}%;top:${t.y / z.h * 100}%;width:${t.w / z.w * 100}%;height:${t.h / z.h * 100}%`);
+      }).join("")}</div>`).join("")
+      + (extra.length ? `<h3 class="flh">Autres</h3><div class="tables">${extra.map(t => { const s = tableState(t); busy++; return tblHtml(t, s); }).join("")}</div>` : "");
+    $("#bTables").hidden = !busy; $("#bTables").textContent = busy;
+    if (openTable !== null) renderTableSheet();
+    return;
+  }
+  $("#tables").classList.remove("flplan");
   const extra = [...new Set(ORDERS.filter(o => OPEN.includes(o.status)).map(o => +o.table_no))].filter(n => n > TABLES);  // « à emporter » n'a pas de table
   const nums = [...Array.from({length: TABLES}, (_, i) => i + 1), ...extra];
   let busy = 0;
@@ -487,7 +523,7 @@ function renderTables(){
 }
 function renderTableSheet(){
   const t = openTable, s = tableState(t), n = s.groups.length;
-  $("#tableBox").innerHTML = `<div class="oh" style="margin-bottom:12px"><span class="t">Table ${t}</span><span class="st ${s.state === "free" ? "paid" : s.state}">${LAB[s.state]}</span><button id="tClose" style="margin-left:auto">Fermer</button></div>
+  $("#tableBox").innerHTML = `<div class="oh" style="margin-bottom:12px"><span class="t">${esc(tName(t))}</span><span class="st ${s.state === "free" ? "paid" : s.state}">${LAB[s.state]}</span><button id="tClose" style="margin-left:auto">Fermer</button></div>
     ${n ? s.groups.map((g, i) => `<div class="addition ${i ? "old" : ""}" data-g="${g.g}">
         <div class="ah"><b>${i === 0 ? (n > 1 ? "Addition actuelle" : "Addition") : "Addition d'avant"}</b><span class="st ${g.state}">${LAB[g.state]}</span><span class="time">depuis ${hm(g.since)}</span></div>
         ${g.orders.some(o => o.split) ? `<div class="note">💳 Les clients ont demandé à payer chacun leur part</div>` : ""}
@@ -584,9 +620,9 @@ $("#tabs").addEventListener("click", (e) => {
 });
 
 /* ---------- chargement ---------- */
-let INFO = {};
+let INFO = {}, MENUC = null;
 async function loadMenu(){
-  try { const m = await (await fetch("/api/menu", {cache: "no-store"})).json(); TABLES = parseInt(m.ordering && m.ordering.tables) || 10; INFO = m.info || {}; } catch {}
+  try { const m = await (await fetch("/api/menu", {cache: "no-store"})).json(); TABLES = parseInt(m.ordering && m.ordering.tables) || 10; INFO = m.info || {}; MENUC = m; } catch {}
 }
 async function load(){
   try {
@@ -617,6 +653,7 @@ async function start(){
   $("#hDay").value = paris();
   bindSettings();
   await loadMenu(); await load();
+  setInterval(loadMenu, 60000); // plan de salle ou noms de tables modifiés dans l'admin
   setInterval(load, 4000); setInterval(() => alarmTick(), 1000); setInterval(loadMenu, 120000);
 }
 $("#loginForm").onsubmit = async (e) => {

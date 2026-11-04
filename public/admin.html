@@ -21,6 +21,23 @@ button.danger{color:#ff8d86;border-color:#5a2a27;background:#2a1716}
 button.ghost{background:transparent}
 button:disabled{opacity:.5;cursor:default}
 .wrap{max-width:820px;margin:0 auto;padding:0 16px}
+/* ---------- plan de salle ---------- */
+#tab-floor{width:min(1200px,calc(100vw - 32px));position:relative;left:50%;transform:translateX(-50%)}
+.fl-zones{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.fl-zones button.on{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.fl-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.fl-size{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted)}
+.fl-size input{width:64px;padding:6px 8px}
+.fl-canvas{overflow:auto;padding:22px;background:#1b1d1f;border-radius:16px;border:1px solid var(--line)}
+.fl-edit{min-width:640px;background-color:#25282b;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);touch-action:none;user-select:none;-webkit-user-select:none}
+.fl-edit .fl-t{background:linear-gradient(160deg,#b98a5a,#8e6238);border:2px solid #5d3d1e;color:#fff8ec;font-weight:800;cursor:grab;box-shadow:0 4px 10px rgba(0,0,0,.35);font-size:clamp(10px,1.6cqw,18px);line-height:1.1}
+.fl-edit .fl-t.sel{outline:3px solid var(--accent);outline-offset:3px;z-index:2}
+.fl-edit .fl-t .h{position:absolute;right:-6px;bottom:-6px;width:20px;height:20px;border-radius:6px;background:var(--accent);color:var(--ink);font-size:12px;display:flex;align-items:center;justify-content:center;cursor:nwse-resize}
+.fl-edit .fl-t small{font-size:.7em;opacity:.85;font-weight:600}
+.fl-edit .chair{background:#6d7279!important}
+#flPanel .fl-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px;align-items:end}
+#flPanel .fl-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 #login form{width:min(360px,100%);display:grid;gap:14px;text-align:center}
 #login img{width:240px;height:auto;margin:0 auto}
@@ -145,6 +162,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <button data-tab="options">Options</button>
       <button data-tab="promos">Promos</button>
       <button data-tab="info">Infos du restaurant</button>
+      <button data-tab="floor">Plan de salle</button>
       <button data-tab="qr">QR code</button>
     </div>
   </header>
@@ -206,6 +224,21 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       </div>
     </section>
 
+    <section id="tab-floor" style="display:none">
+      <div class="panel">
+        <p class="small" style="margin-top:0">Dessinez vos tables une fois : glissez-les pour les placer, tirez le coin <b>◢</b> pour changer la taille, touchez une table pour changer son numéro, son nom ou ses places. Ce plan sert ensuite sur la page Cuisine et pour imprimer les QR codes.</p>
+        <div class="fl-zones" id="flZones"></div>
+        <div class="fl-tools">
+          <button type="button" data-fl="add" data-shape="rect" data-w="3" data-h="3">＋ Table carrée</button>
+          <button type="button" data-fl="add" data-shape="rect" data-w="6" data-h="3">＋ Table longue</button>
+          <button type="button" data-fl="add" data-shape="round" data-w="3" data-h="3">＋ Table ronde</button>
+          <span class="fl-size">Taille de la zone <input id="flW" type="number" min="10" max="80"> × <input id="flH" type="number" min="5" max="60"></span>
+        </div>
+        <div class="fl-canvas"><div class="fl-zone fl-edit" id="flCanvas"></div></div>
+        <div id="flPanel"></div>
+      </div>
+    </section>
+
     <section id="tab-qr" style="display:none">
       <div class="panel">
         <p>Ce QR code ouvre le menu. Imprimez-le et posez-le sur les tables. Il ne change pas quand vous modifiez les prix ou les produits.</p>
@@ -239,10 +272,12 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 
 <script src="vendor/qrcode.min.js"></script>
 <script src="icons.js"></script>
+<script src="floor.js"></script>
 <script>
 const LANGS = ["fr","en","tr","de"];
 const LNAME = {fr:"Français",en:"English",tr:"Türkçe",de:"Deutsch"};
 const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ss = { get(k){try{return sessionStorage.getItem(k)}catch{return null}}, set(k,v){try{sessionStorage.setItem(k,v)}catch{}}, del(k){try{sessionStorage.removeItem(k)}catch{}} };
 const ls = { get(k){try{return localStorage.getItem(k)}catch{return null}}, set(k,v){try{localStorage.setItem(k,v);return true}catch{return false}} };
@@ -426,6 +461,7 @@ $("#scrBgPick").onclick = () => {
 
 function renderInfo(){
   renderScreen();
+  if ($("#tab-floor").style.display === "block") drawFloor();
   const info = menu.info || (menu.info = {address:"",phone:"",hours:blankL()});
   $("#infoAddress").value = info.address || "";
   $("#infoPhone").value = info.phone || "";
@@ -715,6 +751,116 @@ $("#addGroup").onclick = async () => {
   renderGroups(); updateStatus();
 };
 
+
+/* ---------- Plan de salle ---------- */
+const FL = window.MADO_FLOOR; FL.injectCss();
+let flZone = null, flSel = null;
+function floorData(){
+  if (!menu.floor) menu.floor = {zones: [{id: "salle", name: "Salle", w: 46, h: 16}], tables: []};
+  const f = menu.floor; f.zones = f.zones || []; f.tables = f.tables || [];
+  if (!f.zones.length) f.zones.push({id: "salle", name: "Salle", w: 46, h: 16});
+  if (!f.zones.some(z => z.id === flZone)) flZone = f.zones[0].id;
+  return f;
+}
+function floorChanged(){
+  menu.ordering = menu.ordering || {enabled: false};
+  menu.ordering.tables = FL.maxN(menu);
+  updateStatus();
+}
+function drawFloor(){
+  const f = floorData(), z = f.zones.find(z => z.id === flZone);
+  $("#flZones").innerHTML = f.zones.map(x => `<button type="button" data-fl="zone" data-z="${esc(x.id)}" class="${x.id === flZone ? "on" : ""}">${esc(x.name)} <small>(${f.tables.filter(t => t.zone === x.id).length})</small></button>`).join("")
+    + `<button type="button" data-fl="addZone">＋ Zone</button><button type="button" data-fl="renameZone" class="ghost">Renommer</button>${f.zones.length > 1 ? `<button type="button" data-fl="delZone" class="ghost danger">Supprimer la zone</button>` : ""}`;
+  $("#flW").value = z.w; $("#flH").value = z.h;
+  const c = $("#flCanvas");
+  c.style.aspectRatio = `${z.w} / ${z.h}`;
+  c.style.backgroundSize = `calc(100% / ${z.w}) calc(100% / ${z.h})`;
+  c.innerHTML = f.tables.filter(t => t.zone === z.id).map(t => `<div class="fl-t ${t.shape === "round" ? "round" : ""} ${flSel === t.n ? "sel" : ""}" data-n="${t.n}"
+      style="left:${t.x / z.w * 100}%;top:${t.y / z.h * 100}%;width:${t.w / z.w * 100}%;height:${t.h / z.h * 100}%">
+      ${FL.chairsHtml(t)}<span>${esc(FL.label(menu, t.n))}</span>${t.seats ? `<small>${t.seats} pl.</small>` : ""}<span class="h" data-h="1">◢</span></div>`).join("");
+  drawFloorPanel();
+}
+function drawFloorPanel(){
+  const t = FL.find(menu, flSel), f = floorData();
+  if (!t) { $("#flPanel").innerHTML = `<p class="small" style="margin-bottom:0">Touchez une table pour la modifier. ${f.tables.length} table${f.tables.length > 1 ? "s" : ""} au total.</p>`; return; }
+  $("#flPanel").innerHTML = `<div class="fl-form">
+      <label><div class="lbl">Numéro (dans le QR)</div><input type="number" min="1" max="999" data-ff="n" value="${t.n}"></label>
+      <label><div class="lbl">Nom affiché</div><input data-ff="label" maxlength="24" placeholder="Table ${t.n}" value="${esc(t.label || "")}"></label>
+      <label><div class="lbl">Places</div><input type="number" min="0" max="16" data-ff="seats" value="${t.seats || 0}"></label>
+      <label><div class="lbl">Forme</div><select data-ff="shape"><option value="rect" ${t.shape !== "round" ? "selected" : ""}>Carrée / rectangle</option><option value="round" ${t.shape === "round" ? "selected" : ""}>Ronde</option></select></label>
+      <label><div class="lbl">Zone</div><select data-ff="zone">${f.zones.map(z => `<option value="${esc(z.id)}" ${z.id === t.zone ? "selected" : ""}>${esc(z.name)}</option>`).join("")}</select></label>
+    </div>
+    <div class="fl-acts"><button type="button" data-fl="rotate">↻ Tourner</button><button type="button" data-fl="dup">⧉ Dupliquer</button><button type="button" class="danger" data-fl="del">Supprimer la table</button></div>`;
+}
+$("#tab-floor").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-fl]"); if (!b) return;
+  const f = floorData(), a = b.dataset.fl, t = FL.find(menu, flSel);
+  if (a === "zone") { flZone = b.dataset.z; flSel = null; }
+  else if (a === "addZone") { const name = await ask("Nom de la nouvelle zone (ex. « Terrasse », « Étage ») :", {input: true, yes: "Ajouter"}); if (!name) return; const id = "z" + uid(); f.zones.push({id, name, w: 30, h: 12}); flZone = id; floorChanged(); }
+  else if (a === "renameZone") { const z = f.zones.find(z => z.id === flZone); const name = await ask("Nouveau nom de la zone :", {input: true, yes: "Renommer"}); if (!name) return; z.name = name; floorChanged(); }
+  else if (a === "delZone") { const z = f.zones.find(z => z.id === flZone), n = f.tables.filter(t => t.zone === z.id).length; if (!(await ask(`Supprimer la zone « ${z.name} »${n ? ` et ses ${n} table(s)` : ""} ?`, {yes: "Supprimer", danger: true}))) return; f.tables = f.tables.filter(t => t.zone !== z.id); f.zones = f.zones.filter(x => x !== z); flZone = f.zones[0].id; flSel = null; floorChanged(); }
+  else if (a === "add") {
+    const z = f.zones.find(z => z.id === flZone), n = FL.maxN(menu) + 1, w = +b.dataset.w, h = +b.dataset.h;
+    const zi = f.zones.indexOf(z), k = f.tables.filter(t => t.zone === z.id).length + 1;
+    f.tables.push({n, label: zi ? `${z.name} ${k}` : "", zone: z.id, x: Math.max(0, Math.floor((z.w - w) / 2)), y: Math.max(0, Math.floor((z.h - h) / 2)), w, h, shape: b.dataset.shape, seats: w > 4 ? 6 : 4});
+    flSel = n; floorChanged();
+  }
+  else if (!t) return;
+  else if (a === "rotate") { [t.w, t.h] = [t.h, t.w]; clampT(t); floorChanged(); }
+  else if (a === "dup") { const n = FL.maxN(menu) + 1; f.tables.push({...t, n, label: t.label ? t.label.replace(/\d+$/, "") + n : "", x: t.x + 1, y: t.y + 1}); clampT(f.tables[f.tables.length - 1]); flSel = n; floorChanged(); }
+  else if (a === "del") { if (!(await ask(`Supprimer ${FL.label(menu, t.n)} ?`, {yes: "Supprimer", danger: true}))) return; f.tables = f.tables.filter(x => x !== t); flSel = null; floorChanged(); }
+  drawFloor();
+});
+$("#flPanel").addEventListener("change", (e) => {
+  const k = e.target.dataset.ff, t = FL.find(menu, flSel); if (!k || !t) return;
+  let v = e.target.value;
+  if (k === "n") {
+    v = parseInt(v);
+    if (!(v >= 1 && v <= 999)) { toast("Le numéro doit être entre 1 et 999."); return drawFloorPanel(); }
+    if (v !== t.n && FL.find(menu, v)) { toast(`Le numéro ${v} est déjà pris par ${FL.label(menu, v)}.`); return drawFloorPanel(); }
+    t.n = v; flSel = v; toast("Numéro changé : imprimez le QR de cette table.");
+  } else if (k === "seats") t.seats = Math.max(0, Math.min(16, parseInt(v) || 0));
+  else if (k === "zone") { t.zone = v; flZone = v; clampT(t); }
+  else t[k] = v;
+  floorChanged(); drawFloor();
+});
+$("#flPanel").addEventListener("input", (e) => {
+  const t = FL.find(menu, flSel); if (e.target.dataset.ff !== "label" || !t) return;
+  t.label = e.target.value; updateStatus();
+  const el = $(`#flCanvas .fl-t[data-n="${t.n}"] > span:not(.h)`); if (el) el.textContent = FL.label(menu, t.n);
+});
+for (const id of ["#flW", "#flH"]) $(id).addEventListener("change", () => {
+  const z = floorData().zones.find(z => z.id === flZone);
+  z.w = Math.max(10, Math.min(80, parseInt($("#flW").value) || z.w)); z.h = Math.max(5, Math.min(60, parseInt($("#flH").value) || z.h));
+  floorData().tables.filter(t => t.zone === z.id).forEach(clampT); floorChanged(); drawFloor();
+});
+function clampT(t){
+  const z = floorData().zones.find(z => z.id === t.zone) || {w: 46, h: 16};
+  t.w = Math.max(1, Math.min(z.w, t.w)); t.h = Math.max(1, Math.min(z.h, t.h));
+  t.x = Math.max(0, Math.min(z.w - t.w, t.x)); t.y = Math.max(0, Math.min(z.h - t.h, t.y));
+}
+// glisser pour déplacer, coin ◢ pour agrandir (souris et doigt), aimanté sur la grille
+let flDrag = null;
+$("#flCanvas").addEventListener("pointerdown", (e) => {
+  const el = e.target.closest(".fl-t");
+  if (!el) { if (flSel !== null) { flSel = null; drawFloor(); } return; }
+  const t = FL.find(menu, +el.dataset.n), z = floorData().zones.find(z => z.id === flZone), r = $("#flCanvas").getBoundingClientRect();
+  flDrag = {t, el, resize: !!e.target.closest("[data-h]"), sx: e.clientX, sy: e.clientY, x: t.x, y: t.y, w: t.w, h: t.h, ux: r.width / z.w, uy: r.height / z.h, z, moved: false};
+  if (flSel !== t.n) { flSel = t.n; $$("#flCanvas .fl-t").forEach(x => x.classList.toggle("sel", x === el)); drawFloorPanel(); }
+  el.setPointerCapture(e.pointerId); e.preventDefault();
+});
+$("#flCanvas").addEventListener("pointermove", (e) => {
+  const d = flDrag; if (!d) return;
+  const dx = Math.round((e.clientX - d.sx) / d.ux), dy = Math.round((e.clientY - d.sy) / d.uy), t = d.t;
+  if (d.resize) { t.w = Math.max(1, d.w + dx); t.h = Math.max(1, d.h + dy); } else { t.x = d.x + dx; t.y = d.y + dy; }
+  clampT(t);
+  if (t.x !== d.x || t.y !== d.y || t.w !== d.w || t.h !== d.h) d.moved = true;
+  Object.assign(d.el.style, {left: t.x / d.z.w * 100 + "%", top: t.y / d.z.h * 100 + "%", width: t.w / d.z.w * 100 + "%", height: t.h / d.z.h * 100 + "%"});
+  if (d.resize) d.el.querySelectorAll(".chair").forEach(c => c.remove()), d.el.insertAdjacentHTML("afterbegin", FL.chairsHtml(t));
+});
+const flEnd = () => { const d = flDrag; flDrag = null; if (d && d.moved) floorChanged(); };
+$("#flCanvas").addEventListener("pointerup", flEnd); $("#flCanvas").addEventListener("pointercancel", flEnd);
+
 /* ---------- Photos ---------- */
 function pickPhoto(it, phEl, after = render, max = 900){
   const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
@@ -773,7 +919,8 @@ window.addEventListener("beforeunload", (e) => { if (menu && dirty()) { e.preven
 $("#tabs").onclick = (e) => {
   const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
-  for (const t of ["menu","options","promos","info","qr"]) $("#tab-"+t).style.display = t === b.dataset.tab ? "block" : "none";
+  for (const t of ["menu","options","promos","info","floor","qr"]) $("#tab-"+t).style.display = t === b.dataset.tab ? "block" : "none";
+  if (b.dataset.tab === "floor") drawFloor();
   if (b.dataset.tab === "qr") drawQr();
 };
 function drawQr(){
@@ -794,6 +941,12 @@ async function tableKeys(){
   if (DEMO) return {};
   const r = await api("/api/table-keys"); return r.ok ? (await r.json()).keys : {};
 }
+// tables à imprimer : celles du plan de salle, sinon 1 à N
+function tableNums(){
+  const fl = MADO_FLOOR.tables(menu).map(t => +t.n).sort((a, b) => a - b);
+  if (fl.length) return fl;
+  return Array.from({length: (menu.ordering && menu.ordering.tables) || 0}, (_, i) => i + 1);
+}
 async function printTableQRs(only){
   const n = (menu.ordering && menu.ordering.tables) || 0;
   if (!n) { toast("Indiquez d'abord le nombre de tables (onglet Infos du restaurant)."); return; }
@@ -801,9 +954,9 @@ async function printTableQRs(only){
   const keys = await tableKeys();
   const base = ($("#qrUrl").value || location.origin + "/").replace(/\?.*$/, "");
   const sheet = $("#qrSheet"); sheet.innerHTML = "";
-  const list = only ? [only] : Array.from({length: n}, (_, i) => i + 1);
+  const list = only ? [only] : tableNums();
   for (const i of list) {
-    sheet.insertAdjacentHTML("beforeend", `<div class="qcard"><img class="lg" src="img/logo.png" alt=""><div class="qr" id="q${i}"></div><div class="tn">Table ${i}</div><div class="tx">Scannez pour voir le menu et commander</div></div>`);
+    sheet.insertAdjacentHTML("beforeend", `<div class="qcard"><img class="lg" src="img/logo.png" alt=""><div class="qr" id="q${i}"></div><div class="tn">${esc(MADO_FLOOR.label(menu, i))}</div><div class="tx">Scannez pour voir le menu et commander</div></div>`);
     new QRCode(document.getElementById("q" + i), {text: base + "?t=" + i + (keys[i] ? "&k=" + keys[i] : ""), width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M});
   }
   setTimeout(() => window.print(), 400);
@@ -813,7 +966,7 @@ async function drawKeys(){
   const box = $("#qrKeys"), n = (menu.ordering && menu.ordering.tables) || 0;
   if (DEMO) { box.innerHTML = `<p class="small">Disponible une fois le site en ligne.</p>`; return; }
   const keys = await tableKeys();
-  box.innerHTML = Array.from({length: n}, (_, i) => i + 1).map(i => `<div class="tkrow"><b>Table ${i}</b><code>${esc(keys[i] || "")}</code>
+  box.innerHTML = tableNums().map(i => `<div class="tkrow"><b>${esc(MADO_FLOOR.label(menu, i))}</b><code>${esc(keys[i] || "")}</code>
     <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button></div>`).join("");
 }
 
