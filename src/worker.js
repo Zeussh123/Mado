@@ -241,6 +241,7 @@ const PRODUCT_PHOTOS = {
   "pides-pide-sucuk": "/img/produits/pide-sucuk.jpg",
   "alcools-bouteille-de-vin": "/img/produits/vin-rose-bouteille.jpg",
   "alcools-bouteille-de-vin-rouge": "/img/produits/vin-rouge-bouteille.jpg",
+  "desserts-baklava-piece": "/img/produits/baklava.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
