@@ -171,6 +171,7 @@ async function handleBasket(request, env, table, action, { json, menuText, check
       if (i < 0) return {};
       const q = action === "remove" ? 0 : Math.min(20, parseInt(body.qty) || 0);
       if (q <= 0) d.lines.splice(i, 1); else d.lines[i].qty = q;
+      m.ready = false;   // panier modifié après « J'ai fini » : il repasse en attente
       return {};
     }
     if (action === "ready") { m.ready = !!body.ready; return {}; }

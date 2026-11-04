@@ -667,6 +667,18 @@
    "en": "No luck on this last spin.",
    "tr": "Son çevirmede olmadı.",
    "de": "Bei der letzten Drehung leider nicht."
+  },
+  "tbWaitFor": {
+   "fr": "En attente de {names}",
+   "en": "Waiting for {names}",
+   "tr": "{names} bekleniyor",
+   "de": "Warten auf {names}"
+  },
+  "tbWait2": {
+   "fr": "Pas encore fini : {names}. Attendez son « J'ai fini » pour ne rien oublier, ou envoyez quand même.",
+   "en": "Not finished yet: {names}. Wait for “I'm done” so nothing is forgotten, or send anyway.",
+   "tr": "Henüz bitirmedi: {names}. Hiçbir şey unutulmasın diye « Bitirdim »i bekleyin ya da yine de gönderin.",
+   "de": "Noch nicht fertig: {names}. Warten Sie auf „Ich bin fertig“, damit nichts vergessen wird, oder senden Sie trotzdem."
   }
  },
  "categories": [

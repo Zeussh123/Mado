@@ -274,6 +274,7 @@ main{padding-bottom:96px}
 @keyframes toastin{from{opacity:0;transform:translate(-50%,10px)}}
 @media (prefers-reduced-motion:reduce){#toast{animation:none}}
 #cartPill.track{background:var(--surface);color:var(--text);border:1px solid var(--line);padding:12px 18px}
+.wait-btn{background:#2a2620;color:var(--muted,#bbb);border:1px dashed #6b5d45;font-size:.92rem;white-space:normal;line-height:1.25}
 #cartPill.ready{background:#1f3a1f;border-color:#5cb85c;color:#bff0bf}
 </style>
 </head>
@@ -1004,6 +1005,12 @@ let lastActivity = Date.now(), remindedAt = 0, allDoneKey = "", sendConfirm = fa
 const member = (id) => TB.members.find(m => m.id === id) || {id, name: "", c: 0};
 const mname = (m) => m.name || ui("tbGuest");
 const avatar = (m) => `<span class="av" style="background:${COLORS[(m.c || 0) % COLORS.length]}">${esc((m.name || "?").slice(0, 1).toUpperCase())}</span>`;
+// convives qui choisissent : ceux qui ont des plats, et ceux qui ont mis leur prénom et sont actifs depuis moins de 15 min
+const tbChoosers = () => { const own = tbOwners(), ids = new Set(own.map(m => m.id));
+  return own.concat(TB.members.filter(m => !ids.has(m.id) && m.name && Date.now() - (m.t || 0) < 15 * 60e3)); };
+const tbWaiting = () => tbChoosers().filter(m => !m.ready && m.id !== ME);
+let sendConfirmAt = 0;
+const SEND_WAIT = 10;   // secondes avant de pouvoir « envoyer quand même »
 const tbOwners = () => { const ids = [...new Set(TB.lines.map(l => l.m))]; return ids.map(member).sort((a, b) => (b.id === ME) - (a.id === ME)); };
 const meM = () => member(ME);
 
@@ -1081,7 +1088,7 @@ function applyTB(b, iSent){
   if (open && STEP === "join") drawJoin(true);
   // tout le monde a fini : chaque téléphone propose d'envoyer
   const owners = tbOwners();
-  if (owners.length && owners.every(m => m.ready) && orderingOpen()) {
+  if (owners.length && tbChoosers().every(m => m.ready) && orderingOpen()) {
     const key = TB.lines.map(l => l.k + l.qty).join();
     if (key !== allDoneKey && (!open || STEP === "cart" || STEP === "remind")) { allDoneKey = key; STEP = "alldone"; CUR = null; drawAsk(); showSheet(); }
   }
@@ -1164,17 +1171,22 @@ function drawTableCart(){
         ${TB.lines.filter(l => l.m === m.id).map(l => line(l, m.id === ME)).join("")}</div>`).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
     ${TB.lines.length ? `<div class="big-total"><span>${esc(ui("tbTotal"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>
       <textarea id="orderNote" class="note-in" rows="2" maxlength="300" placeholder="${esc(ui("notePh"))}"></textarea>` : ""}
-    ${sendConfirm ? `<div class="warnbox">${esc(fill(ui("tbWait"), {names: owners.filter(m => !m.ready && m.id !== ME).map(mname).join(", ")}))}</div>` : ""}
+    ${sendConfirm ? `<div class="warnbox">${esc(fill(ui("tbWait2"), {names: tbWaiting().map(mname).join(", ")}))}</div>` : ""}
   </div>`;
   if (!TB.lines.length) { $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return; }
   if (!orderingOpen()) {
     $("#shScroll .cart").insertAdjacentHTML("beforeend", `<div class="warnbox">${esc(ui("tbHours"))}</div>`);
     $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return;
   }
-  const readyBtn = mine ? `<button class="btn ghost" data-sh="tbReady">${esc(ui(me.ready ? "tbNotDone" : "tbImDone"))}</button>` : "";
+  const readyBtn = (mine || me.name) ? `<button class="btn ghost" data-sh="tbReady">${esc(ui(me.ready ? "tbNotDone" : "tbImDone"))}</button>` : "";
+  const waiting = tbWaiting();
+  if (sendConfirm && !waiting.length) sendConfirm = false;
+  const left = Math.max(0, SEND_WAIT - Math.floor((Date.now() - sendConfirmAt) / 1000));
   $("#shBar").innerHTML = sendConfirm
-    ? `<button class="btn ghost" data-sh="tbCancel">${esc(ui("tbLater"))}</button><button class="btn grow" data-sh="tbSendForce">${esc(ui("tbSendAnyway"))}</button>`
-    : `${readyBtn}<button class="btn grow pulse" data-sh="tbSend">${esc(ui("tbSend"))} · ${esc(fmtPrice(cartTotal()))}</button>`;
+    ? `<button class="btn ghost" data-sh="tbCancel">${esc(ui("tbLater"))}</button><button class="btn grow" data-sh="tbSendForce" id="tbForce"${left ? " disabled" : ""}>${esc(ui("tbSendAnyway"))}${left ? ` (${left})` : ""}</button>`
+    : waiting.length
+      ? `${readyBtn}<button class="btn grow wait-btn" data-sh="tbSend">⏳ ${esc(fill(ui("tbWaitFor"), {names: waiting.map(mname).join(", ")}))}</button>`
+      : `${readyBtn}<button class="btn grow pulse" data-sh="tbSend">${esc(ui("tbSend"))} · ${esc(fmtPrice(cartTotal()))}</button>`;
 }
 async function tbSendNow(btn){
   btn.disabled = true; btn.textContent = ui("sending");
@@ -1191,11 +1203,16 @@ function tbAction(a, b){
   else if (a === "tbContinue") { lastActivity = Date.now(); closeSheet(); }
   else if (a === "tbCancel") { sendConfirm = false; drawTableCart(); }
   else if (a === "tbSend") {
-    const waiting = tbOwners().filter(m => !m.ready && m.id !== ME);
-    if (waiting.length) { sendConfirm = true; drawTableCart(); $("#shScroll").scrollTop = 1e6; } else tbSendNow(b);
+    if (tbWaiting().length) { sendConfirm = true; sendConfirmAt = Date.now(); drawTableCart(); $("#shScroll").scrollTop = 1e6; } else tbSendNow(b);
   }
-  else if (a === "tbSendForce") tbSendNow(b);
+  else if (a === "tbSendForce") { if (sendConfirm && Date.now() - sendConfirmAt < SEND_WAIT * 1000) return; tbSendNow(b); }
 }
+// compte à rebours du bouton « Envoyer quand même »
+setInterval(() => {
+  const f = $("#tbForce"); if (!f || !sendConfirm) return;
+  const left = Math.max(0, SEND_WAIT - Math.floor((Date.now() - sendConfirmAt) / 1000));
+  f.disabled = left > 0; f.textContent = ui("tbSendAnyway") + (left ? ` (${left})` : "");
+}, 250);
 // rappel : des plats dans le panier, pas « fini », rien ajouté depuis 1 minute
 setInterval(() => {
   if (!SHARED() || $("#sheet").classList.contains("on") || $("#app").style.display !== "block") return;
