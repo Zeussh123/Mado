@@ -239,6 +239,7 @@ const PRODUCT_PHOTOS = {
   "alcools-biere-desperados-50-cl": "/img/produits/desperados.jpg",
   "alcools-biere-bavaria-50-cl": "/img/produits/biere-86.jpg",
   "pides-pide-sucuk": "/img/produits/pide-sucuk.jpg",
+  "alcools-bouteille-de-vin": "/img/produits/vin-rose-bouteille.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
