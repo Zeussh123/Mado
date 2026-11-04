@@ -78,6 +78,7 @@ label.sw input{width:20px;height:20px;accent-color:var(--accent)}
 .stk .chips{display:flex;flex-wrap:wrap;gap:8px}
 .stk button{border:2px solid var(--line);background:var(--surface);color:inherit;border-radius:12px;padding:12px 16px;font:inherit;font-weight:800;cursor:pointer}
 .stk button.out{border-color:#c0392b;background:#3a1512;color:#ffb3ad;text-decoration:line-through}
+.note.gift{background:#3a2a10;border-color:#f3c969;color:#ffe9b0}
 .stk-t{margin:22px 0 0;font-size:1.25rem}
 .stk button.auto{opacity:.5;border-style:dashed;text-decoration:line-through}
 .stk button.auto::after{content:" · indispo (ingrédient)";text-decoration:none;display:inline-block;margin-left:4px;font-size:.75em;font-weight:600}
@@ -289,7 +290,7 @@ let token = (() => { try { return sessionStorage.getItem("mado-admin") || ls.get
 let ORDERS = [], TABLES = 10, started = false, audio = null, firstLoad = true, tab = "orders", openTable = null;
 const idSet = (k) => new Set((ls.get(k) || "").split(",").filter(Boolean).map(Number));
 const saveSet = (k, s) => ls.set(k, [...s].slice(-400).join(","));
-const printed = idSet("mado-printed"), seen = idSet("mado-seen");
+const printed = idSet("mado-printed"), seen = idSet("mado-seen"), gifts = idSet("mado-gifts");
 const api = (p, o = {}) => fetch(p, {...o, headers: {...(o.headers || {}), authorization: "Bearer " + token}});
 
 /* ---------- réglages (sur ce poste) ---------- */
@@ -406,7 +407,8 @@ function ticketHtml(o){
   return `<div class="resto">MADO</div><div class="big"${isEmp(o.table_no) ? ' style="font-size:22pt"' : ""}>${esc(tName(o.table_no).toUpperCase())}</div>
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>
     ${byCategory(o.lines).map(c => `<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("")}
-    ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}<div class="sep"></div>
+    ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}
+    ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(o.prize).toUpperCase()}</div>` : ""}<div class="sep"></div>
     ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}`;
 }
 function billHtml(t, list){
@@ -439,6 +441,15 @@ function printHtml(html, copies = 1){ for (let i = 0; i < copies; i++) queue.pus
 function printOrder(o, copies = S.copies){
   printHtml(ticketHtml(o), copies);
   if (o.id) { printed.add(o.id); saveSet("mado-printed", printed); }
+  if (o.prize) { gifts.add(o.id); saveSet("mado-gifts", gifts); }
+}
+// lot gagné à la roue après l'impression de la commande : petit ticket cadeau
+function giftHtml(o){
+  return `<div class="resto">MADO</div><div class="big">${esc(tName(o.table_no).toUpperCase())}</div>
+    <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div><div class="sep"></div>
+    <div class="c" style="font-size:13pt;font-weight:900">🎁 CADEAU ROUE DE LA CHANCE</div>
+    <div class="prod" style="text-align:center;margin-top:2mm">${esc(o.prize).toUpperCase()}</div>
+    <div class="c" style="margin-top:2mm">Offert · à servir avec la commande</div>`;
 }
 function runQueue(){
   if (printing || !queue.length) return;
@@ -454,6 +465,7 @@ function orderCard(o, opts = {}){
     ${o.split ? `<div class="note">💳 Paiement séparé</div>` : ""}
     ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.who ? ` <small style="color:var(--muted)">· ${esc(l.who)}</small>` : ""}${detailsHtml(l)}</div>`).join("")}
     ${o.note ? `<div class="note">📝 ${esc(o.note)}</div>` : ""}
+    ${o.prize ? `<div class="note gift">🎁 Gagné à la roue : <b>${esc(o.prize)}</b> (offert)</div>` : ""}
     <div class="of"><span class="tot">${eur(o.total)}</span>
       <button data-a="print">🖨</button>
       ${isNew ? `<button data-a="seen">Vu</button>` : ""}
@@ -667,6 +679,12 @@ async function load(){
     ORDERS = j.orders;
     const fresh = firstLoad ? [] : ORDERS.filter(o => !known.has(o.id) && o.status === "new" && !seen.has(o.id));
     if (started && S.autoPrint) ORDERS.filter(o => o.status === "new" && !printed.has(o.id)).reverse().forEach(o => printOrder(o));
+    // nouveaux gagnants de la roue : ticket cadeau + annonce
+    const won = ORDERS.filter(o => o.prize && !gifts.has(o.id) && o.status !== "cancelled");
+    if (won.length) {
+      won.forEach(o => { gifts.add(o.id); if (started && S.autoPrint && !firstLoad) printHtml(giftHtml(o)); if (started && S.voice && !firstLoad) say(`${tName(o.table_no)} a gagné ${o.prize}`); });
+      saveSet("mado-gifts", gifts);
+    }
     firstLoad = false;
     $("#live").classList.add("on"); $("#liveTxt").textContent = "En ligne · " + new Date().toLocaleTimeString("fr-FR");
     render();

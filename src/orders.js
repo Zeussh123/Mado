@@ -15,6 +15,8 @@ async function ensureSchema(db) {
   try { await db.exec("ALTER TABLE orders ADD COLUMN grp INTEGER"); } catch {}
   // split = les clients de la table ont demandé à payer chacun sa part
   try { await db.exec("ALTER TABLE orders ADD COLUMN split INTEGER"); } catch {}
+  // lot gagné à la roue de la chance (voir game.js)
+  try { await db.exec("ALTER TABLE orders ADD COLUMN prize TEXT"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS table_baskets (table_no TEXT PRIMARY KEY, data TEXT NOT NULL, version INTEGER NOT NULL, updated_at TEXT NOT NULL)");
   schemaReady = true;
 }
@@ -269,8 +271,8 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const q = new URL(request.url).searchParams.get("day");
       const day = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? q : parisNow().date;
       const stmt = q
-        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp,split FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
-        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp,split FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
+        ? env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp,split,prize FROM orders WHERE day=? ORDER BY id DESC LIMIT 500").bind(day)
+        : env.DB.prepare("SELECT id,day,num,table_no,status,total,lines,note,created_at,updated_at,COALESCE(grp,id) AS grp,split,prize FROM orders WHERE day=? OR status IN ('new','ready','done') ORDER BY id DESC LIMIT 300").bind(day);
       const { results } = await stmt.all();
       return json({ orders: results.map((o) => ({ ...o, lines: JSON.parse(o.lines) })) }, 200, { "cache-control": "no-store" });
     });

@@ -589,6 +589,60 @@
    "en": "Thank you, the restaurant has received your message.",
    "tr": "Teşekkürler, restoran mesajınızı aldı.",
    "de": "Danke, das Restaurant hat Ihre Nachricht erhalten."
+  },
+  "gameBtn": {
+   "fr": "Tournez la roue et tentez de gagner !",
+   "en": "Spin the wheel for a chance to win!",
+   "tr": "Çarkı çevir, kazanma şansını dene!",
+   "de": "Drehen Sie am Glücksrad und gewinnen Sie!"
+  },
+  "gameTitle": {
+   "fr": "Roue de la chance",
+   "en": "Wheel of fortune",
+   "tr": "Şans çarkı",
+   "de": "Glücksrad"
+  },
+  "gameSpin": {
+   "fr": "Lancer la roue",
+   "en": "Spin",
+   "tr": "Çevir",
+   "de": "Drehen"
+  },
+  "gameLose": {
+   "fr": "Perdu",
+   "en": "No luck",
+   "tr": "Boş",
+   "de": "Niete"
+  },
+  "gameLoseMsg": {
+   "fr": "Pas de chance cette fois… Retentez à votre prochaine commande !",
+   "en": "Not this time… Try again with your next order!",
+   "tr": "Bu sefer olmadı… Bir sonraki siparişinizde tekrar deneyin!",
+   "de": "Diesmal leider nicht… Versuchen Sie es bei Ihrer nächsten Bestellung erneut!"
+  },
+  "gameWin": {
+   "fr": "Gagné : {prize} !",
+   "en": "You won: {prize}!",
+   "tr": "Kazandınız: {prize}!",
+   "de": "Gewonnen: {prize}!"
+  },
+  "gameWinMsg": {
+   "fr": "Le restaurant est prévenu, votre cadeau vous sera servi avec la commande n° {n}.",
+   "en": "The restaurant has been told: your gift will be served with order #{n}.",
+   "tr": "Restorana bildirildi, hediyeniz {n} numaralı siparişle servis edilecek.",
+   "de": "Das Restaurant ist informiert: Ihr Geschenk wird mit Bestellung Nr. {n} serviert."
+  },
+  "gamePlayed": {
+   "fr": "Vous avez déjà joué récemment sur ce téléphone. Rejouez après {time}.",
+   "en": "You already played recently on this phone. Play again after {time}.",
+   "tr": "Bu telefonda yakın zamanda oynadınız. {time} sonra tekrar oynayın.",
+   "de": "Sie haben auf diesem Handy schon gespielt. Wieder ab {time}."
+  },
+  "gameClose": {
+   "fr": "Fermer",
+   "en": "Close",
+   "tr": "Kapat",
+   "de": "Schließen"
   }
  },
  "categories": [
@@ -3816,5 +3870,31 @@
   "photo-margherita-2026-11",
   "photo:pizzas-pizza-margherita",
   "photo:pizzas-pizza-kebab"
- ]
+ ],
+ "game": {
+  "enabled": false,
+  "resetHours": 3,
+  "prizes": [
+   {
+    "id": "p1",
+    "name": {
+     "fr": "Boisson offerte",
+     "en": "Free drink",
+     "tr": "İkram içecek",
+     "de": "Gratis-Getränk"
+    },
+    "chance": 10
+   },
+   {
+    "id": "p2",
+    "name": {
+     "fr": "Dessert offert",
+     "en": "Free dessert",
+     "tr": "İkram tatlı",
+     "de": "Gratis-Dessert"
+    },
+    "chance": 5
+   }
+  ]
+ }
 }

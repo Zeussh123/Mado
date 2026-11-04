@@ -89,6 +89,17 @@ footer .info{margin-bottom:8px;color:var(--text)}
 
 /* ---------- Fiche produit personnalisable ---------- */
 .review{display:flex;flex-direction:column;align-items:center;gap:4px;margin:18px auto 0;max-width:320px;padding:14px 18px;border-radius:16px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);text-decoration:none;font-weight:700;text-align:center}
+.game-btn{display:flex;align-items:center;gap:12px;margin:16px auto 0;max-width:340px;width:100%;padding:14px 16px;border-radius:16px;border:2px solid #f3c969;background:linear-gradient(135deg,#3a2a10,#24190b);color:#ffe9b0;font:inherit;font-weight:800;text-align:left;cursor:pointer;animation:gpulse 2.2s ease-in-out infinite}
+.game-btn .gw{flex:none;width:40px;height:40px;border-radius:50%;border:3px solid #f3c969;background:conic-gradient(#f39200 0 60deg,#2c2620 0 120deg,#4caf50 0 180deg,#2c2620 0 240deg,#e8505b 0 300deg,#2c2620 0);display:inline-block;animation:gspin 6s linear infinite}
+@keyframes gspin{to{transform:rotate(360deg)}}@keyframes gpulse{50%{box-shadow:0 0 0 6px rgba(243,201,105,.18)}}
+.game-ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:16px}
+.game-box{position:relative;width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;text-align:center}
+.game-box h2{margin:0 0 10px;font-size:1.25rem}
+.game-box .wheel{width:100%;max-width:320px;display:block;margin:0 auto}
+.game-box #wheelG{transform-origin:160px 160px;transform-box:view-box}
+.game-res p{margin:10px 0 0}.game-res .win{font-size:1.25rem;font-weight:900;color:#f3c969}
+.game-act{display:flex;gap:10px;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.game-btn,.game-btn .gw{animation:none}}
 .review .stars-in{display:flex;gap:6px}
 .review .stars-in button{background:none;border:0;font-size:2.1rem;line-height:1;color:#555;cursor:pointer;padding:2px}
 .review .stars-in button.on{color:#fbbc04}
@@ -729,12 +740,75 @@ function drawSent(fresh){
     <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
     <p class="hint">${esc(ui("payAtCounter"))}</p>
+    ${gameOn(o) ? `<button type="button" class="game-btn" data-sh="game"><span class="gw"></span><span>${esc(GAME_DONE[o.id] ? gameResultTxt(GAME_DONE[o.id]) : ui("gameBtn"))}</span></button>` : ""}
     ${!STAFF && /^https:\/\//.test((MENU.info || {}).reviewUrl || "") ? `<div id="rateSlot"></div>` : ""}</div>`;
   $("#shBar").innerHTML = STAFF ? `<button class="btn grow" data-sh="staffNext">Nouvelle commande</button>` : `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
   if (STAFF) $("#shScroll .sent .status").remove();
   if ($("#rateSlot")) $("#rateSlot").replaceWith(rateBox(o));
   if (fresh) burst($("#shScroll .sent"));
 }
+/* ----- roue de la chance (tirage fait par le serveur, une partie par commande et par téléphone) ----- */
+const DEV_ID = (() => { try { let c = localStorage.getItem("mado-dev"); if (!c) { c = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36)).replace(/-/g, "").slice(0, 24); localStorage.setItem("mado-dev", c); } return c; } catch { return ""; } })();
+let GAME_DONE = (() => { try { return JSON.parse(localStorage.getItem("mado-game") || "{}"); } catch { return {}; } })();
+const saveGame = () => { try { localStorage.setItem("mado-game", JSON.stringify(GAME_DONE)); } catch {} };
+function gameCfg(){ const g = MENU.game || {}; const prizes = (g.prizes || []).filter(p => p && p.name && (p.name.fr || "").trim() && +p.chance > 0); return {on: !!g.enabled && prizes.length > 0, hours: Math.min(48, Math.max(1, +g.resetHours || 3)), prizes}; }
+const gameOn = (o) => !STAFF && !!TABLE && !!o && !!o.id && gameCfg().on && Date.now() - (o.at || 0) < gameCfg().hours * 3600e3 && o.status !== "cancelled";
+const gameResultTxt = (r) => r.prize ? fill(ui("gameWin"), {prize: r.label || r.prize}) : ui("gameLose");
+function wheelSegs(){
+  const pz = gameCfg().prizes, n = Math.max(6, pz.length * 2), segs = [];
+  for (let i = 0; i < n; i++) segs.push(i % 2 === 0 && pz[i / 2] ? {id: pz[i / 2].id, label: t(pz[i / 2].name)} : {id: null, label: ui("gameLose")});
+  return segs;
+}
+function wheelSvg(segs){
+  const n = segs.length, R = 150, C = 160, a = 2 * Math.PI / n, cols = ["#f39200", "#2c2620", "#4caf50", "#2c2620", "#e8505b", "#2c2620", "#3d8bfd", "#2c2620"];
+  return `<svg viewBox="0 0 320 320" class="wheel"><g id="wheelG">${segs.map((s, i) => {
+    const a0 = i * a - Math.PI / 2 - a / 2, a1 = a0 + a, x0 = C + R * Math.cos(a0), y0 = C + R * Math.sin(a0), x1 = C + R * Math.cos(a1), y1 = C + R * Math.sin(a1);
+    const mid = (a0 + a1) / 2, tx = C + R * .62 * Math.cos(mid), ty = C + R * .62 * Math.sin(mid), deg = mid * 180 / Math.PI;
+    const col = s.id ? cols[(i) % cols.length] === "#2c2620" ? "#f39200" : cols[i % cols.length] : "#2c2620";
+    const words = s.label.split(" "), l1 = words.slice(0, Math.ceil(words.length / 2)).join(" "), l2 = words.slice(Math.ceil(words.length / 2)).join(" ");
+    return `<path d="M${C} ${C} L${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${col}" stroke="#16130f" stroke-width="2"/>
+      <text transform="translate(${tx.toFixed(1)} ${ty.toFixed(1)}) rotate(${(deg + 90).toFixed(1)})" text-anchor="middle" font-size="${s.id ? 12.5 : 11}" font-weight="800" fill="${s.id ? "#fff" : "#a9a39a"}"><tspan x="0" dy="${l2 ? -2 : 4}">${esc(l1)}</tspan>${l2 ? `<tspan x="0" dy="14">${esc(l2)}</tspan>` : ""}</text>`;
+  }).join("")}</g><circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="#f3c969" stroke-width="6"/>
+  ${Array.from({length: n * 2}, (_, i) => { const b = i * Math.PI / n; return `<circle cx="${(C + (R + 0) * Math.cos(b)).toFixed(1)}" cy="${(C + R * Math.sin(b)).toFixed(1)}" r="3.2" fill="#fff8e1"/>`; }).join("")}
+  <circle cx="${C}" cy="${C}" r="24" fill="#16130f" stroke="#f3c969" stroke-width="4"/><text x="${C}" y="${C + 6}" text-anchor="middle" font-size="18">🎁</text>
+  <path d="M${C - 14} 2 L${C + 14} 2 L${C} 30 Z" fill="#fff" stroke="#16130f" stroke-width="2"/></svg>`;
+}
+function openGame(){
+  const o = ORDERS[0]; if (!gameOn(o)) return;
+  const segs = wheelSegs(), done = GAME_DONE[o.id];
+  const ov = document.createElement("div"); ov.className = "game-ov"; ov.innerHTML = `<div class="game-box"><h2>${esc(ui("gameTitle"))}</h2>${wheelSvg(segs)}
+    <div class="game-res">${done ? gameMsg(done, o) : ""}</div>
+    <div class="game-act">${done ? "" : `<button class="btn grow pulse" data-g="spin">${esc(ui("gameSpin"))}</button>`}<button class="btn ghost" data-g="close">${esc(ui("gameClose"))}</button></div></div>`;
+  document.body.appendChild(ov);
+  if (done) { const i = segs.findIndex(s => s.id === (done.prizeId || null)); ov.querySelector("#wheelG").style.transform = `rotate(${-i * 360 / segs.length}deg)`; }
+  ov.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-g]"); if (!b && e.target !== ov) return;
+    if (!b || b.dataset.g === "close") { ov.remove(); if (STEP === "sent") drawSent(false); return; }
+    b.disabled = true;
+    let r;
+    try {
+      const res = await fetch("/api/game/spin", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({table: TABLE, k: TKEY, order: o.id, cid: DEV_ID})});
+      r = await res.json();
+      if (r.error === "played") { ov.querySelector(".game-res").innerHTML = `<p>${esc(fill(ui("gamePlayed"), {time: new Date(r.next).toLocaleTimeString(lang === "en" ? "en-GB" : lang, {hour: "2-digit", minute: "2-digit"})}))}</p>`; b.remove(); return; }
+      if (!res.ok) throw new Error(r.error);
+    } catch { b.disabled = false; toast(meM ? meM() : null, ui("sendError")); return; }
+    const p = gameCfg().prizes.find(x => x.id === r.prizeId);
+    const res = {prizeId: r.prizeId || null, prize: r.prize || null, label: p ? t(p.name) : r.prize};
+    // on choisit un segment du bon lot (ou un « perdu ») et la roue s'arrête dessus
+    const idx = segs.map((s, i) => [s, i]).filter(([s]) => s.id === res.prizeId).map(([, i]) => i);
+    const i = idx[Math.floor(Math.random() * idx.length)] ?? 0, step = 360 / segs.length;
+    const jitter = (Math.random() - .5) * step * .6, turn = 360 * 6 - i * step + jitter;
+    const g = ov.querySelector("#wheelG"); g.style.transition = "transform 4.6s cubic-bezier(.12,.6,.1,1)"; g.style.transform = `rotate(${turn}deg)`;
+    b.remove();
+    setTimeout(() => {
+      GAME_DONE[o.id] = res; saveGame();
+      ov.querySelector(".game-res").innerHTML = gameMsg(res, o);
+      if (res.prize) burst(ov.querySelector(".game-box"));
+    }, 4800);
+  });
+}
+const gameMsg = (r, o) => r.prize ? `<p class="win">🎉 ${esc(fill(ui("gameWin"), {prize: r.label || r.prize}))}</p><p>${esc(fill(ui("gameWinMsg"), {n: o.num}))}</p>` : `<p>${esc(ui("gameLoseMsg"))}</p>`;
+
 /* ----- avis : 5 étoiles → fiche Google ; moins → message privé au restaurant (le client le sait) ----- */
 let RATE_EL = null;
 function rateBox(o){
@@ -1119,6 +1193,7 @@ $("#sheet").addEventListener("click", (e) => {
   else if (a === "reset") { if (FOCUS) for (const g of FOCUS) delete SEL[g]; else SEL = {}; drawSheet(); }
   else if (a === "editAll") { FOCUS = null; drawSheet(); }
   else if (a === "add") addCurrent();
+  else if (a === "game") openGame();
   else if (a === "yesMenu") acceptMenu();
   else if (a === "noMenu") goSuggest(CUR);
   else if (a === "cart") openCart();
