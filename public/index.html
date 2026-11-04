@@ -98,6 +98,7 @@ footer .info{margin-bottom:8px;color:var(--text)}
 .game-box h2{margin:0 0 10px;font-size:1.35rem;color:var(--g-title,inherit);letter-spacing:.02em}
 .game-box .wheel{width:100%;max-width:320px;display:block;margin:0 auto}
 .game-box #wheelG{transform-origin:160px 160px;transform-box:view-box}
+.game-left{margin:-4px 0 6px;color:var(--g-title,var(--muted));font-weight:700;opacity:.85}.game-left:empty{display:none}
 .game-res p{margin:10px 0 0}.game-res .win{font-size:1.25rem;font-weight:900;color:#f3c969}
 .game-act{display:flex;gap:10px;margin-top:14px}
 @media (prefers-reduced-motion:reduce){.game-btn,.game-btn .gw{animation:none}}
@@ -722,7 +723,7 @@ async function sendOrder(btn){
     if (STAFF && r.status === 401) { staffLogout(); return; }
     if (j.error === "soldout") { refreshSoldOut(); throw new Error(fill(ui("soldOutErr"), {items: (j.items || []).join(", ")})); }
     if (!r.ok) throw new Error(j.error === "closed" ? ui("closedNow") : (STAFF && j.error) || ui("sendError"));
-    ORDERS.unshift({id: j.id, num: j.num, token: j.token, table: TABLE, status: "new", at: Date.now()}); ORDERS = ORDERS.slice(0, 5); saveOrders();
+    ORDERS.unshift({id: j.id, num: j.num, token: j.token, table: TABLE, status: "new", at: Date.now(), total: j.total}); ORDERS = ORDERS.slice(0, 5); saveOrders();
     CART = []; saveCart(); drawPill();
     if (STAFF) { ORDERS = ORDERS.slice(0, 1); saveOrders(); }
     STEP = "sent"; drawSent(true); if (!STAFF) pollOrders();
@@ -741,7 +742,7 @@ function drawSent(fresh){
     <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
     <p class="hint">${esc(ui("payAtCounter"))}</p>
-    ${gameOn(o) ? `<button type="button" class="game-btn" data-sh="game"><span class="gw"></span><span>${esc(GAME_DONE[o.id] ? gameResultTxt(GAME_DONE[o.id]) : ui("gameBtn"))}</span></button>` : ""}
+    ${gameOn(o) ? `<button type="button" class="game-btn" data-sh="game"><span class="gw"></span><span>${esc(gameBtnTxt(o))}</span></button>` : ""}
     ${!STAFF && /^https:\/\//.test((MENU.info || {}).reviewUrl || "") ? `<div id="rateSlot"></div>` : ""}</div>`;
   $("#shBar").innerHTML = STAFF ? `<button class="btn grow" data-sh="staffNext">Nouvelle commande</button>` : `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
   if (STAFF) $("#shScroll .sent .status").remove();
@@ -752,9 +753,18 @@ function drawSent(fresh){
 const DEV_ID = (() => { try { let c = localStorage.getItem("mado-dev"); if (!c) { c = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36)).replace(/-/g, "").slice(0, 24); localStorage.setItem("mado-dev", c); } return c; } catch { return ""; } })();
 let GAME_DONE = (() => { try { return JSON.parse(localStorage.getItem("mado-game") || "{}"); } catch { return {}; } })();
 const saveGame = () => { try { localStorage.setItem("mado-game", JSON.stringify(GAME_DONE)); } catch {} };
-function gameCfg(){ const g = MENU.game || {}; const prizes = (g.prizes || []).filter(p => p && p.name && (p.name.fr || "").trim() && +p.chance > 0); return {on: !!g.enabled && prizes.length > 0, hours: Math.min(48, Math.max(1, +g.resetHours || 3)), prizes}; }
-const gameOn = (o) => !STAFF && !!TABLE && !!o && !!o.id && gameCfg().on && Date.now() - (o.at || 0) < gameCfg().hours * 3600e3 && o.status !== "cancelled";
-const gameResultTxt = (r) => r.prize ? fill(ui("gameWin"), {prize: r.label || r.prize}) : ui("gameLose");
+function gameCfg(){ const g = MENU.game || {}; const prizes = (g.prizes || []).filter(p => p && p.name && (p.name.fr || "").trim() && +p.chance > 0);
+  return {on: !!g.enabled && prizes.length > 0, mode: ["phone", "order", "amount"].includes(g.mode) ? g.mode : "phone", step: Math.max(1, +g.step || 10), max: Math.min(20, Math.max(1, parseInt(g.maxSpins) || 5)), hours: Math.min(48, Math.max(1, +g.resetHours || 3)), prizes}; }
+// nombre de tours donnés par la commande (mode « par tranche de X € »)
+const gameSpins = (o) => { const c = gameCfg(); return c.mode === "amount" ? (o.total == null ? 1 : Math.min(c.max, Math.floor((+o.total + 1e-9) / c.step))) : 1; };
+const gameOn = (o) => !STAFF && !!TABLE && !!o && !!o.id && gameCfg().on && Date.now() - (o.at || 0) < gameCfg().hours * 3600e3 && o.status !== "cancelled" && gameSpins(o) > 0;
+const gameLabel = (r) => { const p = gameCfg().prizes.find(x => x.id === r.prizeId); return p ? t(p.name) : r.prize; };
+function gameBtnTxt(o){
+  const st = GAME_DONE[o.id];
+  if (st && st.left === 0) { const w = st.results.filter(r => r.prize); return w.length ? fill(ui("gameWin"), {prize: w.map(gameLabel).join(" + ")}) : ui("gameLose"); }
+  const n = st ? st.left : gameSpins(o);
+  return n > 1 ? fill(ui("gameBtnN"), {n}) : ui("gameBtn");
+}
 function wheelSegs(){
   const pz = gameCfg().prizes, n = Math.max(6, pz.length * 2), segs = [];
   for (let i = 0; i < n; i++) segs.push(i % 2 === 0 && pz[i / 2] ? {id: pz[i / 2].id, label: t(pz[i / 2].name)} : {id: null, label: ui("gameLose")});
@@ -783,40 +793,50 @@ function wheelSvg(segs){
 }
 function openGame(){
   const o = ORDERS[0]; if (!gameOn(o)) return;
-  const segs = wheelSegs(), done = GAME_DONE[o.id];
-  const ov = document.createElement("div"); ov.className = "game-ov"; const T = wheelTheme();
-  ov.style.cssText = `--g-ov:${T.ov};--g-box:${T.box};--g-line:${T.line};--g-title:${T.title};--g-btn:${T.btn};--g-btn-txt:${T.btnTxt}`; ov.innerHTML = `<div class="game-box"><h2>${esc(ui("gameTitle"))}</h2>${wheelSvg(segs)}
-    <div class="game-res">${done ? gameMsg(done, o) : ""}</div>
-    <div class="game-act">${done ? "" : `<button class="btn grow pulse" data-g="spin">${esc(ui("gameSpin"))}</button>`}<button class="btn ghost" data-g="close">${esc(ui("gameClose"))}</button></div></div>`;
+  const segs = wheelSegs(), T = wheelTheme(), step = 360 / segs.length;
+  const ov = document.createElement("div"); ov.className = "game-ov";
+  ov.style.cssText = `--g-ov:${T.ov};--g-box:${T.box};--g-line:${T.line};--g-title:${T.title};--g-btn:${T.btn};--g-btn-txt:${T.btnTxt}`;
+  ov.innerHTML = `<div class="game-box"><h2>${esc(ui("gameTitle"))}</h2><p class="game-left"></p>${wheelSvg(segs)}
+    <div class="game-res"></div><div class="game-act"><button class="btn grow pulse" data-g="spin" disabled>${esc(ui("gameSpin"))}</button><button class="btn ghost" data-g="close">${esc(ui("gameClose"))}</button></div></div>`;
   document.body.appendChild(ov);
-  if (done) { const i = segs.findIndex(s => s.id === (done.prizeId || null)); ov.querySelector("#wheelG").style.transform = `rotate(${-i * 360 / segs.length}deg)`; }
+  const g = ov.querySelector("#wheelG"), spinBtn = ov.querySelector('[data-g="spin"]');
+  const segOf = (r) => { const idx = segs.map((s, i) => [s, i]).filter(([s]) => s.id === (r.prizeId || null)).map(([, i]) => i); return idx[Math.floor(Math.random() * idx.length)] ?? 0; };
+  const body = () => JSON.stringify({table: TABLE, k: TKEY, order: o.id, cid: DEV_ID});
+  let turns = 0;
+  function show(st, animate){
+    GAME_DONE[o.id] = {left: st.left, total: st.total, results: st.results}; saveGame();
+    const wins = st.results.filter(r => r.prize), last = st.results[st.results.length - 1];
+    ov.querySelector(".game-left").textContent = st.total > 1 ? fill(ui("gameLeft"), {n: st.left, t: st.total}) : "";
+    ov.querySelector(".game-res").innerHTML = last ? (last.prize ? `<p class="win">🎉 ${esc(fill(ui("gameWin"), {prize: gameLabel(last)}))}</p>` : `<p>${esc(ui(st.left ? "gameLoseAgain" : wins.length ? "gameLoseLast" : "gameLoseMsg"))}</p>`)
+      + (wins.length && !st.left ? `<p>${esc(fill(ui("gameWinMsg"), {n: o.num}))}${wins.length > 1 ? ` (${esc(wins.map(gameLabel).join(" + "))})` : ""}</p>` : "") : "";
+    spinBtn.hidden = !st.left; spinBtn.disabled = false;
+    if (last && !animate) g.style.transform = `rotate(${-segOf(last) * step}deg)`;
+    if (animate && last && last.prize) burst(ov.querySelector(".game-box"));
+  }
+  fetch("/api/game/status", {method: "POST", headers: {"content-type": "application/json"}, body: body()}).then(r => r.json()).then(st => {
+    if (st.error) { ov.querySelector(".game-res").innerHTML = `<p>${esc(ui("gameLoseMsg"))}</p>`; spinBtn.hidden = true; return; }
+    show(st, false);
+  }).catch(() => { spinBtn.disabled = false; });
   ov.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-g]"); if (!b && e.target !== ov) return;
     if (!b || b.dataset.g === "close") { ov.remove(); if (STEP === "sent") drawSent(false); return; }
     b.disabled = true;
     let r;
     try {
-      const res = await fetch("/api/game/spin", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({table: TABLE, k: TKEY, order: o.id, cid: DEV_ID})});
+      const res = await fetch("/api/game/spin", {method: "POST", headers: {"content-type": "application/json"}, body: body()});
       r = await res.json();
-      if (r.error === "played") { ov.querySelector(".game-res").innerHTML = `<p>${esc(fill(ui("gamePlayed"), {time: new Date(r.next).toLocaleTimeString(lang === "en" ? "en-GB" : lang, {hour: "2-digit", minute: "2-digit"})}))}</p>`; b.remove(); return; }
+      if (r.error === "played") { ov.querySelector(".game-res").innerHTML = `<p>${esc(fill(ui("gamePlayed"), {time: new Date(r.next).toLocaleTimeString(lang === "en" ? "en-GB" : lang, {hour: "2-digit", minute: "2-digit"})}))}</p>`; b.hidden = true; return; }
+      if (r.error === "none" || r.error === "amount") { show(r, false); return; }
       if (!res.ok) throw new Error(r.error);
-    } catch { b.disabled = false; toast(meM ? meM() : null, ui("sendError")); return; }
-    const p = gameCfg().prizes.find(x => x.id === r.prizeId);
-    const res = {prizeId: r.prizeId || null, prize: r.prize || null, label: p ? t(p.name) : r.prize};
-    // on choisit un segment du bon lot (ou un « perdu ») et la roue s'arrête dessus
-    const idx = segs.map((s, i) => [s, i]).filter(([s]) => s.id === res.prizeId).map(([, i]) => i);
-    const i = idx[Math.floor(Math.random() * idx.length)] ?? 0, step = 360 / segs.length;
-    const jitter = (Math.random() - .5) * step * .6, turn = 360 * 6 - i * step + jitter;
-    const g = ov.querySelector("#wheelG"); g.style.transition = "transform 4.6s cubic-bezier(.12,.6,.1,1)"; g.style.transform = `rotate(${turn}deg)`;
-    b.remove();
-    setTimeout(() => {
-      GAME_DONE[o.id] = res; saveGame();
-      ov.querySelector(".game-res").innerHTML = gameMsg(res, o);
-      if (res.prize) burst(ov.querySelector(".game-box"));
-    }, 4800);
+    } catch { b.disabled = false; toast(typeof meM === "function" ? meM() : null, ui("sendError")); return; }
+    // la roue s'arrête sur un segment du lot tiré par le serveur (ou sur « Perdu »)
+    turns += 6;
+    const i = segOf(r), jitter = (Math.random() - .5) * step * .6;
+    g.style.transition = "transform 4.6s cubic-bezier(.12,.6,.1,1)"; g.style.transform = `rotate(${360 * turns - i * step + jitter}deg)`;
+    ov.querySelector(".game-res").innerHTML = "";
+    setTimeout(() => show(r, true), 4800);
   });
 }
-const gameMsg = (r, o) => r.prize ? `<p class="win">🎉 ${esc(fill(ui("gameWin"), {prize: r.label || r.prize}))}</p><p>${esc(fill(ui("gameWinMsg"), {n: o.num}))}</p>` : `<p>${esc(ui("gameLoseMsg"))}</p>`;
 
 /* ----- avis : 5 étoiles → fiche Google ; moins → message privé au restaurant (le client le sait) ----- */
 let RATE_EL = null;
@@ -1048,7 +1068,7 @@ function applyTB(b, iSent){
   if (TB.last && String(TB.last.id) !== prevLast) {
     ss.set("mado-tb-last", String(TB.last.id));
     if (!first || iSent) {
-      ORDERS.unshift({id: TB.last.id, num: TB.last.num, token: TB.last.token, table: TABLE, status: "new", at: Date.now(), shared: true, by: TB.last.by});
+      ORDERS.unshift({id: TB.last.id, num: TB.last.num, token: TB.last.token, table: TABLE, status: "new", at: Date.now(), shared: true, by: TB.last.by, total: TB.last.total});
       ORDERS = ORDERS.slice(0, 5); saveOrders();
       CUR = null; STEP = "sent"; sendConfirm = false; drawSent(true); showSheet(); pollOrders();
       drawPill(); return;

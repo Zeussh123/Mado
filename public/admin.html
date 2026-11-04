@@ -24,6 +24,11 @@ button:disabled{opacity:.5;cursor:default}
 /* ---------- plan de salle ---------- */
 .toggles .so.on{color:#ff8d86;font-weight:800}
 #gmThemes button.on{border-color:var(--accent);background:#2b2214}
+.gm-modes{display:flex;flex-direction:column;gap:8px}
+.gm-modes>label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.gm-modes>label:has(input:checked){border-color:var(--accent);background:#2b2214}
+.gm-modes>label>input{width:auto;margin-top:4px}
+.gm-modes small{display:block;color:var(--muted);margin-top:3px;line-height:1.5}
 .gm-row{display:grid;grid-template-columns:1fr 110px 44px;gap:8px;align-items:center;margin-bottom:10px}
 .gm-row details{grid-column:1/-1;margin-top:-4px}
 .av-msg{border-top:1px solid var(--line);padding:10px 0}.av-msg p{margin:6px 0 0;white-space:pre-wrap}
@@ -279,7 +284,13 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <label style="display:flex;gap:8px;align-items:center;font-weight:800"><input type="checkbox" id="gmOn" style="width:auto;margin:0"> Activer la roue de la chance</label>
         <div class="lbl">Style de la roue</div>
         <div id="gmThemes" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-        <div class="lbl">Une partie par commande, et une partie par téléphone toutes les… (heures)</div>
+        <div class="lbl">Combien de tours ?</div>
+        <div id="gmModes" class="gm-modes">
+          <label><input type="radio" name="gmMode" value="order"> <span><b>1 tour par commande</b><small>Sans limite par téléphone : chaque nouvelle commande donne un tour.</small></span></label>
+          <label><input type="radio" name="gmMode" value="amount"> <span><b>1 tour par tranche de <input id="gmStep" type="number" min="1" step="1" style="width:70px;display:inline-block;padding:4px 6px"> € dépensés</b><small>Ex. tranche de 10 € : commande de 25 € = 2 tours, 9 € = pas de tour. Maximum <input id="gmMax" type="number" min="1" max="20" step="1" style="width:56px;display:inline-block;padding:2px 6px"> tours par commande.</small></span></label>
+          <label><input type="radio" name="gmMode" value="phone"> <span><b>1 tour par commande, et 1 par téléphone toutes les X heures</b><small>Un même téléphone ne peut rejouer qu'après le délai ci-dessous, même s'il recommande.</small></span></label>
+        </div>
+        <div class="lbl" id="gmHoursLbl">Délai (heures)</div>
         <input id="gmHours" type="number" min="1" max="48" step="1" style="max-width:120px">
         <div class="lbl">Lots à gagner et chance de gagner chacun (%)</div>
         <div id="gmPrizes"></div>
@@ -899,6 +910,9 @@ function gm(){ menu.game = menu.game || {enabled: false, resetHours: 3, prizes: 
 function renderGame(){
   const g = gm();
   $("#gmOn").checked = !!g.enabled; $("#gmHours").value = g.resetHours || 3;
+  const mode = g.mode || "phone"; $$('[name="gmMode"]').forEach(r => r.checked = r.value === mode);
+  $("#gmStep").value = g.step || 10; $("#gmMax").value = g.maxSpins || 5;
+  $("#gmHoursLbl").textContent = mode === "phone" ? "Délai par téléphone (heures) : le client peut aussi tourner la roue pendant ce temps après sa commande" : "Le client peut tourner la roue pendant… (heures après sa commande)";
   const TH = [["mado", "Mado (vert et or)", "#8cc63f,#f4ecd8,#d4a537,#f4ecd8", "#132410"], ["casino", "Casino (rouge et or)", "#d62828,#f7ecd4,#b3121b,#f7ecd4", "#2b0709"], ["fete", "Fête (multicolore)", "#ff4d6d,#fff,#ffb703,#fff,#06d6a0,#fff", "#4b1d8f"]];
   $("#gmThemes").innerHTML = TH.map(([id, name, cols, bg]) => { const c = cols.split(","), st = 360 / c.length;
     return `<button type="button" data-gt="${id}" class="${(g.theme || "mado") === id ? "on" : ""}" style="display:flex;align-items:center;gap:10px;padding:8px 12px"><span style="width:34px;height:34px;border-radius:50%;border:3px solid ${id === "fete" ? "#fff" : id === "casino" ? "#e0b84a" : "#c9a24a"};outline:6px solid ${bg};background:conic-gradient(${c.map((x, i) => `${x} ${i * st}deg ${(i + 1) * st}deg`).join(",")})"></span>${name}</button>`; }).join("");
@@ -915,6 +929,13 @@ function gmSum(){
 }
 $("#gmThemes").addEventListener("click", (e) => { const b = e.target.closest("[data-gt]"); if (!b) return; gm().theme = b.dataset.gt; renderGame(); updateStatus(); });
 $("#gmOn").onchange = (e) => { gm().enabled = e.target.checked; updateStatus(); };
+$("#gmModes").addEventListener("input", (e) => {
+  const g = gm();
+  if (e.target.name === "gmMode") { g.mode = e.target.value; renderGame(); }
+  else if (e.target.id === "gmStep") g.step = Math.max(1, parseFloat(e.target.value) || 10);
+  else if (e.target.id === "gmMax") g.maxSpins = Math.min(20, Math.max(1, parseInt(e.target.value) || 5));
+  updateStatus();
+});
 $("#gmHours").oninput = (e) => { gm().resetHours = Math.min(48, Math.max(1, parseInt(e.target.value) || 3)); updateStatus(); };
 $("#gmAdd").onclick = () => { gm().prizes.push({id: "p" + Date.now().toString(36), name: {fr: "", en: "", tr: "", de: ""}, chance: 5}); renderGame(); updateStatus(); };
 $("#gmPrizes").addEventListener("input", (e) => {

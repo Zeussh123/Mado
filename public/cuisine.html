@@ -290,7 +290,8 @@ let token = (() => { try { return sessionStorage.getItem("mado-admin") || ls.get
 let ORDERS = [], TABLES = 10, started = false, audio = null, firstLoad = true, tab = "orders", openTable = null;
 const idSet = (k) => new Set((ls.get(k) || "").split(",").filter(Boolean).map(Number));
 const saveSet = (k, s) => ls.set(k, [...s].slice(-400).join(","));
-const printed = idSet("mado-printed"), seen = idSet("mado-seen"), gifts = idSet("mado-gifts");
+const printed = idSet("mado-printed"), seen = idSet("mado-seen"), gifts = new Set((ls.get("mado-gifts2") || "").split("|").filter(Boolean));
+const giftKey = (o) => o.id + ":" + o.prize, saveGifts = () => ls.set("mado-gifts2", [...gifts].slice(-300).join("|"));
 const api = (p, o = {}) => fetch(p, {...o, headers: {...(o.headers || {}), authorization: "Bearer " + token}});
 
 /* ---------- réglages (sur ce poste) ---------- */
@@ -441,7 +442,7 @@ function printHtml(html, copies = 1){ for (let i = 0; i < copies; i++) queue.pus
 function printOrder(o, copies = S.copies){
   printHtml(ticketHtml(o), copies);
   if (o.id) { printed.add(o.id); saveSet("mado-printed", printed); }
-  if (o.prize) { gifts.add(o.id); saveSet("mado-gifts", gifts); }
+  if (o.prize) { gifts.add(giftKey(o)); saveGifts(); }
 }
 // lot gagné à la roue après l'impression de la commande : petit ticket cadeau
 function giftHtml(o){
@@ -680,10 +681,10 @@ async function load(){
     const fresh = firstLoad ? [] : ORDERS.filter(o => !known.has(o.id) && o.status === "new" && !seen.has(o.id));
     if (started && S.autoPrint) ORDERS.filter(o => o.status === "new" && !printed.has(o.id)).reverse().forEach(o => printOrder(o));
     // nouveaux gagnants de la roue : ticket cadeau + annonce
-    const won = ORDERS.filter(o => o.prize && !gifts.has(o.id) && o.status !== "cancelled");
+    const won = ORDERS.filter(o => o.prize && !gifts.has(giftKey(o)) && o.status !== "cancelled");
     if (won.length) {
-      won.forEach(o => { gifts.add(o.id); if (started && S.autoPrint && !firstLoad) printHtml(giftHtml(o)); if (started && S.voice && !firstLoad) say(`${tName(o.table_no)} a gagné ${o.prize}`); });
-      saveSet("mado-gifts", gifts);
+      won.forEach(o => { gifts.add(giftKey(o)); if (started && S.autoPrint && !firstLoad) printHtml(giftHtml(o)); if (started && S.voice && !firstLoad) say(`${tName(o.table_no)} a gagné ${o.prize}`); });
+      saveGifts();
     }
     firstLoad = false;
     $("#live").classList.add("on"); $("#liveTxt").textContent = "En ligne · " + new Date().toLocaleTimeString("fr-FR");

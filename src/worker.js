@@ -6,7 +6,7 @@
 import { handleOrders, stats } from "./orders.js";
 import { stockState } from "./stock.js";
 import { postFeedback, listFeedback } from "./feedback.js";
-import { spin, gameStats } from "./game.js";
+import { spin, gameStatus, gameStats } from "./game.js";
 
 const MENU_KEY = "menu";
 const STAFF_KEY = "staff-code";
@@ -23,6 +23,7 @@ export default {
       if (path === "/api/soldout" && request.method === "POST") return setSoldOut(request, env);
       if (path === "/api/stats" && request.method === "GET") return withAuth(request, env, async () => env.DB ? json(await stats(env, url)) : json({ error: "Commandes non activées" }, 503));
       if (path === "/api/game/spin" && request.method === "POST") return spin(request, env, JSON.parse(await menuText(request, env)), { json, checkTableKey });
+      if (path === "/api/game/status" && request.method === "POST") return gameStatus(request, env, JSON.parse(await menuText(request, env)), { json, checkTableKey });
       if (path === "/api/game/stats" && request.method === "GET") return withAuth(request, env, async () => env.DB ? json(await gameStats(env, url)) : json({ error: "Commandes non activées" }, 503));
       if (path === "/api/feedback" && request.method === "POST") return postFeedback(request, env, { json, checkTableKey });
       if (path === "/api/feedback" && request.method === "GET") return withAuth(request, env, async () => env.DB ? json(await listFeedback(env, url)) : json({ error: "Commandes non activées" }, 503));

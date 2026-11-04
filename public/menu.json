@@ -643,6 +643,30 @@
    "en": "Close",
    "tr": "Kapat",
    "de": "Schließen"
+  },
+  "gameBtnN": {
+   "fr": "Tournez la roue : vous avez {n} chances !",
+   "en": "Spin the wheel: you have {n} chances!",
+   "tr": "Çarkı çevir: {n} şansınız var!",
+   "de": "Drehen Sie das Glücksrad: Sie haben {n} Chancen!"
+  },
+  "gameLeft": {
+   "fr": "Tours restants : {n} sur {t}",
+   "en": "Spins left: {n} of {t}",
+   "tr": "Kalan çevirme: {n} / {t}",
+   "de": "Verbleibende Drehungen: {n} von {t}"
+  },
+  "gameLoseAgain": {
+   "fr": "Perdu… Tentez encore votre chance !",
+   "en": "No luck… Try again!",
+   "tr": "Olmadı… Tekrar deneyin!",
+   "de": "Leider nicht… Versuchen Sie es noch einmal!"
+  },
+  "gameLoseLast": {
+   "fr": "Perdu pour ce dernier tour.",
+   "en": "No luck on this last spin.",
+   "tr": "Son çevirmede olmadı.",
+   "de": "Bei der letzten Drehung leider nicht."
   }
  },
  "categories": [
@@ -3895,6 +3919,9 @@
     },
     "chance": 5
    }
-  ]
+  ],
+  "mode": "phone",
+  "step": 10,
+  "maxSpins": 5
  }
 }
