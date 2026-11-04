@@ -237,6 +237,7 @@ const PRODUCT_PHOTOS = {
   "alcools-biere-heineken-50-cl": "/img/produits/heineken.jpg",
   "alcools-biere-1664-50-cl": "/img/produits/1664.jpg",
   "alcools-biere-desperados-50-cl": "/img/produits/desperados.jpg",
+  "alcools-biere-bavaria-50-cl": "/img/produits/biere-86.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
