@@ -3457,19 +3457,6 @@
      "hidden": false
     },
     {
-     "id": "piment",
-     "name": {
-      "fr": "Piment",
-      "en": "Hot chili",
-      "tr": "Acı sos",
-      "de": "Scharf"
-     },
-     "icon": "piment",
-     "photo": "",
-     "price": 0,
-     "hidden": false
-    },
-    {
      "id": "harissa",
      "name": {
       "fr": "Harissa",

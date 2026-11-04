@@ -260,6 +260,12 @@ function applyMigrations(m){
     if (!m.info.reviewUrl) m.info.reviewUrl = "https://g.page/r/CbD3MvtAG53rEBE/review";
     m.applied.push("review-2026-11");
   }
+  if (!m.applied.includes("sauce-piment-2026-11")) {
+    // « Piment » faisait doublon avec « Piment en poudre » dans les sauces (demande momo) : on le retire
+    const g = (m.optionGroups || []).find((x) => x.id === "sauces");
+    if (g) g.choices = g.choices.filter((c) => c.id !== "piment");
+    m.applied.push("sauce-piment-2026-11");
+  }
   if (!m.applied.includes("review2-2026-11")) {
     // lien d'avis direct (« Demander des avis ») à la place du lien de fiche Maps
     m.info = m.info || {};
