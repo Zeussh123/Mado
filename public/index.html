@@ -89,7 +89,15 @@ footer .info{margin-bottom:8px;color:var(--text)}
 
 /* ---------- Fiche produit personnalisable ---------- */
 .review{display:flex;flex-direction:column;align-items:center;gap:4px;margin:18px auto 0;max-width:320px;padding:14px 18px;border-radius:16px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);text-decoration:none;font-weight:700;text-align:center}
-.review .stars{color:#fbbc04;font-size:1.3rem;letter-spacing:3px}
+.review .stars-in{display:flex;gap:6px}
+.review .stars-in button{background:none;border:0;font-size:2.1rem;line-height:1;color:#555;cursor:pointer;padding:2px}
+.review .stars-in button.on{color:#fbbc04}
+.review .rate-more{display:flex;flex-direction:column;gap:8px;width:100%;font-weight:500}.review .rate-more:empty{display:none}
+.review .rate-more p{margin:4px 0 0}
+.review textarea{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:10px;font:inherit;font-size:16px}
+.review small{color:var(--muted);font-weight:500}
+.review .rate-g{color:var(--muted);font-size:.85rem;text-decoration:underline}
+.review a.btn{text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center}
 .item.out{opacity:.55}.item.out .ph{filter:grayscale(1)}
 .badge.soldout{background:#5a2a27;color:#ffb3ad;border-color:#5a2a27}
 .cl.out .cn::after{content:" · " attr(data-out);color:#ff8d86;font-weight:800;font-size:.85em}
@@ -721,10 +729,45 @@ function drawSent(fresh){
     <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
     <p class="hint">${esc(ui("payAtCounter"))}</p>
-    ${!STAFF && /^https:\/\//.test((MENU.info || {}).reviewUrl || "") ? `<a class="review" href="${esc(MENU.info.reviewUrl)}" target="_blank" rel="noopener"><span class="stars">★★★★★</span><span>${esc(ui("reviewAsk"))}</span></a>` : ""}</div>`;
+    ${!STAFF && /^https:\/\//.test((MENU.info || {}).reviewUrl || "") ? `<div id="rateSlot"></div>` : ""}</div>`;
   $("#shBar").innerHTML = STAFF ? `<button class="btn grow" data-sh="staffNext">Nouvelle commande</button>` : `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
   if (STAFF) $("#shScroll .sent .status").remove();
+  if ($("#rateSlot")) $("#rateSlot").replaceWith(rateBox(o));
   if (fresh) burst($("#shScroll .sent"));
+}
+/* ----- avis : 5 étoiles → fiche Google ; moins → message privé au restaurant (le client le sait) ----- */
+let RATE_EL = null;
+function rateBox(o){
+  if (RATE_EL && RATE_EL.dataset.oid === String(o.id)) return RATE_EL;   // on garde ce qui est en cours (texte tapé)
+  const el = document.createElement("div"); el.className = "review"; el.dataset.oid = o.id;
+  el.innerHTML = `<b>${esc(ui("rateAsk"))}</b><div class="stars-in">${[1,2,3,4,5].map(n => `<button type="button" data-rate="${n}" aria-label="${n}/5">★</button>`).join("")}</div><div class="rate-more"></div>`;
+  el.addEventListener("click", (e) => {
+    const st = e.target.closest("[data-rate]"), send = e.target.closest("[data-rsend]");
+    if (st) {
+      const n = +st.dataset.rate; el.dataset.n = n;
+      el.querySelectorAll("[data-rate]").forEach(b => b.classList.toggle("on", +b.dataset.rate <= n));
+      postRate(o, n, "");
+      const more = el.querySelector(".rate-more");
+      if (n === 5) {
+        more.innerHTML = `<p>${esc(ui("rateThanks5"))}</p><a class="btn grow" href="${esc(MENU.info.reviewUrl)}" target="_blank" rel="noopener">${esc(ui("reviewAsk"))}</a>`;
+        window.open(MENU.info.reviewUrl, "_blank", "noopener");
+      } else if (!more.querySelector("textarea")) {
+        more.innerHTML = `<p>${esc(ui("rateLow"))}</p><textarea rows="3" maxlength="1000" placeholder="${esc(ui("ratePlaceholder"))}"></textarea>
+          <button type="button" class="btn grow" data-rsend>${esc(ui("rateSend"))}</button>
+          <small>${esc(ui("ratePrivate"))}</small>
+          <a class="rate-g" href="${esc(MENU.info.reviewUrl)}" target="_blank" rel="noopener">${esc(ui("rateGoogleAnyway"))}</a>`;
+      }
+    } else if (send) {
+      const txt = el.querySelector("textarea").value.trim();
+      send.disabled = true; postRate(o, +el.dataset.n, txt);
+      el.querySelector(".rate-more").innerHTML = `<p>✓ ${esc(ui("rateThanks"))}</p><a class="rate-g" href="${esc(MENU.info.reviewUrl)}" target="_blank" rel="noopener">${esc(ui("rateGoogleAnyway"))}</a>`;
+    }
+  });
+  return RATE_EL = el;
+}
+const RATE_CID = (() => { try { let c = sessionStorage.getItem("mado-cid"); if (!c) { c = Math.random().toString(36).slice(2, 12); sessionStorage.setItem("mado-cid", c); } return c; } catch { return "x"; } })();
+function postRate(o, n, text){
+  fetch("/api/feedback", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({table: TABLE, k: TKEY, order: o.id, num: o.num, rating: n, text, lang, cid: RATE_CID})}).catch(() => {});
 }
 let pollT = null;
 async function pollOrders(){

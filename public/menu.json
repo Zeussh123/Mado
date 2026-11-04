@@ -541,6 +541,54 @@
    "en": "Enjoyed it? Leave us a Google review",
    "tr": "Beğendiniz mi? Bize Google yorumu bırakın",
    "de": "Hat es geschmeckt? Hinterlassen Sie uns eine Google-Bewertung"
+  },
+  "rateAsk": {
+   "fr": "Comment était votre repas ?",
+   "en": "How was your meal?",
+   "tr": "Yemeğiniz nasıldı?",
+   "de": "Wie hat es Ihnen geschmeckt?"
+  },
+  "rateThanks5": {
+   "fr": "Merci beaucoup ! Un avis Google nous aide énormément.",
+   "en": "Thank you so much! A Google review helps us a lot.",
+   "tr": "Çok teşekkürler! Bir Google yorumu bize çok yardımcı olur.",
+   "de": "Vielen Dank! Eine Google-Bewertung hilft uns sehr."
+  },
+  "rateLow": {
+   "fr": "Désolé que tout n'ait pas été parfait. Dites-nous ce qui n'allait pas :",
+   "en": "Sorry it wasn't perfect. Tell us what went wrong:",
+   "tr": "Her şey mükemmel olmadığı için üzgünüz. Neyin yanlış gittiğini bize söyleyin:",
+   "de": "Schade, dass nicht alles perfekt war. Sagen Sie uns, was nicht gepasst hat:"
+  },
+  "ratePlaceholder": {
+   "fr": "Votre message…",
+   "en": "Your message…",
+   "tr": "Mesajınız…",
+   "de": "Ihre Nachricht…"
+  },
+  "rateSend": {
+   "fr": "Envoyer au restaurant",
+   "en": "Send to the restaurant",
+   "tr": "Restorana gönder",
+   "de": "An das Restaurant senden"
+  },
+  "ratePrivate": {
+   "fr": "Votre message va directement au restaurant, il n'est pas publié.",
+   "en": "Your message goes straight to the restaurant and is not published.",
+   "tr": "Mesajınız doğrudan restorana gider, yayınlanmaz.",
+   "de": "Ihre Nachricht geht direkt an das Restaurant und wird nicht veröffentlicht."
+  },
+  "rateGoogleAnyway": {
+   "fr": "Publier un avis sur Google",
+   "en": "Post a review on Google",
+   "tr": "Google'da yorum yayınla",
+   "de": "Bewertung auf Google veröffentlichen"
+  },
+  "rateThanks": {
+   "fr": "Merci, le restaurant a bien reçu votre message.",
+   "en": "Thank you, the restaurant has received your message.",
+   "tr": "Teşekkürler, restoran mesajınızı aldı.",
+   "de": "Danke, das Restaurant hat Ihre Nachricht erhalten."
   }
  },
  "categories": [
