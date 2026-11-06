@@ -64,12 +64,12 @@ function priceLine(menu, line, promos) {
     const all = chosen.find((c) => c.all);
     const missing = all ? g.choices.filter((c) => (menu.outChoices || []).includes(c.id) && !c.all && !c.apart && !(+c.price) && !c.hidden).map((c) => c.name.fr) : [];
     const names = [all ? all.name.fr + (missing.length ? " sauf " + missing.join(", ") : "") : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price) && !c.apart)).map((c) => c.name.fr)].filter(Boolean);
-    // presque tout coché (ex. tout sauf l'oignon) : « Tout sans oignons » sur le ticket, plus simple à lire en cuisine
+    // presque tout coché (1 ou 2 crudités en moins, demande momo) : « Tout sans oignons » sur le ticket, plus simple à lire en cuisine
     const allC = g.choices.find((c) => c.all && !c.hidden);
     if (!all && allC) {
       const plain = g.choices.filter((c) => !c.all && !c.apart && !(+c.price) && !c.hidden && !(menu.outChoices || []).includes(c.id));
       const lack = plain.filter((c) => !ids.includes(c.id)), have = plain.length - lack.length;
-      if (lack.length && lack.length <= 3 && have > lack.length) {
+      if (lack.length && lack.length <= 2 && have > lack.length) {
         names.length = 0;
         names.push(allC.name.fr + " sans " + lack.map((c) => c.name.fr.toLowerCase()).join(", "), ...chosen.filter((c) => c.apart || +c.price).map((c) => c.name.fr));
       }
