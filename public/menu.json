@@ -708,7 +708,7 @@
      "bestseller": true,
      "id": "menus-menu-kebab",
      "hidden": false,
-     "photo": "/img/produits/kebab.jpg",
+     "photo": "/img/produits/menu-kebab.jpg",
      "options": [
       "viande",
       "crudites",
@@ -4015,6 +4015,7 @@
   "capri-sun-2026-11",
   "photo-4saisons2-2026-11",
   "photo-margherita-2026-11",
+  "photo-menukebab-2026-11",
   "photo:pizzas-pizza-kebab",
   "photo:pizzas-pizza-margherita",
   "piment-2026-11",

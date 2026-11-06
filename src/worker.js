@@ -225,7 +225,7 @@ const PRODUCT_PHOTOS = {
   "assiettes-assiette-doner-mix-buf-poulet": "/img/produits/assiette-kebab.jpg",
   "menus-menu-assiette": "/img/produits/assiette-kebab.jpg",
   "sandwichs-kebab": "/img/produits/kebab.jpg",
-  "menus-menu-kebab": "/img/produits/kebab.jpg",
+  "menus-menu-kebab": "/img/produits/menu-kebab.jpg",
   "boissons-canette-33-cl-coca-cola-fanta-lipton": "/img/produits/boisson-33cl.jpg",
   "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino": "/img/produits/boisson-50cl.jpg",
   "boissons-coca-cola-1-5-l": "/img/produits/boisson-1l5.jpg",
@@ -357,6 +357,11 @@ function applyMigrations(m){
     // nouvelle photo de la 4 saisons (sans le carton), demande momo
     for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-4-saisons" && (!it.photo || it.photo === "/img/produits/pizza-4-saisons.jpg")) it.photo = "/img/produits/pizza-4-saisons-2.jpg";
     m.applied.push("photo-4saisons2-2026-11");
+  }
+  if (!m.applied.includes("photo-menukebab-2026-11")) {
+    // vraie photo du Menu Kebab (kebab + frites + canette), demande momo
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "menus-menu-kebab" && (!it.photo || it.photo === "/img/produits/kebab.jpg")) it.photo = "/img/produits/menu-kebab.jpg";
+    m.applied.push("photo-menukebab-2026-11");
   }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
