@@ -71,7 +71,7 @@ function priceLine(menu, line, promos) {
 
 // La caisse est à part : on oublie parfois « Servie » ou « Encaissée » sur le PC (demande momo).
 // - en préparation / prête depuis plus de 40 min → servie
-// - pas encaissée plus d'1 h après la commande → encaissée (la table redevient libre)
+// - servie depuis plus d'1 h sans être encaissée → encaissée (la table redevient libre)
 const AUTO_SERVED_MIN = 40, AUTO_PAID_MIN = 60;
 let autoAt = 0;
 async function autoAdvance(env) {
@@ -79,7 +79,8 @@ async function autoAdvance(env) {
   autoAt = Date.now();
   const now = new Date().toISOString(), ago = (min) => new Date(Date.now() - min * 60e3).toISOString();
   await env.DB.prepare("UPDATE orders SET status='done', updated_at=? WHERE status IN ('new','ready') AND created_at < ?").bind(now, ago(AUTO_SERVED_MIN)).run();
-  const paid = await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE status IN ('new','ready','done') AND created_at < ?").bind(now, ago(AUTO_PAID_MIN)).run();
+  // le délai d'1 h part du passage en « Servie » (à la main, ou automatique après 40 min)
+  const paid = await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE status='done' AND updated_at < ?").bind(now, ago(AUTO_PAID_MIN)).run();
   if (paid.meta && paid.meta.changes) {
     // tables qui n'ont plus rien en cours : panier et convives vidés
     const { results } = await env.DB.prepare("SELECT table_no FROM table_baskets WHERE table_no NOT IN (SELECT table_no FROM orders WHERE status IN ('new','ready','done'))").all();
