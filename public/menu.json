@@ -1083,7 +1083,7 @@
      "id": "sandwichs-tacos",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/tacos.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -1185,7 +1185,7 @@
      "id": "sandwichs-maxi-tacos",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/tacos.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -1752,7 +1752,7 @@
      "id": "pides-pide-viande-hachee",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pide-viande-hachee.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -2111,7 +2111,7 @@
      "id": "pizzas-pizza-texane",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-texane.jpg",
      "options": [],
      "upgrade": ""
     },

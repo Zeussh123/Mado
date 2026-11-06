@@ -243,6 +243,10 @@ const PRODUCT_PHOTOS = {
   "alcools-bouteille-de-vin-rouge": "/img/produits/vin-rouge-bouteille.jpg",
   "desserts-baklava-piece": "/img/produits/baklava.jpg",
   "pizzas-pizza-poulet-creme": "/img/produits/pizza-poulet-creme.jpg",
+  "sandwichs-tacos": "/img/produits/tacos.jpg",
+  "sandwichs-maxi-tacos": "/img/produits/tacos.jpg",
+  "pizzas-pizza-texane": "/img/produits/pizza-texane.jpg",
+  "pides-pide-viande-hachee": "/img/produits/pide-viande-hachee.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
