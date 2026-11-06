@@ -53,6 +53,7 @@ function priceLine(menu, line, promos) {
   const details = [];
   const sel = line.sel && typeof line.sel === "object" ? line.sel : {};
   for (const g of groups) {
+    if (g.showIf && groups.some((x) => x.id === g.showIf.group) && !(Array.isArray(sel[g.showIf.group]) && sel[g.showIf.group].includes(g.showIf.choice))) continue;
     const ids = Array.isArray(sel[g.id]) ? sel[g.id].map(String) : [];
     const chosen = g.choices.filter((c) => ids.includes(c.id) && !c.hidden);
     if (!g.multi && chosen.length > 1) chosen.length = 1;
@@ -102,6 +103,13 @@ async function autoAdvance(env, getMenu) {
   }
 }
 
+// Thé offert (libre service) avec une pizza, un pide ou un menu, à table seulement (réglable : menu.tea)
+function teaOffered(menu, table, priced) {
+  const t = menu.tea || {};
+  if (t.enabled === false || table === "EMP") return false;
+  const cats = new Set(Array.isArray(t.cats) && t.cats.length ? t.cats : ["pizzas", "pides", "menus"]);
+  return priced.some((l) => (menu.categories || []).some((c) => cats.has(c.id) && (c.items || []).some((it) => it.id === l.id)));
+}
 async function createOrder(env, menu, table, rawLines, rawNote, split, newGroup) {
   const lines = (Array.isArray(rawLines) ? rawLines : []).slice(0, MAX_LINES);
   const now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
@@ -120,7 +128,7 @@ async function createOrder(env, menu, table, rawLines, rawNote, split, newGroup)
   // sinon c'est une nouvelle addition (nouveau client), regroupable à la main sur le PC
   const prev = table === "EMP" || newGroup ? null : await env.DB.prepare("SELECT COALESCE(grp,id) AS g FROM orders WHERE table_no=? AND id<? AND status IN ('new','ready') ORDER BY id DESC LIMIT 1").bind(table, id).first();
   await env.DB.prepare("UPDATE orders SET grp=? WHERE id=?").bind(prev ? prev.g : id, id).run();
-  return { id, num: row.n, token, total };
+  return { id, num: row.n, token, total, tea: teaOffered(menu, table, priced) };
 }
 
 // ---------- panier commun ----------
@@ -239,7 +247,7 @@ async function handleBasket(request, env, table, action, { json, menuText, check
       const prevIds = meNew || !d.last ? [] : d.last.ids || [];
       const ids = [...new Set([...prevIds, ...d.members.filter((x) => !(meNew && d.last && (d.last.ids || []).includes(x.id))).map((x) => x.id)])];
       const first = !meNew && d.last ? d.last.first || d.last.at : now;
-      d.last = { id: o.id, num: o.num, token: o.token, total: o.total, by: m.name, at: now, first, ids, n: d.lines.reduce((n, l) => n + l.qty, 0) };
+      d.last = { id: o.id, num: o.num, token: o.token, total: o.total, tea: o.tea, by: m.name, at: now, first, ids, n: d.lines.reduce((n, l) => n + l.qty, 0) };
       if (meNew) d.members = d.members.filter((x) => ids.includes(x.id));   // le groupe d'avant quitte la liste
       d.lines = []; d.members.forEach((x) => (x.ready = false));
       return { order: o };

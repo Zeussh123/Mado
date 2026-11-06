@@ -727,6 +727,18 @@
    "en": "Choose",
    "tr": "Seç",
    "de": "Auswählen"
+  },
+  "teaH": {
+   "fr": "Le thé est offert 🍵",
+   "en": "Tea is on us 🍵",
+   "tr": "Çay bizden 🍵",
+   "de": "Der Tee geht aufs Haus 🍵"
+  },
+  "teaP": {
+   "fr": "Après votre repas, servez-vous à la théière en libre service.",
+   "en": "After your meal, help yourself from the self-service teapot.",
+   "tr": "Yemekten sonra self servis demlikten kendiniz alın.",
+   "de": "Nach dem Essen bedienen Sie sich gern an der Teekanne (Selbstbedienung)."
   }
  },
  "categories": [
@@ -882,9 +894,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": ""
+     "upgrade": "",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1464,9 +1480,13 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "sauce-frites"
      ],
-     "upgrade": ""
+     "upgrade": "",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1491,9 +1511,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": "menus-menu-assiette"
+     "upgrade": "menus-menu-assiette",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1517,9 +1541,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": "menus-menu-assiette"
+     "upgrade": "menus-menu-assiette",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1543,9 +1571,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": "menus-menu-assiette"
+     "upgrade": "menus-menu-assiette",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1569,9 +1601,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": "menus-menu-assiette"
+     "upgrade": "menus-menu-assiette",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1595,9 +1631,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": ""
+     "upgrade": "",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1621,9 +1661,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": ""
+     "upgrade": "",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1647,9 +1691,13 @@
       "accompagnement",
       "crudites",
       "sauces",
+      "sauce-frites",
       "supplement"
      ],
-     "upgrade": ""
+     "upgrade": "",
+     "optMax": {
+      "sauce-frites": 2
+     }
     },
     {
      "name": {
@@ -1672,9 +1720,13 @@
      "options": [
       "accompagnement",
       "crudites",
-      "sauces"
+      "sauces",
+      "sauce-frites"
      ],
-     "upgrade": ""
+     "upgrade": "",
+     "optMax": {
+      "sauce-frites": 2
+     }
     }
    ],
    "suggest": [
@@ -3993,7 +4045,11 @@
     }
    ],
    "free": 2,
-   "extraPrice": 0.3
+   "extraPrice": 0.3,
+   "showIf": {
+    "group": "accompagnement",
+    "choice": "frites"
+   }
   },
   {
    "id": "supplement",
@@ -4145,6 +4201,7 @@
   "photo:pizzas-pizza-kebab",
   "photo:pizzas-pizza-margherita",
   "piment-2026-11",
+  "sauce-frites-assiette-2026-11",
   "supp-feta-2026-11",
   "test-client-2026-11",
   "vin-rouge-2026-11"

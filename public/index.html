@@ -200,6 +200,10 @@ main{padding-bottom:96px}
 .nc-btns{display:flex;gap:8px}
 .grp.flash{animation:grpflash 1.2s ease}
 @keyframes grpflash{0%,60%{background:rgba(143,216,143,.18)}100%{background:transparent}}
+.tea{display:flex;align-items:center;gap:12px;text-align:left;margin:14px auto 4px;max-width:360px;padding:10px 12px;border-radius:16px;background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.35);animation:popin .5s .3s cubic-bezier(.3,1.6,.5,1) both}
+.tea img{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none}
+.tea .te{font-size:2.4rem;flex:none}
+.tea b{display:block;font-size:1rem}.tea small{display:block;color:var(--muted);margin-top:2px}
 .drink-note{padding:22px 18px 8px;text-align:center}
 .drink-note .added-line{justify-content:center}
 .dn-img{margin:18px auto 12px;max-width:340px;border-radius:20px;overflow:hidden;border:1px solid var(--line);animation:popin .5s cubic-bezier(.3,1.6,.5,1) both}
@@ -563,6 +567,12 @@ function itemGroups(it){
   return (it.options || []).map(id => all.find(g => g.id === id)).filter(g => g && g.choices.some(c => !c.hidden))
     .map(g => +mx[g.id] ? {...g, max: +mx[g.id], choices: g.choices.filter(c => !c.all)} : g);
 }
+// groupe affiché seulement si un autre choix est fait (ex. sauce des frites si accompagnement = frites)
+function groupOn(it, g, sel){
+  const c = g.showIf; if (!c || !(it.options || []).includes(c.group)) return true;
+  return ((sel || {})[c.group] || []).includes(c.choice);
+}
+const dropHidden = (it, sel) => { for (const g of itemGroups(it)) if (!groupOn(it, g, sel)) delete sel[g.id]; return sel; };
 function iconHtml(c){
   if (c.photo) return `<img src="${esc(c.photo)}" alt="" loading="lazy">`;
   return (window.MADO_ICONS || {})[c.icon] || (window.MADO_ICONS || {}).sauce || "";
@@ -583,7 +593,7 @@ function extras(it, sel){
   }
   return Math.round(x * 100) / 100;
 }
-const groupHint = (g) => (+g.free && +g.extraPrice) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
+const groupHint = (g) => (+g.free && +g.extraPrice && !(+g.max && +g.max <= +g.free)) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
   : g.multi && +g.max ? fill(ui("maxHint"), {n: g.max}) : ui(g.multi ? "severalChoices" : "oneChoice");
 const cntText = (g, n) => n + (!g.multi ? "/1" : +g.max ? "/" + g.max : "");
 function choiceSummary(it, sel){
@@ -606,7 +616,7 @@ function showSheet(){
 }
 function openItem(id, prefill){
   const it = visibleItem(id); if (!it) return;
-  CUR = it; SEL = prefill ? JSON.parse(JSON.stringify(prefill)) : {}; STEP = "item"; FOCUS = null;
+  CUR = it; SEL = prefill ? JSON.parse(JSON.stringify(prefill)) : {}; STEP = "item"; FOCUS = null; AUTO_SCROLLED = new Set();
   // choix cochés d'avance (ex. hamburger : salade, tomate, oignons, sauce Biggy)
   if (!prefill && it.optPre) for (const g of itemGroups(it)) { const pre = (it.optPre[g.id] || []).filter(id => g.choices.some(c => c.id === id && !c.hidden) && !choiceOut(id)); if (pre.length) SEL[g.id] = pre; }
   drawSheet(); showSheet();
@@ -619,6 +629,7 @@ function closeSheet(){
 
 /* ----- ajout au panier et enchaînement ----- */
 function addCurrent(){
+  dropHidden(CUR, SEL);
   const it = CUR, price = unitPrice(it) + extras(it, SEL);
   LAST = {key: newKey(), id: it.id, sel: SEL, price, qty: 1};
   cartAdd(LAST); bumpPill();
@@ -647,7 +658,7 @@ function flashAdded(){
   setTimeout(closeSheet, 750);
 }
 // passage en menu : on ne demande que ce qui manque (sauce des frites, boisson…), le reste est repris du sandwich
-let FOCUS = null, FOCUS_FROM = null;
+let FOCUS = null, FOCUS_FROM = null, AUTO_SCROLLED = new Set();
 function acceptMenu(){
   const it = CUR, menu = visibleItem(it.upgrade);
   const had = new Set(it.options || []), missing = itemGroups(menu).map(g => g.id).filter(id => !had.has(id));
@@ -709,7 +720,7 @@ function drawSheet(){
   // fiche produit
   // une option épuisée entre-temps (ex. bœuf) est retirée des choix déjà faits
   for (const g of itemGroups(it)) if (SEL[g.id]) SEL[g.id] = SEL[g.id].filter(id => !choiceOut(id));
-  const groups = itemGroups(it).filter(g => !FOCUS || FOCUS.has(g.id));
+  const groups = itemGroups(it).filter(g => (!FOCUS || FOCUS.has(g.id)) && groupOn(it, g, SEL));
   const kept = FOCUS ? choiceSummary(it, Object.fromEntries(Object.entries(SEL).filter(([g]) => !FOCUS.has(g)))) : "";
   $("#shScroll").innerHTML = `<div class="sh-hero${FOCUS ? " compact" : ""}">${it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="big">${ICONS[findItem(it.id)[1].id] || "🍴"}</span>`}<button class="sh-close" data-sh="close" aria-label="Fermer">←</button></div>
     <div class="sh-body"><h2>${esc(t(it.name))}</h2>${t(it.description) ? `<p class="d">${esc(t(it.description))}</p>` : ""}
@@ -762,7 +773,7 @@ async function sendOrder(btn){
     if (STAFF && r.status === 401) { staffLogout(); return; }
     if (j.error === "soldout") { refreshSoldOut(); throw new Error(fill(ui("soldOutErr"), {items: (j.items || []).join(", ")})); }
     if (!r.ok) throw new Error(j.error === "closed" ? ui("closedNow") : (STAFF && j.error) || ui("sendError"));
-    ORDERS.unshift({id: j.id, num: j.num, token: j.token, table: TABLE, status: "new", at: Date.now(), total: j.total}); ORDERS = ORDERS.slice(0, 5); saveOrders();
+    ORDERS.unshift({id: j.id, num: j.num, token: j.token, table: TABLE, status: "new", at: Date.now(), total: j.total, tea: !!j.tea}); ORDERS = ORDERS.slice(0, 5); saveOrders();
     CART = []; saveCart(); drawPill();
     if (STAFF) { ORDERS = ORDERS.slice(0, 1); saveOrders(); }
     STEP = "sent"; drawSent(true); if (!STAFF) pollOrders();
@@ -781,6 +792,7 @@ function drawSent(fresh){
     <p class="onum">${esc(STAFF ? `Commande n° ${o.num} · ${o.table === "EMP" ? "à emporter" : "table " + o.table}` : fill(ui("orderNum"), {n: o.num, t: o.table}))}</p>
     <div class="status st-${esc(o.status)}"><span class="dot"></span>${esc(ui(STATUS_TXT[o.status] || "stNew"))}</div>
     <p class="hint">${esc(ui("payAtCounter"))}</p>
+    ${o.tea && !STAFF ? `<div class="tea">${(MENU.tea || {}).photo ? `<img src="${esc(MENU.tea.photo)}" alt="">` : `<span class="te">🫖</span>`}<div><b>${esc(ui("teaH"))}</b><small>${esc(ui("teaP"))}</small></div></div>` : ""}
     ${gameOn(o) ? `<button type="button" class="game-btn" data-sh="game"><span class="gw"></span><span>${esc(gameBtnTxt(o))}</span></button>` : ""}
     ${!STAFF && /^https:\/\//.test((MENU.info || {}).reviewUrl || "") ? `<div id="rateSlot"></div>` : ""}</div>`;
   $("#shBar").innerHTML = STAFF ? `<button class="btn grow" data-sh="staffNext">Nouvelle commande</button>` : `<button class="btn grow" data-sh="close">${esc(ui("orderAgain"))}</button>`;
@@ -1026,8 +1038,15 @@ function toggleChoice(gid, cid, tileEl){
   const n = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
   const cnt = box.querySelector(".cnt"); cnt.textContent = cntText(g, n); cnt.classList.toggle("ok", n > 0);
   tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
+  // un groupe en dépend (ex. frites → sauce des frites) : on redessine la fiche sans bouger
+  if (itemGroups(CUR).some(x => x.showIf && x.showIf.group === gid)) { const y = $("#shScroll").scrollTop; drawSheet(); $("#shScroll").scrollTop = y; }
+  const box2 = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`) || box;
+  const next = box2.nextElementSibling, goNext = () => { if (next) setTimeout(() => next.scrollIntoView({behavior:"smooth", block:"start"}), 250); };
   // une seule viande : on descend tout seul au groupe suivant
-  if (!g.multi && ids.length) { const next = box.nextElementSibling; if (next) setTimeout(() => next.scrollIntoView({behavior:"smooth", block:"start"}), 250); }
+  if (!g.multi && ids.length) goNext();
+  // sauces : arrivé à 2 (incluses ou maximum), on descend une seule fois ; s'il remonte en ajouter, on ne bouge plus
+  else if (g.multi && !AUTO_SCROLLED.has(gid)) { const lim = +g.max || +g.free; const nn = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
+    if (lim && nn >= lim) { AUTO_SCROLLED.add(gid); goNext(); } }
   drawBar();
 }
 
@@ -1115,7 +1134,7 @@ function applyTB(b, iSent){
   if (TB.last && String(TB.last.id) !== prevLast) {
     ss.set("mado-tb-last", String(TB.last.id));
     if (!first || iSent) {
-      ORDERS.unshift({id: TB.last.id, num: TB.last.num, token: TB.last.token, table: TABLE, status: "new", at: Date.now(), shared: true, by: TB.last.by, total: TB.last.total});
+      ORDERS.unshift({id: TB.last.id, num: TB.last.num, token: TB.last.token, table: TABLE, status: "new", at: Date.now(), shared: true, by: TB.last.by, total: TB.last.total, tea: !!TB.last.tea});
       ORDERS = ORDERS.slice(0, 5); saveOrders();
       CUR = null; STEP = "sent"; sendConfirm = false; drawSent(true); showSheet(); pollOrders();
       drawPill(); return;

@@ -210,6 +210,16 @@ export async function menuText(request, env) {
 }
 
 // Photos retouchées ajoutées pour le gérant (fichiers dans public/img/produits)
+function applySauceFritesAssiette(m) {
+  const g = (m.optionGroups || []).find((x) => x.id === "sauce-frites");
+  if (g) g.showIf = { group: "accompagnement", choice: "frites" };
+  for (const c of m.categories || []) for (const it of c.items || []) {
+    const o = it.options || [];
+    if (!o.includes("accompagnement") || o.includes("sauce-frites")) continue;
+    const k = o.indexOf("sauces"); o.splice(k >= 0 ? k + 1 : o.length, 0, "sauce-frites"); it.options = o;
+    it.optMax = { ...(it.optMax || {}), "sauce-frites": 2 };
+  }
+}
 const ASSIETTE_DONER = {"name": {"fr": "Assiette Döner", "en": "Döner plate", "tr": "Döner tabağı", "de": "Döner-Teller"}, "price": 14, "id": "assiettes-assiette-doner", "bestseller": false, "hidden": false, "photo": "/img/produits/assiette-kebab.jpg", "description": {"fr": "Bœuf, poulet ou mixte", "en": "Beef, chicken or mixed", "tr": "Dana, tavuk veya karışık", "de": "Rind, Hähnchen oder gemischt"}, "options": ["viande", "accompagnement", "crudites", "sauces", "supplement"], "upgrade": "menus-menu-assiette"};
 const OLD_ASSIETTES = ["assiettes-assiette-doner-buf", "assiettes-assiette-doner-poulet", "assiettes-assiette-doner-mix-buf-poulet"];
 const BURGER = { optMax: { crudites: 4, sauces: 2 }, optPre: { crudites: ["salade", "tomate", "oignons"], sauces: ["biggy-burger"] } };
@@ -397,6 +407,11 @@ function applyMigrations(m){
     // une seule Assiette Döner avec choix de la viande, tacos jusqu'à 2 viandes, hamburger personnalisable
     applyTestClient(m);
     m.applied.push("test-client-2026-11");
+  }
+  if (!m.applied.includes("sauce-frites-assiette-2026-11")) {
+    // assiettes : sauce des frites (2 max) si l'accompagnement choisi est « frites » (demande momo)
+    applySauceFritesAssiette(m);
+    m.applied.push("sauce-frites-assiette-2026-11");
   }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
