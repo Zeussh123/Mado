@@ -216,7 +216,7 @@ const PRODUCT_PHOTOS = {
   "menus-menu-tacos": "/img/produits/menu-tacos.jpg",
   "menus-menu-yufka": "/img/produits/menu-yufka.jpg",
   "pizzas-pizza-4-fromages": "/img/produits/pizza-4-fromages.jpg",
-  "pizzas-pizza-4-saisons": "/img/produits/pizza-4-saisons.jpg",
+  "pizzas-pizza-4-saisons": "/img/produits/pizza-4-saisons-2.jpg",
   "menus-menu-hamburger": "/img/produits/menu-hamburger.jpg",
   "pokebowl-pokebowl": "/img/produits/kebab-bowl.jpg",
   "menus-menu-bowl": "/img/produits/kebab-bowl.jpg",
@@ -352,6 +352,11 @@ function applyMigrations(m){
     if (g && !g.choices.some((c) => c.id === "supp-feta")) g.choices.push({"id": "supp-feta", "name": {"fr": "Supplément feta", "en": "Extra feta", "tr": "Ekstra beyaz peynir", "de": "Extra Feta"}, "icon": "supp-feta", "photo": "", "price": 1, "hidden": false});
     for (const c of m.categories || []) for (const it of c.items || []) if (["accompagnements-supplement-feta", "accompagnements-supplement-viande"].includes(it.id)) it.hidden = true;
     m.applied.push("supp-feta-2026-11");
+  }
+  if (!m.applied.includes("photo-4saisons2-2026-11")) {
+    // nouvelle photo de la 4 saisons (sans le carton), demande momo
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-4-saisons" && (!it.photo || it.photo === "/img/produits/pizza-4-saisons.jpg")) it.photo = "/img/produits/pizza-4-saisons-2.jpg";
+    m.applied.push("photo-4saisons2-2026-11");
   }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
