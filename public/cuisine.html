@@ -410,9 +410,19 @@ function byCategory(lines){
 const isOven = (name) => /^(pizza|pide)/i.test(name || "") ? 1 : 0;
 const row = (a, b) => `<tr><td>${a}</td><td class="r">${b}</td></tr>`;
 function ticketHtml(o){
+  // avec pizzas / pides : total et note avant la coupe ✂, le morceau du poste pizza garde seulement les plats et la table
+  const cats = byCategory(o.lines), k = cats.findIndex(c => c.oven), cut = k > 0;
+  const catsHtml = (list) => list.map(c => `<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("");
+  const extra = `${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}
+    ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(o.prize).toUpperCase()}</div>` : ""}<div class="sep"></div>
+    ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}`;
+  const foot = `<div class="big again">${esc(tName(o.table_no).toUpperCase())}</div><div class="c">n° ${o.num} · ${hm(o.created_at)}</div>`;
+  if (cut) return `<div class="resto">MADO</div><div class="big"${isEmp(o.table_no) ? ' style="font-size:22pt"' : ""}>${esc(tName(o.table_no).toUpperCase())}</div>
+    <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>${catsHtml(cats.slice(0, k))}${extra}
+    <div class="cut">✂ - - - - - - - - - - - - - - -</div>${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}${catsHtml(cats.slice(k))}<div class="sep"></div>${foot}`;
   return `<div class="resto">MADO</div><div class="big"${isEmp(o.table_no) ? ' style="font-size:22pt"' : ""}>${esc(tName(o.table_no).toUpperCase())}</div>
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>
-    ${byCategory(o.lines).map((c, ci, all) => `${c.oven && ci && !all[ci - 1].oven ? '<div class="cut">✂ - - - - - - - - - - - - - - -</div>' : ""}<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("")}
+    ${cats.map(c => `<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("")}
     ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}
     ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(o.prize).toUpperCase()}</div>` : ""}<div class="sep"></div>
     ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}
