@@ -247,6 +247,8 @@ const PRODUCT_PHOTOS = {
   "sandwichs-maxi-tacos": "/img/produits/tacos.jpg",
   "pizzas-pizza-texane": "/img/produits/pizza-texane.jpg",
   "pides-pide-viande-hachee": "/img/produits/pide-viande-hachee.jpg",
+  "pides-pide-mado": "/img/produits/pide-mado.jpg",
+  "pizzas-pizza-salami": "/img/produits/pizza-salami.jpg",
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)

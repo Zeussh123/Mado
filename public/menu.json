@@ -1668,7 +1668,7 @@
      "id": "pides-pide-mado",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pide-mado.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -2048,7 +2048,7 @@
      "id": "pizzas-pizza-salami",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-salami.jpg",
      "options": [],
      "upgrade": ""
     },
