@@ -368,7 +368,7 @@ $("#ackAll").onclick = () => markSeen(unseen().map(o => o.id));
 
 /* ---------- impression du ticket 80 mm ---------- */
 const queue = []; let printing = false;
-const detailsHtml = (l) => l.details.map(d => `<div class="d">${esc(d.group)} : ${esc(d.choices.join(", "))}</div>`).join("");
+const detailsHtml = (l) => l.details.map(d => d.none ? `<div class="d"><b>${esc(d.choices.join(", "))}</b></div>` : `<div class="d">${esc(d.group)} : ${esc(d.choices.join(", "))}</div>`).join("");
 // Ticket cuisine (modèle C) : viande en gros, crudités, sauces, autres options, puis sauces des frites à part
 const kind = (d) => {
   const id = d.gid || "", g = (d.group || "").toLowerCase();
@@ -382,7 +382,7 @@ function ticketDetails(l){
   const by = (k) => l.details.filter(d => kind(d) === k);
   const list = (d) => esc(d.choices.join(", "));
   return by("meat").map(d => `<div class="g meat">▸ ${list(d).toUpperCase()}</div>`).join("")
-    + by("crud").map(d => `<div class="g">▸ ${esc(d.choices.map(c => c === "Tout" ? "Toutes crudités" : c).join(", "))}</div>`).join("")
+    + by("crud").map(d => d.none ? `<div class="g"><b>▸ ${esc(d.choices.join(", ").toUpperCase())}</b></div>` : `<div class="g">▸ ${esc(d.choices.map(c => c === "Tout" ? "Toutes crudités" : c).join(", "))}</div>`).join("")
     + by("sauce").map(d => `<div class="g">▸ Sauces : ${list(d)}</div>`).join("")
     + by("other").map(d => `<div class="g">▸ ${esc(d.group)} : ${list(d)}</div>`).join("")
     + by("frites").map(d => `<div class="g sub">Frites ▸ ${list(d)}</div>`).join("");

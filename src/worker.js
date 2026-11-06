@@ -210,6 +210,28 @@ export async function menuText(request, env) {
 }
 
 // Photos retouchées ajoutées pour le gérant (fichiers dans public/img/produits)
+const ASSIETTE_DONER = {"name": {"fr": "Assiette Döner", "en": "Döner plate", "tr": "Döner tabağı", "de": "Döner-Teller"}, "price": 14, "id": "assiettes-assiette-doner", "bestseller": false, "hidden": false, "photo": "/img/produits/assiette-kebab.jpg", "description": {"fr": "Bœuf, poulet ou mixte", "en": "Beef, chicken or mixed", "tr": "Dana, tavuk veya karışık", "de": "Rind, Hähnchen oder gemischt"}, "options": ["viande", "accompagnement", "crudites", "sauces", "supplement"], "upgrade": "menus-menu-assiette"};
+const OLD_ASSIETTES = ["assiettes-assiette-doner-buf", "assiettes-assiette-doner-poulet", "assiettes-assiette-doner-mix-buf-poulet"];
+const BURGER = { optMax: { crudites: 4, sauces: 2 }, optPre: { crudites: ["salade", "tomate", "oignons"], sauces: ["biggy-burger"] } };
+function applyTestClient(m) {
+  for (const c of m.categories || []) {
+    const i = (c.items || []).findIndex((x) => OLD_ASSIETTES.includes(x.id));
+    if (i >= 0 && !c.items.some((x) => x.id === ASSIETTE_DONER.id)) {
+      const olds = c.items.filter((x) => OLD_ASSIETTES.includes(x.id));
+      const it = JSON.parse(JSON.stringify(ASSIETTE_DONER));
+      it.price = +olds[0].price || it.price; it.bestseller = olds.some((x) => x.bestseller);
+      if (olds[0].photo) it.photo = olds[0].photo;
+      c.items.splice(i, 0, it);
+    }
+    for (const it of c.items || []) {
+      if (OLD_ASSIETTES.includes(it.id)) it.hidden = true;
+      if (["sandwichs-hamburger", "sandwichs-hamburger-double"].includes(it.id)) { it.options = ["crudites", "sauces"]; Object.assign(it, JSON.parse(JSON.stringify(BURGER))); }
+      if (it.id === "menus-menu-hamburger") { it.options = ["crudites", "sauces", "sauce-frites"]; Object.assign(it, JSON.parse(JSON.stringify(BURGER))); }
+    }
+  }
+  const t = (m.optionGroups || []).find((g) => g.id === "viande-tacos");
+  if (t) { t.multi = true; t.max = 2; }
+}
 const PRODUCT_PHOTOS = {
   "pizzas-pizza-margherita": "/img/produits/pizza-margherita.jpg",
   "pizzas-pizza-kebab": "/img/produits/pizza-kebab.jpg",
@@ -369,6 +391,12 @@ function applyMigrations(m){
     // nouvelle photo de la 4 fromages, demande momo
     for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-4-fromages" && (!it.photo || it.photo === "/img/produits/pizza-4-fromages.jpg")) it.photo = "/img/produits/pizza-4-fromages-2.jpg";
     m.applied.push("photo-4fromages2-2026-11");
+  }
+  if (!m.applied.includes("test-client-2026-11")) {
+    // retours du test avec un vrai client (momo, 06/11) :
+    // une seule Assiette Döner avec choix de la viande, tacos jusqu'à 2 viandes, hamburger personnalisable
+    applyTestClient(m);
+    m.applied.push("test-client-2026-11");
   }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo

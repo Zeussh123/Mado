@@ -195,6 +195,17 @@ main{padding-bottom:96px}
 .confetti{position:absolute;left:50%;top:45%;width:8px;height:12px;border-radius:2px;pointer-events:none;animation:conf .85s ease-out forwards}
 @keyframes conf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .sugg{padding:20px 16px 8px;position:relative}
+.nocrud{flex:1;display:flex;flex-direction:column;gap:8px;animation:popin .35s cubic-bezier(.3,1.6,.5,1) both}
+.nocrud b{text-align:center;font-size:1.05rem}
+.nc-btns{display:flex;gap:8px}
+.grp.flash{animation:grpflash 1.2s ease}
+@keyframes grpflash{0%,60%{background:rgba(143,216,143,.18)}100%{background:transparent}}
+.drink-note{padding:22px 18px 8px;text-align:center}
+.drink-note .added-line{justify-content:center}
+.dn-img{margin:18px auto 12px;max-width:340px;border-radius:20px;overflow:hidden;border:1px solid var(--line);animation:popin .5s cubic-bezier(.3,1.6,.5,1) both}
+.dn-img img{display:block;width:100%;height:auto}
+.drink-note h2{margin:6px 0 4px;font-size:1.35rem;text-wrap:balance}
+.drink-note p{margin:0;color:var(--muted,#aaa);text-wrap:balance}
 .added-line{display:flex;align-items:center;gap:8px;color:#8fd88f;font-weight:700;font-size:.9rem}
 .added-line .ok{width:24px;height:24px;border-radius:50%;background:#2e5e2e;display:flex;align-items:center;justify-content:center;animation:popin .4s cubic-bezier(.3,1.6,.5,1)}
 .sugg h2{margin:14px 0 12px;font-size:1.4rem}
@@ -546,9 +557,11 @@ function selOut(it, sel){
 }
 const lineOut = (l) => { const it = findItem(l.id)[0]; return isOut(l.id) || (!!it && selOut(it, l.sel)); };
 const visibleItem = (id) => { const [it, c] = findItem(id); return it && !it.hidden && !c.hidden && !isOut(id) ? it : null; };
+// réglages propres au produit (ex. hamburger : 4 crudités et 2 sauces max, sans « Tout »)
 function itemGroups(it){
-  const all = MENU.optionGroups || [];
-  return (it.options || []).map(id => all.find(g => g.id === id)).filter(g => g && g.choices.some(c => !c.hidden));
+  const all = MENU.optionGroups || [], mx = it.optMax || {};
+  return (it.options || []).map(id => all.find(g => g.id === id)).filter(g => g && g.choices.some(c => !c.hidden))
+    .map(g => +mx[g.id] ? {...g, max: +mx[g.id], choices: g.choices.filter(c => !c.all)} : g);
 }
 function iconHtml(c){
   if (c.photo) return `<img src="${esc(c.photo)}" alt="" loading="lazy">`;
@@ -570,12 +583,15 @@ function extras(it, sel){
   }
   return Math.round(x * 100) / 100;
 }
-const groupHint = (g) => (+g.free && +g.extraPrice) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) : ui(g.multi ? "severalChoices" : "oneChoice");
+const groupHint = (g) => (+g.free && +g.extraPrice) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
+  : g.multi && +g.max ? fill(ui("maxHint"), {n: g.max}) : ui(g.multi ? "severalChoices" : "oneChoice");
+const cntText = (g, n) => n + (!g.multi ? "/1" : +g.max ? "/" + g.max : "");
 function choiceSummary(it, sel){
   return itemGroups(it).map(g => {
     const ids = sel[g.id] || [], all = g.choices.find(c => c.all && ids.includes(c.id));
     // « Tout » coché : on l'écrit au lieu de lister chaque crudité (les suppléments payants restent affichés)
     const shown = g.choices.filter(c => ids.includes(c.id) && !c.all && !(all && !(+c.price) && !c.apart));
+    if (g.id === "crudites" && !ids.length) return ui("noCrud");
     return [all ? t(all.name) : "", ...shown.map(c => t(c.name))].filter(Boolean).join(", ");
   }).filter(Boolean).join(" · ");
 }
@@ -591,6 +607,8 @@ function showSheet(){
 function openItem(id, prefill){
   const it = visibleItem(id); if (!it) return;
   CUR = it; SEL = prefill ? JSON.parse(JSON.stringify(prefill)) : {}; STEP = "item"; FOCUS = null;
+  // choix cochés d'avance (ex. hamburger : salade, tomate, oignons, sauce Biggy)
+  if (!prefill && it.optPre) for (const g of itemGroups(it)) { const pre = (it.optPre[g.id] || []).filter(id => g.choices.some(c => c.id === id && !c.hidden) && !choiceOut(id)); if (pre.length) SEL[g.id] = pre; }
   drawSheet(); showSheet();
 }
 function openCart(){ CUR = null; STEP = "cart"; drawSheet(); showSheet(); }
@@ -607,7 +625,13 @@ function addCurrent(){
   const up = it.upgrade && visibleItem(it.upgrade);
   if (STAFF) { flashAdded(); return; }
   if (up && unitPrice(up) > unitPrice(it)) { STEP = "upsell"; drawSheet(); return; }
+  if (hasDrink(it)) { STEP = "drink"; drawSheet(); $("#shScroll").scrollTop = 0; return; }
   goSuggest(it);
+}
+// menu avec boisson 33 cl : le client se sert lui-même au frigo
+function hasDrink(it){
+  const cat = findItem(it.id)[1];
+  return /boisson/i.test((it.description && it.description.fr) || "") && ((cat && cat.id === "menus") || /^menu/i.test((it.name && it.name.fr) || ""));
 }
 function suggestionsFor(it){
   const cat = findItem(it.id)[1]; const inCart = new Set(CART.map(l => l.id));
@@ -630,8 +654,10 @@ function acceptMenu(){
   cartRemove(LAST.key); drawPill();
   burst($("#shScroll .upsell"));
   // on garde les choix déjà faits (viande, crudités, sauces) et on ouvre le menu
-  setTimeout(() => { CUR = menu; SEL = JSON.parse(JSON.stringify(LAST.sel)); STEP = "item";
-    FOCUS = missing.length ? new Set(missing) : null; FOCUS_FROM = it; drawSheet(); $("#shScroll").scrollTop = 0; }, 450);
+  setTimeout(() => { CUR = menu; SEL = JSON.parse(JSON.stringify(LAST.sel)); STEP = "item"; FOCUS_FROM = it;
+    // rien à redemander (ex. assiette → menu assiette) : le menu est ajouté tout de suite
+    if (!missing.length) { FOCUS = null; return addCurrent(); }
+    FOCUS = new Set(missing); drawSheet(); $("#shScroll").scrollTop = 0; }, 450);
 }
 
 /* ----- dessin de la fiche ----- */
@@ -658,6 +684,15 @@ function drawSheet(){
     $("#shBar").innerHTML = `<button class="btn ghost" data-sh="noMenu">${esc(ui("noThanks"))}</button><button class="btn grow pulse" data-sh="yesMenu">${esc(ui("yesMenu"))}</button>`;
     return;
   }
+  if (STEP === "drink") {
+    const d = (MENU.categories.find(c => c.id === "boissons") || {items: []}).items.find(x => /33/.test(x.name && x.name.fr || "") && x.photo);
+    $("#shScroll").innerHTML = `<div class="drink-note">
+      <div class="added-line"><span class="ok">✓</span> ${esc(t(it.name))} · ${esc(ui("added"))}</div>
+      <div class="dn-img"><img src="${esc(d ? d.photo : "/img/produits/boisson-33cl.jpg")}" alt=""></div>
+      <h2>🥤 ${esc(ui("drinkH"))}</h2><p>${esc(ui("drinkP"))}</p></div>`;
+    $("#shBar").innerHTML = `<button class="btn grow" data-sh="drinkOk">${esc(ui("drinkOk"))}</button>`;
+    return;
+  }
   if (STEP === "suggest") {
     const list = suggestionsFor(it);
     $("#shScroll").innerHTML = `<div class="sugg">
@@ -682,10 +717,13 @@ function drawSheet(){
     ${groups.map(g => {
       const ids = SEL[g.id] || [];
       const n = ids.filter(id => { const c = g.choices.find(c => c.id === id); return c && !c.all && !c.apart; }).length;
-      return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(groupHint(g))}</small><span class="cnt ${n ? "ok" : ""}">${n}${g.multi ? "" : "/1"}</span></div>
+      return `<div class="grp" data-g="${esc(g.id)}"><div class="grp-h"><h3>${esc(t(g.name))}</h3><small>${esc(groupHint(g))}</small><span class="cnt ${n ? "ok" : ""}">${cntText(g, n)}</span></div>
         <div class="tiles">${g.choices.filter(c => !c.hidden).map(c => choiceOut(c.id) ? `<button class="tile out" data-c="${esc(c.id)}" disabled aria-disabled="true"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span><span class="so">${esc(ui("soldOut"))}</span></button>` : `<button class="tile ${ids.includes(c.id) ? "on" : ""}" data-c="${esc(c.id)}" aria-pressed="${ids.includes(c.id)}"><span class="ic">${iconHtml(c)}</span><span>${esc(t(c.name))}</span>${+c.price ? `<span class="sup">+${esc(fmtPrice(c.price))}</span>` : ""}</button>`).join("")}</div></div>`;
     }).join("")}</div>`;
   drawBar();
+}
+function askNoCrud(){
+  $("#shBar").innerHTML = `<div class="nocrud"><b>🥗 ${esc(ui("noCrudH"))}</b><div class="nc-btns"><button class="btn ghost" data-sh="noCrudPick">${esc(ui("noCrudPick"))}</button><button class="btn grow" data-sh="noCrudYes">${esc(ui("noCrudYes"))}</button></div></div>`;
 }
 function drawBar(){
   const total = unitPrice(CUR) + extras(CUR, SEL);
@@ -968,7 +1006,7 @@ function burst(el){
 
 /* ----- choix des options ----- */
 function toggleChoice(gid, cid, tileEl){
-  const g = (MENU.optionGroups || []).find(g => g.id === gid), c = g.choices.find(c => c.id === cid);
+  const g = itemGroups(CUR).find(g => g.id === gid), c = g && g.choices.find(c => c.id === cid); if (!c) return;
   let ids = SEL[gid] || [];
   if (choiceOut(cid)) return;
   const plain = g.choices.filter(x => !x.hidden && !x.all && !x.apart && !(+x.price) && !choiceOut(x.id));
@@ -978,13 +1016,15 @@ function toggleChoice(gid, cid, tileEl){
     ids = ids.includes(cid) ? ids.filter(id => id !== cid) : [...ids, cid];
     const allC = g.choices.find(x => x.all);
     if (allC) { const full = plain.every(p => ids.includes(p.id)); ids = full ? [...new Set([...ids, allC.id])] : ids.filter(id => id !== allC.id); }
-    if (g.max && ids.length > g.max) ids = ids.slice(-g.max);
+    // au-delà du maximum : le plus ancien choix est retiré (les payants / « à part » ne comptent pas)
+    const counted = (a) => a.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart && !(+x.price); }).length;
+    while (+g.max && counted(ids) > g.max) { const i = ids.findIndex(id => id !== cid && (x => x && !x.all && !x.apart && !(+x.price))(g.choices.find(x => x.id === id))); if (i < 0) break; ids.splice(i, 1); }
   }
   SEL[gid] = ids;
   const box = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`);
   box.querySelectorAll(".tile:not(.out)").forEach(b => { const on = ids.includes(b.dataset.c); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
   const n = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
-  const cnt = box.querySelector(".cnt"); cnt.textContent = n + (g.multi ? "" : "/1"); cnt.classList.toggle("ok", n > 0);
+  const cnt = box.querySelector(".cnt"); cnt.textContent = cntText(g, n); cnt.classList.toggle("ok", n > 0);
   tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
   // une seule viande : on descend tout seul au groupe suivant
   if (!g.multi && ids.length) { const next = box.nextElementSibling; if (next) setTimeout(() => next.scrollIntoView({behavior:"smooth", block:"start"}), 250); }
@@ -1238,10 +1278,18 @@ $("#sheet").addEventListener("click", (e) => {
   if (a === "close") closeSheet();
   else if (a === "reset") { if (FOCUS) for (const g of FOCUS) delete SEL[g]; else SEL = {}; drawSheet(); }
   else if (a === "editAll") { FOCUS = null; drawSheet(); }
-  else if (a === "add") addCurrent();
+  else if (a === "add") {
+    // aucune crudité cochée : on demande confirmation avant d'ajouter (« Sans crudités ? »)
+    const cg = itemGroups(CUR).find(g => g.id === "crudites");
+    if (cg && !(SEL.crudites || []).length && (!FOCUS || FOCUS.has("crudites"))) return askNoCrud();
+    addCurrent();
+  }
+  else if (a === "noCrudYes") { SEL.crudites = []; addCurrent(); }
+  else if (a === "noCrudPick") { drawBar(); const box = document.querySelector('.grp[data-g="crudites"]'); if (box) { box.scrollIntoView({behavior: "smooth", block: "start"}); box.classList.remove("flash"); void box.offsetWidth; box.classList.add("flash"); } }
   else if (a === "game") openGame();
   else if (a === "yesMenu") acceptMenu();
   else if (a === "noMenu") goSuggest(CUR);
+  else if (a === "drinkOk") goSuggest(CUR);
   else if (a === "cart") openCart();
   else if (a === "sugAdd") {
     const card = b.closest(".sug"), x = visibleItem(card.dataset.id); if (!x) return;

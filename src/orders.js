@@ -47,13 +47,16 @@ function priceLine(menu, line, promos) {
   if (!item) return null;
   let unit = +item.price || 0;
   for (const p of promos) for (const x of p.items || []) if (x.id === item.id && x.price !== null && x.price !== "" && +x.price < unit) unit = +x.price;
-  const groups = (item.options || []).map((id) => (menu.optionGroups || []).find((g) => g.id === id)).filter(Boolean);
+  const mx = item.optMax || {};
+  const groups = (item.options || []).map((id) => (menu.optionGroups || []).find((g) => g.id === id)).filter(Boolean)
+    .map((g) => (+mx[g.id] ? { ...g, max: +mx[g.id], choices: g.choices.filter((c) => !c.all) } : g));
   const details = [];
   const sel = line.sel && typeof line.sel === "object" ? line.sel : {};
   for (const g of groups) {
     const ids = Array.isArray(sel[g.id]) ? sel[g.id].map(String) : [];
     const chosen = g.choices.filter((c) => ids.includes(c.id) && !c.hidden);
     if (!g.multi && chosen.length > 1) chosen.length = 1;
+    if (g.multi && +g.max) { let k = 0; for (let i = 0; i < chosen.length; i++) { const c = chosen[i]; if (c.all || c.apart || +c.price) continue; if (++k > g.max) chosen.splice(i--, 1); } }
     for (const c of chosen) unit += +c.price || 0;
     const counted = chosen.filter((c) => !c.all && !c.apart).length;
     if (+g.free && +g.extraPrice) unit += Math.max(0, counted - g.free) * g.extraPrice;
@@ -61,6 +64,8 @@ function priceLine(menu, line, promos) {
     const missing = all ? g.choices.filter((c) => (menu.outChoices || []).includes(c.id) && !c.all && !c.apart && !(+c.price) && !c.hidden).map((c) => c.name.fr) : [];
     const names = [all ? all.name.fr + (missing.length ? " sauf " + missing.join(", ") : "") : "", ...chosen.filter((c) => !c.all && !(all && !(+c.price) && !c.apart)).map((c) => c.name.fr)].filter(Boolean);
     if (names.length) details.push({ gid: g.id, group: g.name.fr, choices: names });
+    // aucune crudité choisie (confirmé par le client) : on l'écrit pour la cuisine
+    else if (g.id === "crudites") details.push({ gid: g.id, group: g.name.fr, choices: ["Sans crudités"], none: true });
   }
   const qty = Math.max(1, Math.min(20, parseInt(line.qty) || 1));
   unit = Math.round(unit * 100) / 100;
