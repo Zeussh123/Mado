@@ -24,6 +24,9 @@ button:disabled{opacity:.5;cursor:default}
 /* ---------- plan de salle ---------- */
 .toggles .so.on{color:#ff8d86;font-weight:800}
 #gmThemes button.on{border-color:var(--accent);background:#2b2214}
+.ord-auto{display:flex;flex-direction:column;gap:8px}
+.ord-auto label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ord-auto input{width:80px!important;display:inline-block;padding:4px 6px}
 .gm-modes{display:flex;flex-direction:column;gap:8px}
 .gm-modes>label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
 .gm-modes>label:has(input:checked){border-color:var(--accent);background:#2b2214}
@@ -256,6 +259,19 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <div class="toggles" style="margin-top:14px"><label><input type="checkbox" id="ordUseSched"> Accepter les commandes des clients seulement aux heures ci-dessous</label></div>
         <div id="ordSched"></div>
         <p class="small">Deux créneaux possibles par jour (ex. midi et soir). Un créneau qui finit après minuit marche aussi (ex. 18:00 → 01:00). Le serveur peut toujours commander.</p>
+        <div class="lbl" style="margin-top:14px">Passage automatique (si on oublie de cliquer sur le PC)</div>
+        <div class="ord-auto">
+          <label>« En préparation » devient « Servie » après <input id="ordServed" type="number" min="0" max="1440" step="1"> min</label>
+          <label>« Servie » devient « Encaissée » après <input id="ordPaid" type="number" min="0" max="1440" step="1"> min</label>
+        </div>
+        <p class="small">Mettez 0 pour ne jamais le faire automatiquement. Le délai d'encaissement part du passage en « Servie » (à la main ou automatique).</p>
+        <div class="lbl" style="margin-top:14px">Quand compter quelqu'un qui scanne le QR comme un nouveau client ?</div>
+        <div class="gm-modes" id="ordNewCli">
+          <label><input type="radio" name="ordNew" value="served"> <span><b>Quand toute la table est servie</b><small>Tant qu'une commande de la table est en préparation, un nouveau scan rejoint le même groupe et la même addition.</small></span></label>
+          <label><input type="radio" name="ordNew" value="sent"> <span><b>Dès que la commande est envoyée</b><small>Chaque nouveau scan après l'envoi est un nouveau client, avec une nouvelle addition.</small></span></label>
+          <label><input type="radio" name="ordNew" value="minutes"> <span><b><input id="ordNewMin" type="number" min="1" max="1440" step="1" style="width:70px;display:inline-block;padding:4px 6px"> min après la première commande</b><small>Avant ce délai, un nouveau scan rejoint le groupe de la table. Après, c'est un nouveau client.</small></span></label>
+        </div>
+        <p class="small">Les téléphones qui étaient déjà à la table gardent leur commande et peuvent recommander normalement. Un nouveau client ne voit ni la commande ni les prénoms d'avant.</p>
         <div class="lbl" style="margin-top:14px">Code serveur (4 à 8 chiffres) pour la prise de commande sur <a href="/serveur" target="_blank">/serveur</a></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input id="staffCode" inputmode="numeric" maxlength="8" placeholder="ex. 482913" style="max-width:180px"><button id="staffSave" type="button">Enregistrer le code</button><span class="small" id="staffMsg"></span></div>
         <p class="small">Le serveur choisit la table ou « à emporter », même si les commandes clients sont désactivées. Votre mot de passe admin marche aussi.</p>
@@ -557,6 +573,9 @@ function renderInfo(){
   const ord = menu.ordering || (menu.ordering = {enabled:false, tables:10});
   $("#ordEnabled").checked = !!ord.enabled; $("#ordTables").value = ord.tables || "";
   $("#ordUseSched").checked = !!ord.useSchedule;
+  const dflt = (v, d) => (v === undefined || v === null || v === "" ? d : v);
+  $("#ordServed").value = dflt(ord.autoServedMin, 40); $("#ordPaid").value = dflt(ord.autoPaidMin, 60);
+  $$('[name="ordNew"]').forEach(r => r.checked = r.value === (ord.newClient || "served")); $("#ordNewMin").value = dflt(ord.newClientMin, 30);
   const sch = ord.schedule || {};
   $("#ordSched").style.display = ord.useSchedule ? "" : "none";
   $("#ordSched").innerHTML = DAYN.map((d, i) => {
@@ -678,6 +697,10 @@ $("#tab-info").addEventListener("input", (e) => {
   else if (e.target.id === "ordUseSched") { menu.ordering.useSchedule = e.target.checked; $("#ordSched").style.display = e.target.checked ? "" : "none";
     if (e.target.checked && !menu.ordering.schedule) { menu.ordering.schedule = {}; for (let d = 1; d <= 7; d++) menu.ordering.schedule[d] = [{from: "11:00", to: "23:00"}]; renderInfo(); } }
   else if (e.target.closest && e.target.closest("#ordSched")) menu.ordering.schedule = readSched();
+  else if (e.target.id === "ordServed") menu.ordering.autoServedMin = Math.max(0, parseInt(e.target.value) || 0);
+  else if (e.target.id === "ordPaid") menu.ordering.autoPaidMin = Math.max(0, parseInt(e.target.value) || 0);
+  else if (e.target.name === "ordNew") menu.ordering.newClient = e.target.value;
+  else if (e.target.id === "ordNewMin") { menu.ordering.newClientMin = Math.max(1, parseInt(e.target.value) || 30); }
   else if (e.target.id === "ordTables") menu.ordering.tables = Math.max(0, Math.min(200, parseInt(e.target.value) || 0));
   updateStatus();
 });

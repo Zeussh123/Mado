@@ -72,13 +72,22 @@ function priceLine(menu, line, promos) {
 // La caisse est à part : on oublie parfois « Servie » ou « Encaissée » sur le PC (demande momo).
 // - en préparation / prête depuis plus de 40 min → servie
 // - servie depuis plus d'1 h sans être encaissée → encaissée (la table redevient libre)
-const AUTO_SERVED_MIN = 40, AUTO_PAID_MIN = 60;
+// Durées et règle « nouveau client » réglables dans l'admin (menu.ordering) ; 0 = jamais.
+export function orderCfg(menu) {
+  const o = (menu && menu.ordering) || {};
+  const num = (v, d) => (v === undefined || v === null || v === "" ? d : Math.max(0, Math.min(1440, parseInt(v) || 0)));
+  return { servedMin: num(o.autoServedMin, 40), paidMin: num(o.autoPaidMin, 60),
+    newClient: ["served", "sent", "minutes"].includes(o.newClient) ? o.newClient : "served", newClientMin: Math.max(1, num(o.newClientMin, 30)) };
+}
 let autoAt = 0;
-async function autoAdvance(env) {
+async function autoAdvance(env, getMenu) {
   if (Date.now() - autoAt < 20000) return;   // au plus toutes les 20 s
   autoAt = Date.now();
+  let cfg; try { cfg = orderCfg(await getMenu()); } catch { return; }
+  const AUTO_SERVED_MIN = cfg.servedMin, AUTO_PAID_MIN = cfg.paidMin;
   const now = new Date().toISOString(), ago = (min) => new Date(Date.now() - min * 60e3).toISOString();
-  await env.DB.prepare("UPDATE orders SET status='done', updated_at=? WHERE status IN ('new','ready') AND created_at < ?").bind(now, ago(AUTO_SERVED_MIN)).run();
+  if (AUTO_SERVED_MIN) await env.DB.prepare("UPDATE orders SET status='done', updated_at=? WHERE status IN ('new','ready') AND created_at < ?").bind(now, ago(AUTO_SERVED_MIN)).run();
+  if (!AUTO_PAID_MIN) return;
   // le délai d'1 h part du passage en « Servie » (à la main, ou automatique après 40 min)
   const paid = await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE status='done' AND updated_at < ?").bind(now, ago(AUTO_PAID_MIN)).run();
   if (paid.meta && paid.meta.changes) {
@@ -88,7 +97,7 @@ async function autoAdvance(env) {
   }
 }
 
-async function createOrder(env, menu, table, rawLines, rawNote, split) {
+async function createOrder(env, menu, table, rawLines, rawNote, split, newGroup) {
   const lines = (Array.isArray(rawLines) ? rawLines : []).slice(0, MAX_LINES);
   const now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
   const priced = lines.map((l) => priceLine(menu, l, promos)).filter(Boolean);
@@ -104,7 +113,7 @@ async function createOrder(env, menu, table, rawLines, rawNote, split) {
   if (split) await env.DB.prepare("UPDATE orders SET split=1 WHERE id=?").bind(id).run();
   // même addition que la commande précédente de la table seulement si elle n'est pas encore servie (mêmes clients) ;
   // sinon c'est une nouvelle addition (nouveau client), regroupable à la main sur le PC
-  const prev = table === "EMP" ? null : await env.DB.prepare("SELECT COALESCE(grp,id) AS g FROM orders WHERE table_no=? AND id<? AND status IN ('new','ready') ORDER BY id DESC LIMIT 1").bind(table, id).first();
+  const prev = table === "EMP" || newGroup ? null : await env.DB.prepare("SELECT COALESCE(grp,id) AS g FROM orders WHERE table_no=? AND id<? AND status IN ('new','ready') ORDER BY id DESC LIMIT 1").bind(table, id).first();
   await env.DB.prepare("UPDATE orders SET grp=? WHERE id=?").bind(prev ? prev.g : id, id).run();
   return { id, num: row.n, token, total };
 }
@@ -138,7 +147,21 @@ async function updateBasket(env, table, fn) {
 async function resetBasket(env, table) {
   await env.DB.prepare("UPDATE table_baskets SET data=?, version=version+1, updated_at=? WHERE table_no=?").bind(JSON.stringify(emptyBasket()), new Date().toISOString(), String(table)).run();
 }
-const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, last: data.last });
+const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, last: data.last && { ...data.last, ids: undefined } });
+// Ce téléphone est-il un nouveau client ? (il n'était pas à la table lors du dernier envoi, et la règle de l'admin le dit)
+function isNewClient(d, viewer, cfg, cooking) {
+  if (!d.last) return false;
+  if (viewer && (d.last.ids || []).includes(viewer)) return false;
+  if (cfg.newClient === "sent") return true;
+  if (cfg.newClient === "minutes") return Date.now() - (d.last.first || d.last.at || 0) > cfg.newClientMin * 60e3;
+  return !cooking;   // "served" : tout est servi
+}
+// un nouveau client ne voit ni la commande ni les prénoms du groupe d'avant
+const viewFor = (d, isNew) => isNew ? { ...d, last: null, members: d.members.filter((x) => !(d.last.ids || []).includes(x.id)) } : d;
+async function tableCooking(env, table) {
+  const st = await env.DB.prepare("SELECT SUM(status IN ('new','ready')) AS cooking, SUM(status IN ('new','ready','done')) AS open FROM orders WHERE table_no=?").bind(String(table)).first();
+  return { cooking: +st.cooking || 0, open: +st.open || 0 };
+}
 const cleanStr = (x, n) => String(x || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, n);
 
 async function handleBasket(request, env, table, action, { json, menuText, checkTableKey }) {
@@ -150,21 +173,13 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   if (!(await checkTableKey(env, table, new URL(request.url).searchParams.get("k")))) return json({ error: "badkey" }, 403);
   if (!action) {
     if (request.method !== "GET") return json({ error: "introuvable" }, 404);
-    let b = await readBasket(env, table);
+    let b = await readBasket(env, table), isNew = false;
     if (b.data.last && b.data.last.id) {
-      const st = await env.DB.prepare("SELECT SUM(status IN ('new','ready')) AS cooking, SUM(status IN ('new','ready','done')) AS open FROM orders WHERE table_no=?").bind(String(table)).first();
+      const st = await tableCooking(env, table);
       if (!st.open) { await resetBasket(env, table); b = await readBasket(env, table); }   // tout annulé ou encaissé
-      else if (!st.cooking) {
-        // tout est servi : quelqu'un qui scanne maintenant est un nouveau client. Il ne doit pas voir la commande
-        // ni les prénoms d'avant (ceux qui n'ont rien fait depuis le dernier envoi sont retirés de la liste).
-        if (!b.data.lines.length) {
-          const at = b.data.last.at || 0;
-          await updateBasket(env, table, async (d) => { d.last = null; d.members = d.members.filter((x) => (x.t || 0) > at + 1000); return {}; });
-          b = await readBasket(env, table);
-        } else b = { ...b, data: { ...b.data, last: null } };
-      }
+      else isNew = isNewClient(b.data, cleanStr(new URL(request.url).searchParams.get("m"), 32), orderCfg(menu), st.cooking);
     }
-    return json(publicBasket(b.data, b.version), 200, nocache);
+    return json(publicBasket(viewFor(b.data, isNew), b.version), 200, nocache);
   }
   if (request.method !== "POST") return json({ error: "introuvable" }, 404);
   const raw = await request.text();
@@ -172,7 +187,9 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   let body; try { body = JSON.parse(raw); } catch { return json({ error: "illisible" }, 400); }
   const me = cleanStr(body.member, 32);
   if (!/^[a-z0-9]{6,32}$/.test(me)) return json({ error: "membre inconnu" }, 400);
-  const now = Date.now();
+  const now = Date.now(), cfg = orderCfg(menu);
+  const st = await tableCooking(env, table);
+  let meNew = false;
   const touch = (d) => {
     let m = d.members.find((x) => x.id === me);
     if (!m) {
@@ -184,6 +201,7 @@ async function handleBasket(request, env, table, action, { json, menuText, check
     m.t = now; return m;
   };
   const out = await updateBasket(env, table, async (d) => {
+    meNew = isNewClient(d, me, cfg, st.cooking);
     const m = touch(d);
     if (action === "join") { m.name = cleanStr(body.name, 20); return {}; }
     if (action === "add") {
@@ -210,16 +228,22 @@ async function handleBasket(request, env, table, action, { json, menuText, check
       // prénom de chacun sur ses plats (« Invité 1, 2… » pour ceux qui n'en ont pas mis)
       let gi = 0; const names = {};
       for (const x of d.members) if (d.lines.some((l) => l.m === x.id)) names[x.id] = x.name || `Invité ${++gi}`;
-      const o = await createOrder(env, menu, table, d.lines.map((l) => ({ ...l, who: names[l.m] })), body.note, !!body.split);
+      const o = await createOrder(env, menu, table, d.lines.map((l) => ({ ...l, who: names[l.m] })), body.note, !!body.split, meNew);
       if (!o) return { error: "Commande vide", status: 400 };
-      d.last = { id: o.id, num: o.num, token: o.token, total: o.total, by: m.name, at: now, n: d.lines.reduce((n, l) => n + l.qty, 0) };
+      // qui était à la table pour cet envoi (ils continuent de voir la commande) ; « first » = première commande du groupe
+      const prevIds = meNew || !d.last ? [] : d.last.ids || [];
+      const ids = [...new Set([...prevIds, ...d.members.filter((x) => !(meNew && d.last && (d.last.ids || []).includes(x.id))).map((x) => x.id)])];
+      const first = !meNew && d.last ? d.last.first || d.last.at : now;
+      d.last = { id: o.id, num: o.num, token: o.token, total: o.total, by: m.name, at: now, first, ids, n: d.lines.reduce((n, l) => n + l.qty, 0) };
+      if (meNew) d.members = d.members.filter((x) => ids.includes(x.id));   // le groupe d'avant quitte la liste
       d.lines = []; d.members.forEach((x) => (x.ready = false));
       return { order: o };
     }
     return { error: "introuvable", status: 404 };
   });
   if (out.error) return json({ error: out.error, ...(out.items ? { items: out.items } : {}) }, out.status || 400);
-  return json({ ok: true, ...(out.result || {}), basket: publicBasket(out.data, out.version) }, 200, nocache);
+  const sent = action === "send";
+  return json({ ok: true, ...(out.result || {}), basket: publicBasket(viewFor(out.data, !sent && isNewClient(out.data, me, cfg, st.cooking)), out.version) }, 200, nocache);
 }
 
 // plats en rupture de stock dans une commande (noms en français)
@@ -263,7 +287,7 @@ export function orderingOpen(menu, now = parisNow()) {
 export async function handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey }) {
   if (!env.DB) return json({ error: "Les commandes ne sont pas encore activées sur ce site." }, 503);
   await ensureSchema(env.DB);
-  await autoAdvance(env);
+  await autoAdvance(env, async () => JSON.parse(await menuText(request, env)));
   const m = request.method;
 
   // Le client envoie sa commande

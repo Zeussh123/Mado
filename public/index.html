@@ -1030,7 +1030,7 @@ async function tbPoll(){
   clearTimeout(tbTimer);
   if (SHARED() && document.visibilityState === "visible" && !tbBusy) {
     try {
-      const r = await fetch(`/api/table/${TABLE}?k=${encodeURIComponent(TKEY)}`, {cache: "no-store"});
+      const r = await fetch(`/api/table/${TABLE}?k=${encodeURIComponent(TKEY)}&m=${encodeURIComponent(ME)}`, {cache: "no-store"});
       if (r.status === 403 && (await r.json().catch(() => ({}))).error === "badkey") return badKey();
       if (r.ok) applyTB(await r.json());
     } catch {}
