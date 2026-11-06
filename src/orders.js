@@ -69,6 +69,24 @@ function priceLine(menu, line, promos) {
   return out;
 }
 
+// La caisse est à part : on oublie parfois « Servie » ou « Encaissée » sur le PC (demande momo).
+// - en préparation / prête depuis plus de 40 min → servie
+// - pas encaissée plus d'1 h après la commande → encaissée (la table redevient libre)
+const AUTO_SERVED_MIN = 40, AUTO_PAID_MIN = 60;
+let autoAt = 0;
+async function autoAdvance(env) {
+  if (Date.now() - autoAt < 20000) return;   // au plus toutes les 20 s
+  autoAt = Date.now();
+  const now = new Date().toISOString(), ago = (min) => new Date(Date.now() - min * 60e3).toISOString();
+  await env.DB.prepare("UPDATE orders SET status='done', updated_at=? WHERE status IN ('new','ready') AND created_at < ?").bind(now, ago(AUTO_SERVED_MIN)).run();
+  const paid = await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE status IN ('new','ready','done') AND created_at < ?").bind(now, ago(AUTO_PAID_MIN)).run();
+  if (paid.meta && paid.meta.changes) {
+    // tables qui n'ont plus rien en cours : panier et convives vidés
+    const { results } = await env.DB.prepare("SELECT table_no FROM table_baskets WHERE table_no NOT IN (SELECT table_no FROM orders WHERE status IN ('new','ready','done'))").all();
+    for (const r of results) await resetBasket(env, r.table_no);
+  }
+}
+
 async function createOrder(env, menu, table, rawLines, rawNote, split) {
   const lines = (Array.isArray(rawLines) ? rawLines : []).slice(0, MAX_LINES);
   const now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
@@ -132,10 +150,18 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   if (!action) {
     if (request.method !== "GET") return json({ error: "introuvable" }, 404);
     let b = await readBasket(env, table);
-    // commandes de la table déjà annulées ou encaissées (ex. avant la correction) : on repart d'un panier vide
     if (b.data.last && b.data.last.id) {
-      const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready','done')").bind(String(table)).first();
-      if (!left.n) { await resetBasket(env, table); b = await readBasket(env, table); }
+      const st = await env.DB.prepare("SELECT SUM(status IN ('new','ready')) AS cooking, SUM(status IN ('new','ready','done')) AS open FROM orders WHERE table_no=?").bind(String(table)).first();
+      if (!st.open) { await resetBasket(env, table); b = await readBasket(env, table); }   // tout annulé ou encaissé
+      else if (!st.cooking) {
+        // tout est servi : quelqu'un qui scanne maintenant est un nouveau client. Il ne doit pas voir la commande
+        // ni les prénoms d'avant (ceux qui n'ont rien fait depuis le dernier envoi sont retirés de la liste).
+        if (!b.data.lines.length) {
+          const at = b.data.last.at || 0;
+          await updateBasket(env, table, async (d) => { d.last = null; d.members = d.members.filter((x) => (x.t || 0) > at + 1000); return {}; });
+          b = await readBasket(env, table);
+        } else b = { ...b, data: { ...b.data, last: null } };
+      }
     }
     return json(publicBasket(b.data, b.version), 200, nocache);
   }
@@ -236,6 +262,7 @@ export function orderingOpen(menu, now = parisNow()) {
 export async function handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey }) {
   if (!env.DB) return json({ error: "Les commandes ne sont pas encore activées sur ce site." }, 503);
   await ensureSchema(env.DB);
+  await autoAdvance(env);
   const m = request.method;
 
   // Le client envoie sa commande
