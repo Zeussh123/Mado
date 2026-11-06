@@ -215,7 +215,7 @@ const PRODUCT_PHOTOS = {
   "pizzas-pizza-kebab": "/img/produits/pizza-kebab.jpg",
   "menus-menu-tacos": "/img/produits/menu-tacos.jpg",
   "menus-menu-yufka": "/img/produits/menu-yufka.jpg",
-  "pizzas-pizza-4-fromages": "/img/produits/pizza-4-fromages.jpg",
+  "pizzas-pizza-4-fromages": "/img/produits/pizza-4-fromages-2.jpg",
   "pizzas-pizza-4-saisons": "/img/produits/pizza-4-saisons-2.jpg",
   "menus-menu-hamburger": "/img/produits/menu-hamburger.jpg",
   "pokebowl-pokebowl": "/img/produits/kebab-bowl.jpg",
@@ -362,6 +362,11 @@ function applyMigrations(m){
     // vraie photo du Menu Kebab (kebab + frites + canette), demande momo
     for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "menus-menu-kebab" && (!it.photo || it.photo === "/img/produits/kebab.jpg")) it.photo = "/img/produits/menu-kebab.jpg";
     m.applied.push("photo-menukebab-2026-11");
+  }
+  if (!m.applied.includes("photo-4fromages2-2026-11")) {
+    // nouvelle photo de la 4 fromages, demande momo
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-4-fromages" && (!it.photo || it.photo === "/img/produits/pizza-4-fromages.jpg")) it.photo = "/img/produits/pizza-4-fromages-2.jpg";
+    m.applied.push("photo-4fromages2-2026-11");
   }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
