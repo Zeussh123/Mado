@@ -413,6 +413,12 @@ function applyMigrations(m){
     applySauceFritesAssiette(m);
     m.applied.push("sauce-frites-assiette-2026-11");
   }
+  if (!m.applied.includes("tacos-3viandes-2026-11")) {
+    // tacos : plus de « Kebab mixte » (bœuf + poulet = mixte sur le ticket), 2 viandes incluses, 3e viande +2 € (demande momo)
+    const g = (m.optionGroups || []).find((x) => x.id === "viande-tacos");
+    if (g) { Object.assign(g, {"multi": true, "max": 3, "free": 2, "extraPrice": 2, "warnExtra": true, "combine": [{"ids": ["t-boeuf", "t-poulet"], "name": "Kebab mixte"}]}); for (const c of g.choices) if (c.id === "t-mixte") c.hidden = true; }
+    m.applied.push("tacos-3viandes-2026-11");
+  }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
   if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");

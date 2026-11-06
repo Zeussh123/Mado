@@ -74,6 +74,11 @@ function priceLine(menu, line, promos) {
         names.push(allC.name.fr + " sans " + lack.map((c) => c.name.fr.toLowerCase()).join(", "), ...chosen.filter((c) => c.apart || +c.price).map((c) => c.name.fr));
       }
     }
+    // ex. tacos : « Kebab bœuf » + « Kebab poulet » s'écrit « Kebab mixte » pour la cuisine
+    for (const cb of g.combine || []) {
+      const ns = (cb.ids || []).map((id) => (g.choices.find((c) => c.id === id) || {}).name).filter(Boolean).map((n) => n.fr);
+      if (ns.length > 1 && ns.every((n) => names.includes(n))) { const at = names.indexOf(ns[0]); names.splice(at, 0, cb.name); for (const n of ns) names.splice(names.lastIndexOf(n), 1); }
+    }
     if (names.length) details.push({ gid: g.id, group: g.name.fr, choices: names });
     // aucune crudité choisie (confirmé par le client) : on l'écrit pour la cuisine
     else if (g.id === "crudites") details.push({ gid: g.id, group: g.name.fr, choices: ["Sans crudités"], none: true });

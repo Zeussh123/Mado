@@ -739,6 +739,30 @@
    "en": "After your meal, help yourself from the self-service teapot.",
    "tr": "Yemekten sonra self servis demlikten kendiniz alın.",
    "de": "Nach dem Essen bedienen Sie sich gern an der Teekanne (Selbstbedienung)."
+  },
+  "extraH": {
+   "fr": "{n}e viande = supplément",
+   "en": "Extra meat costs more",
+   "tr": "{n}. et ekstra ücretli",
+   "de": "{n}. Fleisch kostet extra"
+  },
+  "extraP": {
+   "fr": "2 viandes sont comprises. {item} est en supplément : +{p}.",
+   "en": "2 meats are included. {item} is extra: +{p}.",
+   "tr": "2 et dahil. {item} ekstra: +{p}.",
+   "de": "2 Fleischsorten sind inklusive. {item} kostet extra: +{p}."
+  },
+  "extraDrop": {
+   "fr": "Retirer",
+   "en": "Remove",
+   "tr": "Kaldır",
+   "de": "Entfernen"
+  },
+  "extraKeep": {
+   "fr": "Garder (+{p})",
+   "en": "Keep (+{p})",
+   "tr": "Kalsın (+{p})",
+   "de": "Behalten (+{p})"
   }
  },
  "categories": [
@@ -3287,7 +3311,7 @@
     "de": "Fleisch"
    },
    "multi": true,
-   "max": 2,
+   "max": 3,
    "choices": [
     {
      "id": "t-boeuf",
@@ -3326,7 +3350,7 @@
      "icon": "mixte",
      "photo": "",
      "price": 0,
-     "hidden": false
+     "hidden": true
     },
     {
      "id": "t-escalope",
@@ -3368,8 +3392,18 @@
      "hidden": false
     }
    ],
-   "free": 0,
-   "extraPrice": 0
+   "free": 2,
+   "extraPrice": 2,
+   "warnExtra": true,
+   "combine": [
+    {
+     "ids": [
+      "t-boeuf",
+      "t-poulet"
+     ],
+     "name": "Kebab mixte"
+    }
+   ]
   },
   {
    "id": "bowl",
@@ -4203,6 +4237,7 @@
   "piment-2026-11",
   "sauce-frites-assiette-2026-11",
   "supp-feta-2026-11",
+  "tacos-3viandes-2026-11",
   "test-client-2026-11",
   "vin-rouge-2026-11"
  ],

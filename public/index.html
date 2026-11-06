@@ -195,6 +195,10 @@ main{padding-bottom:96px}
 .confetti{position:absolute;left:50%;top:45%;width:8px;height:12px;border-radius:2px;pointer-events:none;animation:conf .85s ease-out forwards}
 @keyframes conf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .sugg{padding:20px 16px 8px;position:relative}
+.xpop{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:16px}
+.xp{background:var(--surface,#222);border:1px solid var(--line,#333);border-radius:22px;padding:20px 16px 16px;max-width:360px;width:100%;text-align:center;animation:popin .35s cubic-bezier(.3,1.6,.5,1) both}
+.xp .xi{width:64px;height:64px;margin:0 auto 6px}.xp .xi svg,.xp .xi img{width:100%;height:100%;object-fit:contain}
+.xp h3{margin:4px 0 6px;font-size:1.2rem}.xp p{margin:0 0 14px;color:var(--muted)}
 .nocrud{flex:1;display:flex;flex-direction:column;gap:8px;animation:popin .35s cubic-bezier(.3,1.6,.5,1) both}
 .nocrud b{text-align:center;font-size:1.05rem}
 .nc-btns{display:flex;gap:8px}
@@ -733,6 +737,20 @@ function drawSheet(){
     }).join("")}</div>`;
   drawBar();
 }
+function warnExtra(g, cid, tileEl){
+  const c = g.choices.find(x => x.id === cid);
+  const box = document.createElement("div"); box.className = "xpop";
+  box.innerHTML = `<div class="xp"><div class="xi">${iconHtml(c)}</div><h3>${esc(fill(ui("extraH"), {n: +g.free + 1}))}</h3>
+    <p>${esc(fill(ui("extraP"), {item: t(c.name), p: fmtPrice(g.extraPrice)}))}</p>
+    <div class="nc-btns"><button class="btn ghost" data-x="drop">${esc(ui("extraDrop"))}</button><button class="btn grow" data-x="keep">${esc(fill(ui("extraKeep"), {p: fmtPrice(g.extraPrice)}))}</button></div></div>`;
+  box.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-x]"); if (!b && e.target !== box) return;
+    e.stopPropagation(); box.remove();
+    if (b && b.dataset.x === "keep") return;
+    if ((SEL[g.id] || []).includes(cid)) toggleChoice(g.id, cid, tileEl);   // retire la viande qu'il vient de prendre
+  });
+  $("#sheet").appendChild(box);
+}
 function askNoCrud(){
   $("#shBar").innerHTML = `<div class="nocrud"><b>🥗 ${esc(ui("noCrudH"))}</b><div class="nc-btns"><button class="btn ghost" data-sh="noCrudPick">${esc(ui("noCrudPick"))}</button><button class="btn grow" data-sh="noCrudYes">${esc(ui("noCrudYes"))}</button></div></div>`;
 }
@@ -1038,6 +1056,8 @@ function toggleChoice(gid, cid, tileEl){
   const n = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
   const cnt = box.querySelector(".cnt"); cnt.textContent = cntText(g, n); cnt.classList.toggle("ok", n > 0);
   tileEl.classList.remove("pop"); void tileEl.offsetWidth; tileEl.classList.add("pop");
+  // viande en plus payante (ex. 3e viande du tacos) : on prévient, avec la possibilité de la retirer
+  if (g.warnExtra && +g.free && +g.extraPrice && ids.includes(cid) && n === +g.free + 1 && !c.apart && !c.all) warnExtra(g, cid, tileEl);
   // un groupe en dépend (ex. frites → sauce des frites) : on redessine la fiche sans bouger
   if (itemGroups(CUR).some(x => x.showIf && x.showIf.group === gid)) { const y = $("#shScroll").scrollTop; drawSheet(); $("#shScroll").scrollTop = y; }
   const box2 = document.querySelector(`.grp[data-g="${CSS.escape(gid)}"]`) || box;
