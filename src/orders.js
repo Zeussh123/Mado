@@ -103,12 +103,13 @@ async function autoAdvance(env, getMenu) {
   }
 }
 
-// Thé offert (libre service) avec une pizza, un pide ou un menu, à table seulement (réglable : menu.tea)
+// Thé offert (libre service) avec une pizza, un pide, un menu ou une assiette, à table seulement (réglable : menu.tea)
 function teaOffered(menu, table, priced) {
   const t = menu.tea || {};
   if (t.enabled === false || table === "EMP") return false;
-  const cats = new Set(Array.isArray(t.cats) && t.cats.length ? t.cats : ["pizzas", "pides", "menus"]);
-  return priced.some((l) => (menu.categories || []).some((c) => cats.has(c.id) && (c.items || []).some((it) => it.id === l.id)));
+  const cats = new Set(Array.isArray(t.cats) && t.cats.length ? t.cats : ["pizzas", "pides", "menus", "assiettes"]);
+  const skip = new Set(Array.isArray(t.exclude) ? t.exclude : ["assiettes-lahmacun"]);   // le lahmacun n'est pas une assiette
+  return priced.some((l) => !skip.has(l.id) && (menu.categories || []).some((c) => cats.has(c.id) && (c.items || []).some((it) => it.id === l.id)));
 }
 async function createOrder(env, menu, table, rawLines, rawNote, split, newGroup) {
   const lines = (Array.isArray(rawLines) ? rawLines : []).slice(0, MAX_LINES);
