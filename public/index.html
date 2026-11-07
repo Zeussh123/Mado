@@ -836,7 +836,10 @@ function gameBtnTxt(o){
 }
 function wheelSegs(){
   const pz = gameCfg().prizes, n = Math.max(6, pz.length * 2), segs = [];
-  for (let i = 0; i < n; i++) segs.push(i % 2 === 0 && pz[i / 2] ? {id: pz[i / 2].id, label: t(pz[i / 2].name)} : {id: null, label: ui("gameLose")});
+  for (let i = 0; i < n; i++) segs.push(i % 2 === 0 && pz[i / 2] ? {id: pz[i / 2].id, label: t(pz[i / 2].name), w: prizeSize(pz[i / 2])} : {id: null, label: ui("gameLose"), w: 1});
+  // taille de chaque case (lot « fin » : moitié ou quart d'une case normale) ; a0/a1/mid en radians depuis le haut
+  const tot = segs.reduce((x, s) => x + s.w, 0); let acc = -segs[0].w / 2;
+  for (const s of segs) { s.a0 = acc / tot * 2 * Math.PI; acc += s.w; s.a1 = acc / tot * 2 * Math.PI; s.mid = (s.a0 + s.a1) / 2; }
   return segs;
 }
 // 3 styles de roue (admin › Roue) : fond, cadre, couleurs des lots et des cases « Perdu »
@@ -846,13 +849,18 @@ const WHEEL_THEMES = {
   mado: {ov: "radial-gradient(circle at 50% 35%,#2d5520,#0b1607 75%)", box: "#132410", line: "#c9a24a", title: "#e9d38f", prize: ["#8cc63f", "#d4a537"], prizeTxt: "#13240e", lose: "#f4ecd8", loseTxt: "#3c5a2a", rim: "#c9a24a", bulb: "#fff3c4", hub: "#1d3a14", ptr: "#e9c46a", sep: "#0f1d0b", btn: "#8cc63f", btnTxt: "#13240e"},
 };
 const wheelTheme = () => WHEEL_THEMES[(MENU.game || {}).theme] || WHEEL_THEMES.mado;
+const prizeSize = (p) => [1, .5, .25].includes(+p.size) ? +p.size : 1;
 function wheelSvg(segs){
   const n = segs.length, R = 150, C = 160, a = 2 * Math.PI / n, T = wheelTheme(); let pi = 0;
   return `<svg viewBox="0 0 320 320" class="wheel"><g id="wheelG">${segs.map((s, i) => {
-    const a0 = i * a - Math.PI / 2 - a / 2, a1 = a0 + a, x0 = C + R * Math.cos(a0), y0 = C + R * Math.sin(a0), x1 = C + R * Math.cos(a1), y1 = C + R * Math.sin(a1);
+    const a0 = s.a0 - Math.PI / 2, a1 = s.a1 - Math.PI / 2, x0 = C + R * Math.cos(a0), y0 = C + R * Math.sin(a0), x1 = C + R * Math.cos(a1), y1 = C + R * Math.sin(a1);
     const mid = (a0 + a1) / 2, tx = C + R * .62 * Math.cos(mid), ty = C + R * .62 * Math.sin(mid), deg = mid * 180 / Math.PI;
     const col = s.id ? T.prize[pi++ % T.prize.length] : T.lose;
     const words = s.label.split(" "), l1 = words.slice(0, Math.ceil(words.length / 2)).join(" "), l2 = words.slice(Math.ceil(words.length / 2)).join(" ");
+    const path = `<path d="M${C} ${C} L${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${col}" stroke="${T.sep}" stroke-width="2"/>`;
+    // case fine : texte écrit le long du rayon, sur une ligne
+    if (a1 - a0 < .45) { const rx = C + R * .6 * Math.cos(mid), ry = C + R * .6 * Math.sin(mid);
+      return path + `<text transform="translate(${rx.toFixed(1)} ${ry.toFixed(1)}) rotate(${(deg + (Math.cos(mid) < 0 ? 180 : 0)).toFixed(1)})" text-anchor="middle" dominant-baseline="central" font-size="${a1 - a0 < .25 ? 8.5 : 10}" font-weight="900" fill="${T.prizeTxt}">${esc(s.label)}</text>`; }
     return `<path d="M${C} ${C} L${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${col}" stroke="${T.sep}" stroke-width="2"/>
       <text transform="translate(${tx.toFixed(1)} ${ty.toFixed(1)}) rotate(${(deg + 90).toFixed(1)})" text-anchor="middle" font-size="${s.id ? 12.5 : 11}" font-weight="800" fill="${s.id ? T.prizeTxt : T.loseTxt}"><tspan x="0" dy="${l2 ? -2 : 4}">${esc(l1)}</tspan>${l2 ? `<tspan x="0" dy="14">${esc(l2)}</tspan>` : ""}</text>`;
   }).join("")}</g><circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="${T.rim}" stroke-width="9"/>
@@ -862,7 +870,7 @@ function wheelSvg(segs){
 }
 function openGame(){
   const o = ORDERS[0]; if (!gameOn(o)) return;
-  const segs = wheelSegs(), T = wheelTheme(), step = 360 / segs.length;
+  const segs = wheelSegs(), T = wheelTheme(), deg = (i) => segs[i].mid * 180 / Math.PI, span = (i) => (segs[i].a1 - segs[i].a0) * 180 / Math.PI;
   const ov = document.createElement("div"); ov.className = "game-ov";
   ov.style.cssText = `--g-ov:${T.ov};--g-box:${T.box};--g-line:${T.line};--g-title:${T.title};--g-btn:${T.btn};--g-btn-txt:${T.btnTxt}`;
   ov.innerHTML = `<div class="game-box"><h2>${esc(ui("gameTitle"))}</h2><p class="game-left"></p>${wheelSvg(segs)}
@@ -879,7 +887,7 @@ function openGame(){
     ov.querySelector(".game-res").innerHTML = last ? (last.prize ? `<p class="win">🎉 ${esc(fill(ui("gameWin"), {prize: gameLabel(last)}))}</p>` : `<p>${esc(ui(st.left ? "gameLoseAgain" : wins.length ? "gameLoseLast" : "gameLoseMsg"))}</p>`)
       + (wins.length && !st.left ? `<p>${esc(fill(ui("gameWinMsg"), {n: o.num}))}${wins.length > 1 ? ` (${esc(wins.map(gameLabel).join(" + "))})` : ""}</p>` : "") : "";
     spinBtn.hidden = !st.left; spinBtn.disabled = false;
-    if (last && !animate) g.style.transform = `rotate(${-segOf(last) * step}deg)`;
+    if (last && !animate) g.style.transform = `rotate(${-deg(segOf(last))}deg)`;
     if (animate && last && last.prize) burst(ov.querySelector(".game-box"));
   }
   fetch("/api/game/status", {method: "POST", headers: {"content-type": "application/json"}, body: body()}).then(r => r.json()).then(st => {
@@ -900,8 +908,8 @@ function openGame(){
     } catch { b.disabled = false; toast(typeof meM === "function" ? meM() : null, ui("sendError")); return; }
     // la roue s'arrête sur un segment du lot tiré par le serveur (ou sur « Perdu »)
     turns += 6;
-    const i = segOf(r), jitter = (Math.random() - .5) * step * .6;
-    g.style.transition = "transform 4.6s cubic-bezier(.12,.6,.1,1)"; g.style.transform = `rotate(${360 * turns - i * step + jitter}deg)`;
+    const i = segOf(r), jitter = (Math.random() - .5) * span(i) * .6;
+    g.style.transition = "transform 4.6s cubic-bezier(.12,.6,.1,1)"; g.style.transform = `rotate(${360 * turns - deg(i) + jitter}deg)`;
     ov.querySelector(".game-res").innerHTML = "";
     setTimeout(() => show(r, true), 4800);
   });

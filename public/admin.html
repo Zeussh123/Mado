@@ -941,7 +941,8 @@ function renderGame(){
     return `<button type="button" data-gt="${id}" class="${(g.theme || "mado") === id ? "on" : ""}" style="display:flex;align-items:center;gap:10px;padding:8px 12px"><span style="width:34px;height:34px;border-radius:50%;border:3px solid ${id === "fete" ? "#fff" : id === "casino" ? "#e0b84a" : "#c9a24a"};outline:6px solid ${bg};background:conic-gradient(${c.map((x, i) => `${x} ${i * st}deg ${(i + 1) * st}deg`).join(",")})"></span>${name}</button>`; }).join("");
   $("#gmPrizes").innerHTML = g.prizes.map((p, i) => `<div class="gm-row" data-i="${i}">
     <input data-k="fr" value="${esc(p.name.fr || "")}" placeholder="Lot (ex. Boisson offerte)">
-    <div style="display:flex;align-items:center;gap:6px"><input data-k="chance" inputmode="decimal" value="${String(p.chance ?? "").replace(".", ",")}"><span>%</span></div>
+    <div style="display:flex;align-items:center;gap:6px"><input data-k="chance" inputmode="decimal" value="${String(p.chance ?? "").replace(".", ",")}"><span>%</span>
+      <select data-k="size" title="Taille de la case sur la roue">${[[1, "Case normale"], [.5, "Case fine (½)"], [.25, "Case très fine (¼)"]].map(([v, l]) => `<option value="${v}" ${(+p.size || 1) === v ? "selected" : ""}>${l}</option>`).join("")}</select></div>
     <button type="button" class="danger" data-k="del" title="Supprimer">✕</button>
     <details><summary class="small">Autres langues</summary><div class="grid4">${["en","tr","de"].map(l => `<input data-k="${l}" placeholder="${LNAME[l]}" value="${esc(p.name[l] || "")}">`).join("")}</div></details></div>`).join("") || `<p class="small">Aucun lot.</p>`;
   gmSum();
@@ -964,7 +965,8 @@ $("#gmAdd").onclick = () => { gm().prizes.push({id: "p" + Date.now().toString(36
 $("#gmPrizes").addEventListener("input", (e) => {
   const row = e.target.closest(".gm-row"), k = e.target.dataset.k; if (!row || !k || k === "del") return;
   const p = gm().prizes[+row.dataset.i];
-  if (k === "chance") p.chance = Math.max(0, Math.min(100, parseFloat(e.target.value.replace(",", ".")) || 0)); else p.name[k] = e.target.value;
+  if (k === "size") p.size = +e.target.value;
+  else if (k === "chance") p.chance = Math.max(0, Math.min(100, parseFloat(e.target.value.replace(",", ".")) || 0)); else p.name[k] = e.target.value;
   gmSum(); updateStatus();
 });
 $("#gmPrizes").addEventListener("click", (e) => {

@@ -4235,6 +4235,7 @@
   "photo:pizzas-pizza-kebab",
   "photo:pizzas-pizza-margherita",
   "piment-2026-11",
+  "roue-menu-offert-2026-11",
   "sauce-frites-assiette-2026-11",
   "supp-feta-2026-11",
   "tacos-3viandes-2026-11",
@@ -4263,7 +4264,19 @@
      "tr": "İkram tatlı",
      "de": "Gratis-Dessert"
     },
-    "chance": 5
+    "chance": 5,
+    "size": 0.5
+   },
+   {
+    "id": "p-menu",
+    "name": {
+     "fr": "Menu offert",
+     "en": "Free meal",
+     "tr": "İkram menü",
+     "de": "Gratis-Menü"
+    },
+    "chance": 0.2,
+    "size": 0.25
    }
   ],
   "mode": "phone",

@@ -419,6 +419,13 @@ function applyMigrations(m){
     if (g) { Object.assign(g, {"multi": true, "max": 3, "free": 2, "extraPrice": 2, "warnExtra": true, "combine": [{"ids": ["t-boeuf", "t-poulet"], "name": "Kebab mixte"}]}); for (const c of g.choices) if (c.id === "t-mixte") c.hidden = true; }
     m.applied.push("tacos-3viandes-2026-11");
   }
+  if (!m.applied.includes("roue-menu-offert-2026-11")) {
+    // roue : case du dessert 2 fois plus fine, nouveau lot « Menu offert » 2 fois plus fin que le dessert (demande momo)
+    const g = m.game || (m.game = { enabled: false, resetHours: 3, prizes: [] }); g.prizes = g.prizes || [];
+    for (const p of g.prizes) if (/dessert/i.test((p.name && p.name.fr) || "")) p.size = 0.5;
+    if (!g.prizes.some((p) => /menu/i.test((p.name && p.name.fr) || ""))) g.prizes.push({ id: "p-menu", name: { fr: "Menu offert", en: "Free meal", tr: "İkram menü", de: "Gratis-Menü" }, chance: 0.2, size: 0.25 });
+    m.applied.push("roue-menu-offert-2026-11");
+  }
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
   if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");
