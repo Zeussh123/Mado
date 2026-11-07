@@ -449,6 +449,13 @@ function applyMigrations(m){
     m.languages = [...new Set([...(m.languages || ["fr", "en", "tr", "de"]), ...EXTRA_LANGS])];
     m.applied.push("langues-es-it-ru-2026-11");
   }
+  if (!m.applied.includes("ru-filet-2026-11")) {
+    // russe : « шницель » (pané) mal compris, c'est du filet de poulet (relu par un client russe)
+    const fix = (o) => { if (Array.isArray(o)) return o.forEach(fix); if (!o || typeof o !== "object") return;
+      if (typeof o.ru === "string") o.ru = o.ru.replace("Куриный шницель", "Куриное филе").replace("куриным шницелем", "куриным филе").replace("куриный шницель", "куриное филе");
+      for (const v of Object.values(o)) fix(v); };
+    fix(m); m.applied.push("ru-filet-2026-11");
+  }
   fillExtraLangs(m);
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo

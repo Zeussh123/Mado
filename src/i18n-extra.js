@@ -759,7 +759,7 @@ export const TR_EXTRA = {
 "Escalope de poulet": {
 "es": "Escalope de pollo",
 "it": "Scaloppina di pollo",
-"ru": "Куриный шницель"
+"ru": "Куриное филе"
 },
 "Köfte": {
 "es": "Köfte",
@@ -854,7 +854,7 @@ export const TR_EXTRA = {
 "Assiette Escalope de poulet": {
 "es": "Plato de escalope de pollo",
 "it": "Piatto scaloppina di pollo",
-"ru": "Тарелка с куриным шницелем"
+"ru": "Тарелка с куриным филе"
 },
 "Assiette Sucuk": {
 "es": "Plato Sucuk",
@@ -1124,7 +1124,7 @@ export const TR_EXTRA = {
 "Sauce tomate BBQ, mozzarella, escalope de poulet, oignons, poivrons": {
 "es": "Salsa de tomate barbacoa, mozzarella, escalope de pollo, cebolla, pimientos",
 "it": "Salsa di pomodoro BBQ, mozzarella, scaloppina di pollo, cipolla, peperoni",
-"ru": "Томатный соус барбекю, моцарелла, куриный шницель, лук, перец"
+"ru": "Томатный соус барбекю, моцарелла, куриное филе, лук, перец"
 },
 "Pizza Poulet crème": {
 "es": "Pizza de pollo con nata",
@@ -1134,7 +1134,7 @@ export const TR_EXTRA = {
 "Base crème, mozzarella, escalope de poulet, oignons, olives, champignons": {
 "es": "Base de nata, mozzarella, escalope de pollo, cebolla, aceitunas, champiñones",
 "it": "Base panna, mozzarella, scaloppina di pollo, cipolla, olive, funghi",
-"ru": "Сливочная основа, моцарелла, куриный шницель, лук, оливки, грибы"
+"ru": "Сливочная основа, моцарелла, куриное филе, лук, оливки, грибы"
 },
 "Pizza Mado": {
 "es": "Pizza Mado",

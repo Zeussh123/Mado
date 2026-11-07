@@ -1708,7 +1708,7 @@
       "de": "Hähnchenschnitzel",
       "es": "Escalope de pollo",
       "it": "Scaloppina di pollo",
-      "ru": "Куриный шницель"
+      "ru": "Куриное филе"
      },
      "price": 8,
      "id": "sandwichs-escalope-de-poulet",
@@ -2268,7 +2268,7 @@
       "de": "Hähnchenschnitzel-Teller",
       "es": "Plato de escalope de pollo",
       "it": "Piatto scaloppina di pollo",
-      "ru": "Тарелка с куриным шницелем"
+      "ru": "Тарелка с куриным филе"
      },
      "price": 15,
      "id": "assiettes-assiette-escalope-de-poulet",
@@ -3081,7 +3081,7 @@
       "de": "BBQ-Tomatensauce, Mozzarella, Hähnchenschnitzel, Zwiebeln, Paprika",
       "es": "Salsa de tomate barbacoa, mozzarella, escalope de pollo, cebolla, pimientos",
       "it": "Salsa di pomodoro BBQ, mozzarella, scaloppina di pollo, cipolla, peperoni",
-      "ru": "Томатный соус барбекю, моцарелла, куриный шницель, лук, перец"
+      "ru": "Томатный соус барбекю, моцарелла, куриное филе, лук, перец"
      },
      "id": "pizzas-pizza-texane",
      "bestseller": false,
@@ -3108,7 +3108,7 @@
       "de": "Sahnebasis, Mozzarella, Hähnchenschnitzel, Zwiebeln, Oliven, Champignons",
       "es": "Base de nata, mozzarella, escalope de pollo, cebolla, aceitunas, champiñones",
       "it": "Base panna, mozzarella, scaloppina di pollo, cipolla, olive, funghi",
-      "ru": "Сливочная основа, моцарелла, куриный шницель, лук, оливки, грибы"
+      "ru": "Сливочная основа, моцарелла, куриное филе, лук, оливки, грибы"
      },
      "id": "pizzas-pizza-poulet-creme",
      "bestseller": false,
@@ -4423,7 +4423,7 @@
       "de": "Hähnchenschnitzel",
       "es": "Escalope de pollo",
       "it": "Scaloppina di pollo",
-      "ru": "Куриный шницель"
+      "ru": "Куриное филе"
      },
      "icon": "escalope",
      "photo": "",
@@ -5493,6 +5493,7 @@
   "photo:pizzas-pizza-margherita",
   "piment-2026-11",
   "roue-menu-offert-2026-11",
+  "ru-filet-2026-11",
   "sauce-frites-assiette-2026-11",
   "supp-feta-2026-11",
   "tacos-3viandes-2026-11",
