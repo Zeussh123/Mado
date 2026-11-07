@@ -1640,5 +1640,402 @@ export const TR_EXTRA = {
 "es": "Menú gratis",
 "it": "Menu offerto",
 "ru": "Комбо в подарок"
+},
+"Pizza Végétarienne": {
+"es": "Pizza vegetariana",
+"it": "Pizza vegetariana",
+"ru": "Вегетарианская пицца"
 }
 };
+// ingrédients : pour traduire une description modifiée dans l'admin (« Mozzarella, sauce tomate, olives… »)
+export const ING_EXTRA = {
+"mozzarella": {
+"es": "mozzarella",
+"it": "mozzarella",
+"ru": "моцарелла"
+},
+"sauce tomate": {
+"es": "salsa de tomate",
+"it": "salsa di pomodoro",
+"ru": "томатный соус"
+},
+"sauce tomate bbq": {
+"es": "salsa de tomate barbacoa",
+"it": "salsa di pomodoro BBQ",
+"ru": "томатный соус барбекю"
+},
+"sauce bbq": {
+"es": "salsa barbacoa",
+"it": "salsa BBQ",
+"ru": "соус барбекю"
+},
+"sauce crème": {
+"es": "salsa de nata",
+"it": "salsa alla panna",
+"ru": "сливочный соус"
+},
+"base crème": {
+"es": "base de nata",
+"it": "base panna",
+"ru": "сливочная основа"
+},
+"crème": {
+"es": "nata",
+"it": "panna",
+"ru": "сливки"
+},
+"sauce burger": {
+"es": "salsa burger",
+"it": "salsa burger",
+"ru": "бургерный соус"
+},
+"champignons": {
+"es": "champiñones",
+"it": "funghi",
+"ru": "грибы"
+},
+"olives": {
+"es": "aceitunas",
+"it": "olive",
+"ru": "оливки"
+},
+"olive": {
+"es": "aceituna",
+"it": "oliva",
+"ru": "оливки"
+},
+"poivrons": {
+"es": "pimientos",
+"it": "peperoni",
+"ru": "перец"
+},
+"poivron": {
+"es": "pimiento",
+"it": "peperone",
+"ru": "перец"
+},
+"tomate": {
+"es": "tomate",
+"it": "pomodoro",
+"ru": "помидор"
+},
+"tomates": {
+"es": "tomates",
+"it": "pomodori",
+"ru": "помидоры"
+},
+"tomates fraîches": {
+"es": "tomate fresco",
+"it": "pomodori freschi",
+"ru": "свежие помидоры"
+},
+"tomate fraîche": {
+"es": "tomate fresco",
+"it": "pomodoro fresco",
+"ru": "свежий помидор"
+},
+"oignons": {
+"es": "cebolla",
+"it": "cipolla",
+"ru": "лук"
+},
+"oignon": {
+"es": "cebolla",
+"it": "cipolla",
+"ru": "лук"
+},
+"oignons rouges": {
+"es": "cebolla morada",
+"it": "cipolla rossa",
+"ru": "красный лук"
+},
+"aubergines": {
+"es": "berenjena",
+"it": "melanzane",
+"ru": "баклажаны"
+},
+"aubergine": {
+"es": "berenjena",
+"it": "melanzana",
+"ru": "баклажан"
+},
+"courgettes": {
+"es": "calabacín",
+"it": "zucchine",
+"ru": "кабачки"
+},
+"maïs": {
+"es": "maíz",
+"it": "mais",
+"ru": "кукуруза"
+},
+"fines herbes": {
+"es": "finas hierbas",
+"it": "erbe aromatiche",
+"ru": "травы"
+},
+"herbes": {
+"es": "hierbas",
+"it": "erbe",
+"ru": "травы"
+},
+"origan": {
+"es": "orégano",
+"it": "origano",
+"ru": "орегано"
+},
+"persil": {
+"es": "perejil",
+"it": "prezzemolo",
+"ru": "петрушка"
+},
+"basilic": {
+"es": "albahaca",
+"it": "basilico",
+"ru": "базилик"
+},
+"ail": {
+"es": "ajo",
+"it": "aglio",
+"ru": "чеснок"
+},
+"emmental": {
+"es": "emmental",
+"it": "emmental",
+"ru": "эмменталь"
+},
+"cheddar": {
+"es": "cheddar",
+"it": "cheddar",
+"ru": "чеддер"
+},
+"roquefort": {
+"es": "roquefort",
+"it": "roquefort",
+"ru": "рокфор"
+},
+"fromage de chèvre": {
+"es": "queso de cabra",
+"it": "formaggio di capra",
+"ru": "козий сыр"
+},
+"chèvre": {
+"es": "queso de cabra",
+"it": "caprino",
+"ru": "козий сыр"
+},
+"feta": {
+"es": "feta",
+"it": "feta",
+"ru": "фета"
+},
+"parmesan": {
+"es": "parmesano",
+"it": "parmigiano",
+"ru": "пармезан"
+},
+"gorgonzola": {
+"es": "gorgonzola",
+"it": "gorgonzola",
+"ru": "горгонзола"
+},
+"fromage": {
+"es": "queso",
+"it": "formaggio",
+"ru": "сыр"
+},
+"miel": {
+"es": "miel",
+"it": "miele",
+"ru": "мёд"
+},
+"thon": {
+"es": "atún",
+"it": "tonno",
+"ru": "тунец"
+},
+"anchois": {
+"es": "anchoas",
+"it": "acciughe",
+"ru": "анчоусы"
+},
+"saumon": {
+"es": "salmón",
+"it": "salmone",
+"ru": "лосось"
+},
+"crevettes": {
+"es": "gambas",
+"it": "gamberi",
+"ru": "креветки"
+},
+"poulet": {
+"es": "pollo",
+"it": "pollo",
+"ru": "курица"
+},
+"escalope de poulet": {
+"es": "escalope de pollo",
+"it": "scaloppina di pollo",
+"ru": "куриное филе"
+},
+"kebab poulet": {
+"es": "kebab de pollo",
+"it": "kebab di pollo",
+"ru": "куриный кебаб"
+},
+"kebab bœuf": {
+"es": "kebab de ternera",
+"it": "kebab di manzo",
+"ru": "кебаб из говядины"
+},
+"döner poulet": {
+"es": "döner de pollo",
+"it": "döner di pollo",
+"ru": "куриный дёнер"
+},
+"döner": {
+"es": "döner",
+"it": "döner",
+"ru": "дёнер"
+},
+"viande hachée": {
+"es": "carne picada",
+"it": "carne macinata",
+"ru": "фарш"
+},
+"bœuf": {
+"es": "ternera",
+"it": "manzo",
+"ru": "говядина"
+},
+"merguez": {
+"es": "merguez",
+"it": "merguez",
+"ru": "мергез"
+},
+"sucuk": {
+"es": "sucuk",
+"it": "sucuk",
+"ru": "суджук"
+},
+"pastirma": {
+"es": "pastirma",
+"it": "pastirma",
+"ru": "бастурма"
+},
+"salami": {
+"es": "salami",
+"it": "salame",
+"ru": "салями"
+},
+"jambon": {
+"es": "jamón",
+"it": "prosciutto",
+"ru": "ветчина"
+},
+"jambon de dinde": {
+"es": "jamón de pavo",
+"it": "prosciutto di tacchino",
+"ru": "ветчина из индейки"
+},
+"lardon de dinde": {
+"es": "bacon de pavo",
+"it": "pancetta di tacchino",
+"ru": "бекон из индейки"
+},
+"lardons de dinde": {
+"es": "bacon de pavo",
+"it": "pancetta di tacchino",
+"ru": "бекон из индейки"
+},
+"œuf": {
+"es": "huevo",
+"it": "uovo",
+"ru": "яйцо"
+},
+"épinards": {
+"es": "espinacas",
+"it": "spinaci",
+"ru": "шпинат"
+},
+"pommes de terre": {
+"es": "patatas",
+"it": "patate",
+"ru": "картофель"
+},
+"frites": {
+"es": "patatas fritas",
+"it": "patatine",
+"ru": "картофель фри"
+},
+"salade": {
+"es": "lechuga",
+"it": "insalata",
+"ru": "салат"
+},
+"crudités": {
+"es": "verduras",
+"it": "verdure",
+"ru": "овощи"
+},
+"chou rouge": {
+"es": "col lombarda",
+"it": "cavolo rosso",
+"ru": "красная капуста"
+},
+"carottes": {
+"es": "zanahoria",
+"it": "carote",
+"ru": "морковь"
+},
+"concombre": {
+"es": "pepino",
+"it": "cetriolo",
+"ru": "огурец"
+},
+"piment": {
+"es": "guindilla",
+"it": "peperoncino",
+"ru": "острый перец"
+},
+"piment vert": {
+"es": "guindilla verde",
+"it": "peperoncino verde",
+"ru": "зелёный перец чили"
+},
+"cornichons": {
+"es": "pepinillos",
+"it": "cetriolini",
+"ru": "маринованные огурцы"
+},
+"ananas": {
+"es": "piña",
+"it": "ananas",
+"ru": "ананас"
+},
+"boisson 33 cl": {
+"es": "bebida 33 cl",
+"it": "bibita 33 cl",
+"ru": "напиток 0,33 л"
+},
+"thé": {
+"es": "té",
+"it": "tè",
+"ru": "чай"
+}
+};
+const LOWER = Object.fromEntries(Object.entries(TR_EXTRA).map(([k, v]) => [k.toLowerCase(), v]));
+const cap = (s) => s ? s[0].toUpperCase() + s.slice(1) : s;
+// traduction d'un texte français : connu tel quel, sinon liste d'ingrédients séparés par des virgules ; null si inconnu
+export function translateExtra(fr) {
+  const s = String(fr || "").trim(); if (!s) return null;
+  if (TR_EXTRA[s]) return TR_EXTRA[s];
+  if (LOWER[s.toLowerCase()]) return LOWER[s.toLowerCase()];
+  const parts = s.replace(/[.…]+$/, "").split(/\s*,\s*|\s+et\s+/).filter(Boolean);
+  const tr = parts.map((p) => ING_EXTRA[p.toLowerCase()] || LOWER[p.toLowerCase()]);
+  if (!parts.length || tr.some((x) => !x)) return null;
+  const out = {};
+  for (const k of EXTRA_LANGS) out[k] = cap(tr.map((x, i) => (i ? x[k].toLowerCase() === x[k] || k === "ru" ? x[k].toLowerCase() : x[k] : x[k])).join(", "));
+  return out;
+}

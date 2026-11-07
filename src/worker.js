@@ -7,7 +7,7 @@ import { handleOrders, stats } from "./orders.js";
 import { stockState } from "./stock.js";
 import { postFeedback, listFeedback } from "./feedback.js";
 import { spin, gameStatus, gameStats } from "./game.js";
-import { EXTRA_LANGS, TR_EXTRA } from "./i18n-extra.js";
+import { EXTRA_LANGS, translateExtra } from "./i18n-extra.js";
 
 const MENU_KEY = "menu";
 const STAFF_KEY = "staff-code";
@@ -285,16 +285,20 @@ const PRODUCT_PHOTOS = {
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
-// remplit es/it/ru vides d'après le texte français (aussi pour les textes ajoutés plus tard, s'ils sont connus)
-function fillExtraLangs(o) {
-  if (Array.isArray(o)) { for (const v of o) fillExtraLangs(v); return; }
+// remplit es/it/ru d'après le texte français (connu, ou liste d'ingrédients). « _auto » = texte français déjà traduit
+// automatiquement : si le gérant change le français dans l'admin, la traduction suit ; une traduction tapée à la main est gardée.
+function fillExtraLangs(o, force) {
+  if (Array.isArray(o)) { for (const v of o) fillExtraLangs(v, force); return; }
   if (!o || typeof o !== "object") return;
   if (typeof o.fr === "string" && ("en" in o || "tr" in o)) {
-    const tr = TR_EXTRA[o.fr];
-    if (tr) for (const k of EXTRA_LANGS) if (!o[k]) o[k] = tr[k];
+    const auto = force || (o._auto !== undefined && o._auto !== o.fr);
+    if (!auto && EXTRA_LANGS.every((k) => o[k])) return;
+    const tr = translateExtra(o.fr);
+    if (tr) { for (const k of EXTRA_LANGS) if (auto || !o[k]) o[k] = tr[k]; o._auto = o.fr; }
+    else if (o._auto !== undefined && o._auto !== o.fr) { for (const k of EXTRA_LANGS) o[k] = ""; delete o._auto; }   // ancienne traduction auto devenue fausse
     return;
   }
-  for (const v of Object.values(o)) fillExtraLangs(v);
+  for (const v of Object.values(o)) fillExtraLangs(v, force);
 }
 function applyMigrations(m){
   m.applied = m.applied || [];
@@ -456,7 +460,16 @@ function applyMigrations(m){
       for (const v of Object.values(o)) fix(v); };
     fix(m); m.applied.push("ru-filet-2026-11");
   }
-  fillExtraLangs(m);
+  if (!m.applied.includes("pizza-vege-2026-11")) {
+    // la 4 saisons devient « Pizza Végétarienne » dans toutes les langues (demande momo)
+    for (const c of m.categories || []) for (const it of c.items || []) if (it.id === "pizzas-pizza-4-saisons")
+      it.name = { fr: "Pizza Végétarienne", en: "Vegetarian pizza", tr: "Vejetaryen pizza", de: "Vegetarische Pizza", es: "Pizza vegetariana", it: "Pizza vegetariana", ru: "Вегетарианская пицца", _auto: "Pizza Végétarienne" };
+    m.applied.push("pizza-vege-2026-11");
+  }
+  // une fois : on retraduit tout (les traductions d'avant n'avaient pas le repère « _auto »)
+  const first = !m.applied.includes("langues-auto-2026-11");
+  fillExtraLangs(m, first);
+  if (first) m.applied.push("langues-auto-2026-11");
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
   if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");
