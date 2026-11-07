@@ -438,6 +438,12 @@ function applyMigrations(m){
     if (!g.prizes.some((p) => /menu/i.test((p.name && p.name.fr) || ""))) g.prizes.push({ id: "p-menu", name: { fr: "Menu offert", en: "Free meal", tr: "İkram menü", de: "Gratis-Menü" }, chance: 0.2, size: 0.25 });
     m.applied.push("roue-menu-offert-2026-11");
   }
+  if (!m.applied.includes("frites-et-boulgour-2026-11")) {
+    // assiettes : on peut prendre frites ET boulgour, sans que ce soit mis en avant (demande momo)
+    const g = (m.optionGroups || []).find((x) => x.id === "accompagnement");
+    if (g) { g.multi = true; g.max = 2; g.quiet = true; }
+    m.applied.push("frites-et-boulgour-2026-11");
+  }
   // espagnol, italien, russe : ajoutés partout où le texte français est connu (sinon le français s'affiche)
   if (!m.applied.includes("langues-es-it-ru-2026-11")) {
     m.languages = [...new Set([...(m.languages || ["fr", "en", "tr", "de"]), ...EXTRA_LANGS])];

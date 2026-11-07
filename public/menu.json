@@ -4585,8 +4585,8 @@
     "it": "Contorno",
     "ru": "Гарнир"
    },
-   "multi": false,
-   "max": 1,
+   "multi": true,
+   "max": 2,
    "choices": [
     {
      "id": "frites",
@@ -4622,7 +4622,8 @@
     }
    ],
    "free": 0,
-   "extraPrice": 0
+   "extraPrice": 0,
+   "quiet": true
   },
   {
    "id": "crudites",
@@ -5482,6 +5483,7 @@
  "applied": [
   "boissons-2026-11",
   "capri-sun-2026-11",
+  "frites-et-boulgour-2026-11",
   "langues-es-it-ru-2026-11",
   "photo-4fromages2-2026-11",
   "photo-4saisons2-2026-11",

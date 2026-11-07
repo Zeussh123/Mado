@@ -602,9 +602,11 @@ function extras(it, sel){
   return Math.round(x * 100) / 100;
 }
 const groupHint = (g) => (isRequired(g) ? ui("requiredTag") + " · " : "") + groupHint0(g);
-const groupHint0 = (g) => (+g.free && +g.extraPrice && !(+g.max && +g.max <= +g.free)) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
+// « quiet » : on peut cocher plusieurs choix sans que ce soit affiché (ex. frites + boulgour)
+const groupHint0 = (g) => g.quiet ? ui("oneChoice") : groupHint1(g);
+const groupHint1 = (g) => (+g.free && +g.extraPrice && !(+g.max && +g.max <= +g.free)) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
   : g.multi && +g.max ? fill(ui("maxHint"), {n: g.max}) : ui(g.multi ? "severalChoices" : "oneChoice");
-const cntText = (g, n) => n + (!g.multi ? "/1" : +g.max ? "/" + g.max : "");
+const cntText = (g, n) => n + (!g.multi || g.quiet ? "" : +g.max ? "/" + g.max : "");
 function choiceSummary(it, sel){
   return itemGroups(it).map(g => {
     const ids = sel[g.id] || [], all = g.choices.find(c => c.all && ids.includes(c.id));
@@ -1086,6 +1088,7 @@ function toggleChoice(gid, cid, tileEl){
   const next = box2.nextElementSibling, goNext = () => { if (next) setTimeout(() => next.scrollIntoView({behavior:"smooth", block:"start"}), 250); };
   // une seule viande : on descend tout seul au groupe suivant
   if (!g.multi && ids.length) goNext();
+  else if (g.quiet) { if (ids.length && !AUTO_SCROLLED.has(gid)) { AUTO_SCROLLED.add(gid); goNext(); } }
   // sauces : arrivé à 2 (incluses ou maximum), on descend une seule fois ; s'il remonte en ajouter, on ne bouge plus
   else if (g.multi && !AUTO_SCROLLED.has(gid)) { const lim = +g.max || +g.free; const nn = ids.filter(id => { const x = g.choices.find(x => x.id === id); return x && !x.all && !x.apart; }).length;
     if (lim && nn >= lim) { AUTO_SCROLLED.add(gid); goNext(); } }
