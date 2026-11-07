@@ -356,6 +356,27 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
   }
 
   // Page Cuisine : liste des commandes du jour
+  // Cuisine : paniers des tables en cours de choix (pas encore envoyés), pour anticiper les grosses tables
+  if (path === "/api/baskets" && m === "GET") {
+    return withAuth(request, env, async () => {
+      const menu = JSON.parse(await menuText(request, env)), now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
+      const since = new Date(Date.now() - BASKET_TTL).toISOString();
+      const { results } = await env.DB.prepare("SELECT table_no, data, updated_at FROM table_baskets WHERE updated_at > ?").bind(since).all();
+      const out = [];
+      for (const r of results) {
+        let d; try { d = JSON.parse(r.data); } catch { continue; }
+        if (!d.lines || !d.lines.length) continue;
+        let gi = 0; const names = {};
+        for (const x of d.members || []) if (d.lines.some((l) => l.m === x.id)) names[x.id] = x.name || `Invité ${++gi}`;
+        const lines = d.lines.map((l) => { const p = priceLine(menu, l, promos); return p && { ...p, who: names[l.m] || "" }; }).filter(Boolean);
+        const active = (d.members || []).filter((x) => d.lines.some((l) => l.m === x.id));
+        out.push({ table: r.table_no, updated_at: r.updated_at, lines, people: active.map((x) => ({ name: names[x.id], ready: !!x.ready })) });
+      }
+      out.sort((a, b) => (+a.table || 0) - (+b.table || 0));
+      return json({ baskets: out }, 200, { "cache-control": "no-store" });
+    });
+  }
+
   if (path === "/api/orders" && m === "GET") {
     return withAuth(request, env, async () => {
       // ?day=AAAA-MM-JJ pour l'historique ; sinon le jour même + tout ce qui n'est pas encore encaissé

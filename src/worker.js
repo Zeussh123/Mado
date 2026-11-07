@@ -41,7 +41,7 @@ export default {
       if (mReset && request.method === "POST") return withAuth(request, env, () => resetTableKey(env, mReset[1]));
       const mSess = path.match(/^\/api\/table\/(\d{1,3})\/session$/);
       if (mSess && request.method === "POST") return tableSession(request, env, mSess[1]);
-      if (path.startsWith("/api/orders") || path.startsWith("/api/table/")) return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey });
+      if (path.startsWith("/api/orders") || path.startsWith("/api/table/") || path === "/api/baskets") return handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey });
       if (path === "/serveur") return env.ASSETS.fetch(new Request(new URL("/", url), request));
       if (path === "/ecran") return env.ASSETS.fetch(new Request(new URL("/ecran.html", url), request));
       if (path === "/cuisine") return env.ASSETS.fetch(new Request(new URL("/cuisine.html", url), request));
