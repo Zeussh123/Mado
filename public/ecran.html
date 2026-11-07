@@ -157,19 +157,19 @@ footer{position:fixed;z-index:3;left:0;right:0;bottom:0;padding:1.4vw 3vw;displa
 <script>
 // Paramètres possibles dans l'adresse : ?lang=en  ?duree=12 (secondes par écran)  ?promos=1 (seulement les promos)
 const Q = new URLSearchParams(location.search);
-const LANG = ["fr", "en", "tr", "de"].includes(Q.get("lang")) ? Q.get("lang") : "fr";
+const LANG = ["fr", "en", "tr", "de", "es", "it", "ru"].includes(Q.get("lang")) ? Q.get("lang") : "fr";
 const DUR = Math.max(5, Math.min(60, parseInt(Q.get("duree")) || 10)) * 1000;
 const ONLY_PROMOS = Q.get("promos") === "1";
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const t = (o) => o ? (o[LANG] || o.fr || "") : "";
-const eur = (n) => new Intl.NumberFormat(LANG === "en" ? "en-IE" : LANG + "-" + LANG.toUpperCase(), {style: "currency", currency: "EUR", minimumFractionDigits: n % 1 ? 2 : 0}).format(n);
+const eur = (n) => new Intl.NumberFormat(LANG === "en" ? "en-IE" : LANG + "-" + LANG.toUpperCase().replace("EN", "IE"), {style: "currency", currency: "EUR", minimumFractionDigits: n % 1 ? 2 : 0}).format(n);
 const TXT = {
-  promo: {fr: "Promo", en: "Deal", tr: "Kampanya", de: "Angebot"},
-  left: {fr: "Encore", en: "Only", tr: "Son", de: "Noch"},
-  leftEnd: {fr: "", en: "left", tr: "", de: ""},
-  menu: {fr: "Notre carte", en: "Our menu", tr: "Menümüz", de: "Unsere Karte"},
-  order: {fr: "Commandez en scannant le QR code de votre table", en: "Order by scanning the QR code on your table", tr: "Masanızdaki QR kodu okutarak sipariş verin", de: "Bestellen Sie über den QR-Code auf Ihrem Tisch"},
+  promo: {fr: "Promo", en: "Deal", tr: "Kampanya", de: "Angebot", es: "Promo", it: "Promo", ru: "Акция"},
+  left: {fr: "Encore", en: "Only", tr: "Son", de: "Noch", es: "Quedan", it: "Ancora", ru: "Осталось"},
+  leftEnd: {fr: "", en: "left", tr: "", de: "", es: "", it: "", ru: ""},
+  menu: {fr: "Notre carte", en: "Our menu", tr: "Menümüz", de: "Unsere Karte", es: "Nuestra carta", it: "Il nostro menu", ru: "Наше меню"},
+  order: {fr: "Commandez en scannant le QR code de votre table", en: "Order by scanning the QR code on your table", tr: "Masanızdaki QR kodu okutarak sipariş verin", de: "Bestellen Sie über den QR-Code auf Ihrem Tisch", es: "Pida escaneando el código QR de su mesa", it: "Ordina scansionando il QR code del tuo tavolo", ru: "Заказывайте, отсканировав QR-код на вашем столе"},
 };
 const ICONS = {menus:"🍱",pokebowl:"🥗",sandwichs:"🥙",assiettes:"🍽️",pides:"🫓",pizzas:"🍕",accompagnements:"🍟",boissons:"🥤",alcools:"🍺",desserts:"🍰"};
 
@@ -220,7 +220,7 @@ const PLAN = [
   [["boissons"], ["alcools"]],
 ];
 const TXT2 = {
-  meats: {fr: "Bœuf, poulet ou mixte", en: "Beef, chicken or mixed", tr: "Dana, tavuk veya karışık", de: "Rind, Hähnchen oder gemischt"},
+  meats: {fr: "Bœuf, poulet ou mixte", en: "Beef, chicken or mixed", tr: "Dana, tavuk veya karışık", de: "Rind, Hähnchen oder gemischt", es: "Ternera, pollo o mixto", it: "Manzo, pollo o misto", ru: "Говядина, курица или микс"},
 };
 function pages(){
   const cats = MENU.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden));

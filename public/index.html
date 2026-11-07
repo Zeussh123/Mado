@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mado · Menu</title>
-<meta name="description" content="Restaurant Mado : kebab, pides, pizzas, assiettes. Menu en français, English, Türkçe, Deutsch.">
+<meta name="description" content="Restaurant Mado : kebab, pides, pizzas, assiettes. Menu en français, English, Türkçe, Deutsch, Español, Italiano, Русский.">
 <meta name="theme-color" content="#1c1c1c">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <style>
@@ -301,7 +301,7 @@ main{padding-bottom:96px}
 
 <div id="splash">
   <img class="logo" src="img/logo.png" alt="Mado">
-  <h1>Bienvenue · Welcome · Hoş geldiniz · Willkommen</h1>
+  <h1>Bienvenue · Welcome · Hoş geldiniz · Willkommen · Bienvenidos · Benvenuti · Добро пожаловать</h1>
   <div class="langs" id="langs"></div>
 </div>
 
@@ -336,8 +336,11 @@ const LANGS = [
   {code:"en", flag:"🇬🇧", label:"English", sub:"Menu in English"},
   {code:"tr", flag:"🇹🇷", label:"Türkçe", sub:"Türkçe menü"},
   {code:"de", flag:"🇩🇪", label:"Deutsch", sub:"Speisekarte auf Deutsch"},
+  {code:"es", flag:"🇪🇸", label:"Español", sub:"Menú en español"},
+  {code:"it", flag:"🇮🇹", label:"Italiano", sub:"Menu in italiano"},
+  {code:"ru", flag:"🇷🇺", label:"Русский", sub:"Меню на русском"},
 ];
-const LOCALES = {fr:"fr-FR", en:"en-IE", tr:"tr-TR", de:"de-DE"};
+const LOCALES = {fr:"fr-FR", en:"en-IE", tr:"tr-TR", de:"de-DE", es:"es-ES", it:"it-IT", ru:"ru-RU"};
 const ICONS = {menus:"🍱",pokebowl:"🥗",sandwichs:"🥙",assiettes:"🍽️",pides:"🫓",pizzas:"🍕",accompagnements:"🍟",boissons:"🥤",alcools:"🍺",desserts:"🍰"};
 let MENU = null, lang = "fr", PROMOS = [];
 
@@ -429,7 +432,7 @@ function openMenu(code){
 }
 
 /* ---------- Promos (heure de Paris) ---------- */
-const DAYS = {fr:["lun","mar","mer","jeu","ven","sam","dim"],en:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],tr:["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"],de:["Mo","Di","Mi","Do","Fr","Sa","So"]};
+const DAYS = {fr:["lun","mar","mer","jeu","ven","sam","dim"],en:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],tr:["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"],de:["Mo","Di","Mi","Do","Fr","Sa","So"],es:["lun","mar","mié","jue","vie","sáb","dom"],it:["lun","mar","mer","gio","ven","sab","dom"],ru:["пн","вт","ср","чт","пт","сб","вс"]};
 function parisNow(){
   const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Paris",weekday:"short",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));
   return { day: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].indexOf(parts.weekday)+1, min: (+parts.hour)*60 + (+parts.minute), date: `${parts.year}-${parts.month}-${parts.day}` };
@@ -902,7 +905,7 @@ function openGame(){
     try {
       const res = await fetch("/api/game/spin", {method: "POST", headers: {"content-type": "application/json"}, body: body()});
       r = await res.json();
-      if (r.error === "played") { ov.querySelector(".game-res").innerHTML = `<p>${esc(fill(ui("gamePlayed"), {time: new Date(r.next).toLocaleTimeString(lang === "en" ? "en-GB" : lang, {hour: "2-digit", minute: "2-digit"})}))}</p>`; b.hidden = true; return; }
+      if (r.error === "played") { ov.querySelector(".game-res").innerHTML = `<p>${esc(fill(ui("gamePlayed"), {time: new Date(r.next).toLocaleTimeString(lang === "en" ? "en-GB" : LOCALES[lang] || lang, {hour: "2-digit", minute: "2-digit"})}))}</p>`; b.hidden = true; return; }
       if (r.error === "none" || r.error === "amount") { show(r, false); return; }
       if (!res.ok) throw new Error(r.error);
     } catch { b.disabled = false; toast(typeof meM === "function" ? meM() : null, ui("sendError")); return; }

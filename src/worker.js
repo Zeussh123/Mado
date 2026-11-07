@@ -7,6 +7,7 @@ import { handleOrders, stats } from "./orders.js";
 import { stockState } from "./stock.js";
 import { postFeedback, listFeedback } from "./feedback.js";
 import { spin, gameStatus, gameStats } from "./game.js";
+import { EXTRA_LANGS, TR_EXTRA } from "./i18n-extra.js";
 
 const MENU_KEY = "menu";
 const STAFF_KEY = "staff-code";
@@ -284,6 +285,17 @@ const PRODUCT_PHOTOS = {
 };
 
 // Mises à jour ponctuelles d'un menu déjà enregistré (appliquées une seule fois)
+// remplit es/it/ru vides d'après le texte français (aussi pour les textes ajoutés plus tard, s'ils sont connus)
+function fillExtraLangs(o) {
+  if (Array.isArray(o)) { for (const v of o) fillExtraLangs(v); return; }
+  if (!o || typeof o !== "object") return;
+  if (typeof o.fr === "string" && ("en" in o || "tr" in o)) {
+    const tr = TR_EXTRA[o.fr];
+    if (tr) for (const k of EXTRA_LANGS) if (!o[k]) o[k] = tr[k];
+    return;
+  }
+  for (const v of Object.values(o)) fillExtraLangs(v);
+}
 function applyMigrations(m){
   m.applied = m.applied || [];
   if (!m.applied.includes("piment-2026-11")) {
@@ -426,6 +438,12 @@ function applyMigrations(m){
     if (!g.prizes.some((p) => /menu/i.test((p.name && p.name.fr) || ""))) g.prizes.push({ id: "p-menu", name: { fr: "Menu offert", en: "Free meal", tr: "İkram menü", de: "Gratis-Menü" }, chance: 0.2, size: 0.25 });
     m.applied.push("roue-menu-offert-2026-11");
   }
+  // espagnol, italien, russe : ajoutés partout où le texte français est connu (sinon le français s'affiche)
+  if (!m.applied.includes("langues-es-it-ru-2026-11")) {
+    m.languages = [...new Set([...(m.languages || ["fr", "en", "tr", "de"]), ...EXTRA_LANGS])];
+    m.applied.push("langues-es-it-ru-2026-11");
+  }
+  fillExtraLangs(m);
   // (en dernier, pour les produits créés par les migrations ci-dessus)
   // photos préparées pour le gérant : posées seulement si le produit n'a pas déjà de photo
   if (m.applied.includes("photo-margherita-2026-11")) m.applied.push("photo:pizzas-pizza-margherita");

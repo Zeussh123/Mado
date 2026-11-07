@@ -367,8 +367,8 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 <script src="icons.js"></script>
 <script src="floor.js"></script>
 <script>
-const LANGS = ["fr","en","tr","de"];
-const LNAME = {fr:"Français",en:"English",tr:"Türkçe",de:"Deutsch"};
+const LANGS = ["fr","en","tr","de","es","it","ru"];
+const LNAME = {fr:"Français",en:"English",tr:"Türkçe",de:"Deutsch",es:"Español",it:"Italiano",ru:"Русский"};
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -525,7 +525,7 @@ function itemHtml(c, ci, it, ii){
     </div>
     <div class="more">
       <div class="lbl">Nom dans les autres langues (si vide, le nom français est affiché)</div>
-      <div class="grid4">${["en","tr","de"].map(l=>`<input data-f="name.${l}" placeholder="${LNAME[l]}" value="${esc(it.name[l])}">`).join("")}</div>
+      <div class="grid4">${LANGS.slice(1).map(l=>`<input data-f="name.${l}" placeholder="${LNAME[l]}" value="${esc(it.name[l])}">`).join("")}</div>
       <div class="lbl">Options proposées au client</div>
       <div class="toggles">${(menu.optionGroups||[]).map(g=>`<label><input type="checkbox" data-opt="${esc(g.id)}" ${(it.options||[]).includes(g.id)?"checked":""}> ${esc(g.name.fr)}</label>`).join("") || '<span class="small">Aucun groupe d\'options</span>'}</div>
       ${INGS.some(i => i.section === "Viandes") ? `<div class="lbl">Contient (si cet ingrédient est épuisé, le plat devient indisponible)</div>
@@ -807,7 +807,7 @@ function renderGroups(){
         <div class="pr" style="position:relative"><input data-cf="price" inputmode="decimal" placeholder="Supplément" value="${+c.price ? String(c.price).replace(".",",") : ""}"><span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted)">€</span></div>
         <div class="toggles gx" style="margin:0"><label><input type="checkbox" data-cf="visible" ${c.hidden?"":"checked"}> Dispo</label></div>
         <details><summary class="small" style="cursor:pointer">Traductions, image, ordre, supprimer</summary>
-          <div class="grid4" style="margin-top:6px">${["en","tr","de"].map(l=>`<input data-cf="name.${l}" placeholder="${LNAME[l]}" value="${esc(c.name[l])}">`).join("")}</div>
+          <div class="grid4" style="margin-top:6px">${LANGS.slice(1).map(l=>`<input data-cf="name.${l}" placeholder="${LNAME[l]}" value="${esc(c.name[l])}">`).join("")}</div>
           <div class="lbl">Image dessinée</div>
           <select data-cf="icon" style="width:auto">${ICON_KEYS.map(k=>`<option ${k===c.icon?"selected":""}>${k}</option>`).join("")}</select>
           ${g.multi ? `<div class="toggles"><label><input type="checkbox" data-cf="all" ${c.all?"checked":""}> Ce choix sélectionne tout (ex. « Tout »)</label></div>
@@ -944,7 +944,7 @@ function renderGame(){
     <div style="display:flex;align-items:center;gap:6px"><input data-k="chance" inputmode="decimal" value="${String(p.chance ?? "").replace(".", ",")}"><span>%</span>
       <select data-k="size" title="Taille de la case sur la roue">${[[1, "Case normale"], [.5, "Case fine (½)"], [.25, "Case très fine (¼)"]].map(([v, l]) => `<option value="${v}" ${(+p.size || 1) === v ? "selected" : ""}>${l}</option>`).join("")}</select></div>
     <button type="button" class="danger" data-k="del" title="Supprimer">✕</button>
-    <details><summary class="small">Autres langues</summary><div class="grid4">${["en","tr","de"].map(l => `<input data-k="${l}" placeholder="${LNAME[l]}" value="${esc(p.name[l] || "")}">`).join("")}</div></details></div>`).join("") || `<p class="small">Aucun lot.</p>`;
+    <details><summary class="small">Autres langues</summary><div class="grid4">${LANGS.slice(1).map(l => `<input data-k="${l}" placeholder="${LNAME[l]}" value="${esc(p.name[l] || "")}">`).join("")}</div></details></div>`).join("") || `<p class="small">Aucun lot.</p>`;
   gmSum();
 }
 function gmSum(){
@@ -961,7 +961,7 @@ $("#gmModes").addEventListener("input", (e) => {
   updateStatus();
 });
 $("#gmHours").oninput = (e) => { gm().resetHours = Math.min(48, Math.max(1, parseInt(e.target.value) || 3)); updateStatus(); };
-$("#gmAdd").onclick = () => { gm().prizes.push({id: "p" + Date.now().toString(36), name: {fr: "", en: "", tr: "", de: ""}, chance: 5}); renderGame(); updateStatus(); };
+$("#gmAdd").onclick = () => { gm().prizes.push({id: "p" + Date.now().toString(36), name: {fr: "", en: "", tr: "", de: "", es: "", it: "", ru: ""}, chance: 5}); renderGame(); updateStatus(); };
 $("#gmPrizes").addEventListener("input", (e) => {
   const row = e.target.closest(".gm-row"), k = e.target.dataset.k; if (!row || !k || k === "del") return;
   const p = gm().prizes[+row.dataset.i];

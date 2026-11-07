@@ -5,764 +5,1145 @@
   "fr",
   "en",
   "tr",
-  "de"
+  "de",
+  "es",
+  "it",
+  "ru"
  ],
  "ui": {
   "bestseller": {
    "fr": "Meilleure vente",
    "en": "Best seller",
    "tr": "En çok satan",
-   "de": "Bestseller"
+   "de": "Bestseller",
+   "es": "Más vendido",
+   "it": "Più venduto",
+   "ru": "Хит продаж"
   },
   "menu": {
    "fr": "Menu",
    "en": "Menu",
    "tr": "Menü",
-   "de": "Speisekarte"
+   "de": "Speisekarte",
+   "es": "Menú",
+   "it": "Menu",
+   "ru": "Меню"
   },
   "welcome": {
    "fr": "Bienvenue",
    "en": "Welcome",
    "tr": "Hoş geldiniz",
-   "de": "Willkommen"
+   "de": "Willkommen",
+   "es": "Bienvenido",
+   "it": "Benvenuti",
+   "ru": "Добро пожаловать"
   },
   "chooseLanguage": {
    "fr": "Choisissez votre langue",
    "en": "Choose your language",
    "tr": "Dilinizi seçin",
-   "de": "Sprache wählen"
+   "de": "Sprache wählen",
+   "es": "Elija su idioma",
+   "it": "Scegli la tua lingua",
+   "ru": "Выберите язык"
   },
   "search": {
    "fr": "Rechercher un plat…",
    "en": "Search a dish…",
    "tr": "Yemek ara…",
-   "de": "Gericht suchen…"
+   "de": "Gericht suchen…",
+   "es": "Buscar un plato…",
+   "it": "Cerca un piatto…",
+   "ru": "Найти блюдо…"
   },
   "bestsellers": {
    "fr": "Meilleures ventes",
    "en": "Best sellers",
    "tr": "Çok satanlar",
-   "de": "Bestseller"
+   "de": "Bestseller",
+   "es": "Más vendidos",
+   "it": "Più venduti",
+   "ru": "Хиты продаж"
   },
   "seeMenu": {
    "fr": "Voir le menu",
    "en": "See the menu",
    "tr": "Menüyü gör",
-   "de": "Speisekarte ansehen"
+   "de": "Speisekarte ansehen",
+   "es": "Ver el menú",
+   "it": "Vedi il menu",
+   "ru": "Смотреть меню"
   },
   "priceOnRequest": {
    "fr": "Prix sur demande",
    "en": "Ask for price",
    "tr": "Fiyat için sorunuz",
-   "de": "Preis auf Anfrage"
+   "de": "Preis auf Anfrage",
+   "es": "Precio a consultar",
+   "it": "Prezzo su richiesta",
+   "ru": "Цена по запросу"
   },
   "noResult": {
    "fr": "Aucun plat trouvé",
    "en": "No dish found",
    "tr": "Sonuç bulunamadı",
-   "de": "Kein Gericht gefunden"
+   "de": "Kein Gericht gefunden",
+   "es": "Ningún plato encontrado",
+   "it": "Nessun piatto trovato",
+   "ru": "Ничего не найдено"
   },
   "allergens": {
    "fr": "Allergènes : demandez à notre équipe.",
    "en": "Allergens: please ask our staff.",
    "tr": "Alerjenler için lütfen personelimize danışın.",
-   "de": "Allergene: Bitte fragen Sie unser Personal."
+   "de": "Allergene: Bitte fragen Sie unser Personal.",
+   "es": "Alérgenos: pregunte a nuestro equipo.",
+   "it": "Allergeni: chiedete al nostro staff.",
+   "ru": "Аллергены: спросите у нашего персонала."
   },
   "promo": {
    "fr": "Promo",
    "en": "Deal",
    "tr": "Kampanya",
-   "de": "Angebot"
+   "de": "Angebot",
+   "es": "Promo",
+   "it": "Promo",
+   "ru": "Акция"
   },
   "promosNow": {
    "fr": "Promos du moment",
    "en": "Today's deals",
    "tr": "Güncel kampanyalar",
-   "de": "Aktuelle Angebote"
+   "de": "Aktuelle Angebote",
+   "es": "Promociones del momento",
+   "it": "Promozioni del momento",
+   "ru": "Акции сейчас"
   },
   "customize": {
    "fr": "Personnaliser",
    "en": "Customize",
    "tr": "Kişiselleştir",
-   "de": "Anpassen"
+   "de": "Anpassen",
+   "es": "Personalizar",
+   "it": "Personalizza",
+   "ru": "Настроить"
   },
   "yourChoice": {
    "fr": "Votre choix",
    "en": "Your choice",
    "tr": "Seçiminiz",
-   "de": "Ihre Auswahl"
+   "de": "Ihre Auswahl",
+   "es": "Su elección",
+   "it": "La tua scelta",
+   "ru": "Ваш выбор"
   },
   "done": {
    "fr": "Terminé",
    "en": "Done",
    "tr": "Tamam",
-   "de": "Fertig"
+   "de": "Fertig",
+   "es": "Listo",
+   "it": "Fatto",
+   "ru": "Готово"
   },
   "reset": {
    "fr": "Effacer",
    "en": "Clear",
    "tr": "Temizle",
-   "de": "Zurücksetzen"
+   "de": "Zurücksetzen",
+   "es": "Borrar",
+   "it": "Cancella",
+   "ru": "Очистить"
   },
   "oneChoice": {
    "fr": "1 choix",
    "en": "Pick 1",
    "tr": "1 seçim",
-   "de": "1 Auswahl"
+   "de": "1 Auswahl",
+   "es": "1 opción",
+   "it": "1 scelta",
+   "ru": "1 вариант"
   },
   "severalChoices": {
    "fr": "Plusieurs choix",
    "en": "Pick several",
    "tr": "Birden fazla seçim",
-   "de": "Mehrfachauswahl"
+   "de": "Mehrfachauswahl",
+   "es": "Varias opciones",
+   "it": "Più scelte",
+   "ru": "Несколько вариантов"
   },
   "showStaff": {
    "fr": "Montrez cet écran au comptoir",
    "en": "Show this screen at the counter",
    "tr": "Bu ekranı kasada gösterin",
-   "de": "Zeigen Sie diesen Bildschirm an der Theke"
+   "de": "Zeigen Sie diesen Bildschirm an der Theke",
+   "es": "Muestre esta pantalla en el mostrador",
+   "it": "Mostra questo schermo alla cassa",
+   "ru": "Покажите этот экран на кассе"
   },
   "total": {
    "fr": "Total",
    "en": "Total",
    "tr": "Toplam",
-   "de": "Gesamt"
+   "de": "Gesamt",
+   "es": "Total",
+   "it": "Totale",
+   "ru": "Итого"
   },
   "add": {
    "fr": "Ajouter",
    "en": "Add",
    "tr": "Ekle",
-   "de": "Hinzufügen"
+   "de": "Hinzufügen",
+   "es": "Añadir",
+   "it": "Aggiungi",
+   "ru": "Добавить"
   },
   "addToOrder": {
    "fr": "Ajouter à ma commande",
    "en": "Add to my order",
    "tr": "Siparişime ekle",
-   "de": "Zur Bestellung"
+   "de": "Zur Bestellung",
+   "es": "Añadir a mi pedido",
+   "it": "Aggiungi al mio ordine",
+   "ru": "Добавить в заказ"
   },
   "myOrder": {
    "fr": "Ma commande",
    "en": "My order",
    "tr": "Siparişim",
-   "de": "Meine Bestellung"
+   "de": "Meine Bestellung",
+   "es": "Mi pedido",
+   "it": "Il mio ordine",
+   "ru": "Мой заказ"
   },
   "goodDeal": {
    "fr": "Bon plan !",
    "en": "Great deal!",
    "tr": "Fırsat!",
-   "de": "Top-Angebot!"
+   "de": "Top-Angebot!",
+   "es": "¡Buena oferta!",
+   "it": "Ottima offerta!",
+   "ru": "Выгодно!"
   },
   "makeMenu": {
    "fr": "Passez en {menu}",
    "en": "Make it a {menu}",
    "tr": "{menu} yapın",
-   "de": "Machen Sie ein {menu} daraus"
+   "de": "Machen Sie ein {menu} daraus",
+   "es": "Pásate al {menu}",
+   "it": "Passa al {menu}",
+   "ru": "Возьмите {menu}"
   },
   "onlyMore": {
    "fr": "seulement +{x}",
    "en": "only +{x}",
    "tr": "sadece +{x}",
-   "de": "nur +{x}"
+   "de": "nur +{x}",
+   "es": "solo +{x}",
+   "it": "solo +{x}",
+   "ru": "всего +{x}"
   },
   "yesMenu": {
    "fr": "Oui, en menu !",
    "en": "Yes, make it a meal!",
    "tr": "Evet, menü olsun!",
-   "de": "Ja, als Menü!"
+   "de": "Ja, als Menü!",
+   "es": "¡Sí, en menú!",
+   "it": "Sì, in menu!",
+   "ru": "Да, комбо!"
   },
   "noThanks": {
    "fr": "Non merci",
    "en": "No thanks",
    "tr": "Hayır, teşekkürler",
-   "de": "Nein, danke"
+   "de": "Nein, danke",
+   "es": "No, gracias",
+   "it": "No, grazie",
+   "ru": "Нет, спасибо"
   },
   "withThat": {
    "fr": "Et avec ça ?",
    "en": "Anything else?",
    "tr": "Yanına ne alırsınız?",
-   "de": "Darf es noch etwas sein?"
+   "de": "Darf es noch etwas sein?",
+   "es": "¿Y con esto?",
+   "it": "E con questo?",
+   "ru": "Что-нибудь ещё?"
   },
   "continue": {
    "fr": "Continuer",
    "en": "Continue",
    "tr": "Devam",
-   "de": "Weiter"
+   "de": "Weiter",
+   "es": "Continuar",
+   "it": "Continua",
+   "ru": "Продолжить"
   },
   "added": {
    "fr": "Ajouté !",
    "en": "Added!",
    "tr": "Eklendi!",
-   "de": "Hinzugefügt!"
+   "de": "Hinzugefügt!",
+   "es": "¡Añadido!",
+   "it": "Aggiunto!",
+   "ru": "Добавлено!"
   },
   "emptyOrder": {
    "fr": "Votre commande est vide.",
    "en": "Your order is empty.",
    "tr": "Siparişiniz boş.",
-   "de": "Ihre Bestellung ist leer."
+   "de": "Ihre Bestellung ist leer.",
+   "es": "Su pedido está vacío.",
+   "it": "Il tuo ordine è vuoto.",
+   "ru": "Ваш заказ пуст."
   },
   "clearOrder": {
    "fr": "Tout effacer",
    "en": "Clear all",
    "tr": "Hepsini sil",
-   "de": "Alles löschen"
+   "de": "Alles löschen",
+   "es": "Borrar todo",
+   "it": "Cancella tutto",
+   "ru": "Очистить всё"
   },
   "orderHint": {
    "fr": "Montrez cet écran au comptoir pour commander.",
    "en": "Show this screen at the counter to order.",
    "tr": "Sipariş için bu ekranı kasada gösterin.",
-   "de": "Zeigen Sie diesen Bildschirm an der Theke, um zu bestellen."
+   "de": "Zeigen Sie diesen Bildschirm an der Theke, um zu bestellen.",
+   "es": "Muestre esta pantalla en el mostrador para pedir.",
+   "it": "Mostra questo schermo alla cassa per ordinare.",
+   "ru": "Покажите этот экран на кассе, чтобы заказать."
   },
   "seeOrder": {
    "fr": "Voir ma commande",
    "en": "See my order",
    "tr": "Siparişimi gör",
-   "de": "Bestellung ansehen"
+   "de": "Bestellung ansehen",
+   "es": "Ver mi pedido",
+   "it": "Vedi il mio ordine",
+   "ru": "Мой заказ"
   },
   "freeHint": {
    "fr": "{n} incluses, +{p} la suivante",
    "en": "{n} included, +{p} each extra",
    "tr": "{n} dahil, fazlası +{p}",
-   "de": "{n} inklusive, jede weitere +{p}"
+   "de": "{n} inklusive, jede weitere +{p}",
+   "es": "{n} incluidas, +{p} la siguiente",
+   "it": "{n} incluse, +{p} ogni extra",
+   "ru": "{n} бесплатно, +{p} за каждый следующий"
   },
   "remove": {
    "fr": "Retirer",
    "en": "Remove",
    "tr": "Kaldır",
-   "de": "Entfernen"
+   "de": "Entfernen",
+   "es": "Quitar",
+   "it": "Rimuovi",
+   "ru": "Убрать"
   },
   "swipeHint": {
    "fr": "Glissez un produit vers la gauche ou la droite pour le retirer.",
    "en": "Swipe an item left or right to remove it.",
    "tr": "Kaldırmak için ürünü sola veya sağa kaydırın.",
-   "de": "Zum Entfernen einen Artikel nach links oder rechts wischen."
+   "de": "Zum Entfernen einen Artikel nach links oder rechts wischen.",
+   "es": "Deslice un producto a la izquierda o a la derecha para quitarlo.",
+   "it": "Scorri un prodotto a sinistra o a destra per rimuoverlo.",
+   "ru": "Смахните позицию влево или вправо, чтобы убрать её."
   },
   "table": {
    "fr": "Table",
    "en": "Table",
    "tr": "Masa",
-   "de": "Tisch"
+   "de": "Tisch",
+   "es": "Mesa",
+   "it": "Tavolo",
+   "ru": "Стол"
   },
   "sendOrder": {
    "fr": "Envoyer la commande",
    "en": "Send my order",
    "tr": "Siparişi gönder",
-   "de": "Bestellung senden"
+   "de": "Bestellung senden",
+   "es": "Enviar el pedido",
+   "it": "Invia l'ordine",
+   "ru": "Отправить заказ"
   },
   "notePh": {
    "fr": "Une remarque ? (sans oignons, allergie…)",
    "en": "Any note? (no onions, allergy…)",
    "tr": "Not ekleyin (soğansız, alerji…)",
-   "de": "Anmerkung? (ohne Zwiebeln, Allergie…)"
+   "de": "Anmerkung? (ohne Zwiebeln, Allergie…)",
+   "es": "¿Algún comentario? (sin cebolla, alergia…)",
+   "it": "Una nota? (senza cipolla, allergia…)",
+   "ru": "Комментарий? (без лука, аллергия…)"
   },
   "sending": {
    "fr": "Envoi…",
    "en": "Sending…",
    "tr": "Gönderiliyor…",
-   "de": "Wird gesendet…"
+   "de": "Wird gesendet…",
+   "es": "Enviando…",
+   "it": "Invio…",
+   "ru": "Отправка…"
   },
   "orderSent": {
    "fr": "Commande envoyée !",
    "en": "Order sent!",
    "tr": "Sipariş gönderildi!",
-   "de": "Bestellung gesendet!"
+   "de": "Bestellung gesendet!",
+   "es": "¡Pedido enviado!",
+   "it": "Ordine inviato!",
+   "ru": "Заказ отправлен!"
   },
   "orderNum": {
    "fr": "Commande n° {n} · Table {t}",
    "en": "Order #{n} · Table {t}",
    "tr": "Sipariş no {n} · Masa {t}",
-   "de": "Bestellung Nr. {n} · Tisch {t}"
+   "de": "Bestellung Nr. {n} · Tisch {t}",
+   "es": "Pedido n.º {n} · Mesa {t}",
+   "it": "Ordine n. {n} · Tavolo {t}",
+   "ru": "Заказ № {n} · Стол {t}"
   },
   "stNew": {
    "fr": "En préparation…",
    "en": "Being prepared…",
    "tr": "Hazırlanıyor…",
-   "de": "Wird zubereitet…"
+   "de": "Wird zubereitet…",
+   "es": "En preparación…",
+   "it": "In preparazione…",
+   "ru": "Готовится…"
   },
   "stReady": {
    "fr": "C'est prêt, on vous l'apporte !",
    "en": "Ready, we're bringing it to you!",
    "tr": "Hazır, masanıza getiriyoruz!",
-   "de": "Fertig, wir bringen es Ihnen!"
+   "de": "Fertig, wir bringen es Ihnen!",
+   "es": "¡Está listo, se lo llevamos!",
+   "it": "È pronto, te lo portiamo!",
+   "ru": "Готово, уже несём!"
   },
   "stDone": {
    "fr": "Bon appétit !",
    "en": "Enjoy your meal!",
    "tr": "Afiyet olsun!",
-   "de": "Guten Appetit!"
+   "de": "Guten Appetit!",
+   "es": "¡Buen provecho!",
+   "it": "Buon appetito!",
+   "ru": "Приятного аппетита!"
   },
   "stCancelled": {
    "fr": "Commande annulée, voyez avec l'équipe.",
    "en": "Order cancelled, please ask our staff.",
    "tr": "Sipariş iptal edildi, lütfen personele danışın.",
-   "de": "Bestellung storniert, bitte fragen Sie das Personal."
+   "de": "Bestellung storniert, bitte fragen Sie das Personal.",
+   "es": "Pedido cancelado, consulte con el equipo.",
+   "it": "Ordine annullato, chiedi allo staff.",
+   "ru": "Заказ отменён, обратитесь к персоналу."
   },
   "payAtCounter": {
    "fr": "Le paiement se fait au comptoir.",
    "en": "Payment is made at the counter.",
    "tr": "Ödeme kasada yapılır.",
-   "de": "Bezahlt wird an der Theke."
+   "de": "Bezahlt wird an der Theke.",
+   "es": "El pago se hace en el mostrador.",
+   "it": "Il pagamento si fa alla cassa.",
+   "ru": "Оплата на кассе."
   },
   "orderAgain": {
    "fr": "Commander autre chose",
    "en": "Order something else",
    "tr": "Başka bir şey sipariş et",
-   "de": "Noch etwas bestellen"
+   "de": "Noch etwas bestellen",
+   "es": "Pedir otra cosa",
+   "it": "Ordina altro",
+   "ru": "Заказать ещё"
   },
   "sendError": {
    "fr": "La commande n'est pas partie. Réessayez ou appelez l'équipe.",
    "en": "The order was not sent. Try again or call our staff.",
    "tr": "Sipariş gönderilemedi. Tekrar deneyin veya personeli çağırın.",
-   "de": "Die Bestellung wurde nicht gesendet. Bitte erneut versuchen oder Personal rufen."
+   "de": "Die Bestellung wurde nicht gesendet. Bitte erneut versuchen oder Personal rufen.",
+   "es": "El pedido no se ha enviado. Inténtelo de nuevo o llame al equipo.",
+   "it": "L'ordine non è partito. Riprova o chiama lo staff.",
+   "ru": "Заказ не отправлен. Попробуйте снова или позовите персонал."
   },
   "closedNow": {
    "fr": "Les commandes depuis la table sont fermées pour le moment. Montrez cet écran au comptoir.",
    "en": "Table ordering is closed right now. Show this screen at the counter.",
    "tr": "Masadan sipariş şu anda kapalı. Bu ekranı kasada gösterin.",
-   "de": "Bestellen am Tisch ist gerade geschlossen. Zeigen Sie diesen Bildschirm an der Theke."
+   "de": "Bestellen am Tisch ist gerade geschlossen. Zeigen Sie diesen Bildschirm an der Theke.",
+   "es": "Los pedidos desde la mesa están cerrados por ahora. Muestre esta pantalla en el mostrador.",
+   "it": "Gli ordini dal tavolo sono chiusi al momento. Mostra questo schermo alla cassa.",
+   "ru": "Заказ со стола сейчас недоступен. Покажите этот экран на кассе."
   },
   "tbJoinH": {
    "fr": "On commande ensemble à la table {t}",
    "en": "Let's order together at table {t}",
    "tr": "{t} numaralı masada birlikte sipariş verelim",
-   "de": "Gemeinsam bestellen an Tisch {t}"
+   "de": "Gemeinsam bestellen an Tisch {t}",
+   "es": "Pedimos juntos en la mesa {t}",
+   "it": "Ordiniamo insieme al tavolo {t}",
+   "ru": "Заказываем вместе за столом {t}"
   },
   "tbJoinP": {
    "fr": "Tout le monde ajoute ses plats dans le même panier. Une seule personne envoie la commande à la cuisine.",
    "en": "Everyone adds their dishes to the same basket. One person sends the order to the kitchen.",
    "tr": "Herkes yemeklerini aynı sepete ekler. Siparişi mutfağa tek bir kişi gönderir.",
-   "de": "Alle legen ihre Gerichte in denselben Warenkorb. Eine Person schickt die Bestellung an die Küche."
+   "de": "Alle legen ihre Gerichte in denselben Warenkorb. Eine Person schickt die Bestellung an die Küche.",
+   "es": "Todos añaden sus platos a la misma cesta. Una sola persona envía el pedido a la cocina.",
+   "it": "Tutti aggiungono i propri piatti allo stesso carrello. Una sola persona invia l'ordine in cucina.",
+   "ru": "Все добавляют блюда в одну корзину. Один человек отправляет заказ на кухню."
   },
   "tbAlready": {
    "fr": "Déjà à la table :",
    "en": "Already at the table:",
    "tr": "Masada olanlar:",
-   "de": "Schon am Tisch:"
+   "de": "Schon am Tisch:",
+   "es": "Ya en la mesa:",
+   "it": "Già al tavolo:",
+   "ru": "Уже за столом:"
   },
   "tbNamePh": {
    "fr": "Votre prénom (facultatif)",
    "en": "Your first name (optional)",
    "tr": "Adınız (isteğe bağlı)",
-   "de": "Ihr Vorname (optional)"
+   "de": "Ihr Vorname (optional)",
+   "es": "Su nombre (opcional)",
+   "it": "Il tuo nome (facoltativo)",
+   "ru": "Ваше имя (необязательно)"
   },
   "tbGo": {
    "fr": "C'est parti",
    "en": "Let's go",
    "tr": "Başlayalım",
-   "de": "Los geht's"
+   "de": "Los geht's",
+   "es": "¡Vamos!",
+   "it": "Si parte",
+   "ru": "Начать"
   },
   "tbBasket": {
    "fr": "Panier de la table",
    "en": "Table basket",
    "tr": "Masa sepeti",
-   "de": "Tisch-Warenkorb"
+   "de": "Tisch-Warenkorb",
+   "es": "Cesta de la mesa",
+   "it": "Carrello del tavolo",
+   "ru": "Корзина стола"
   },
   "tbItems": {
    "fr": "{n} article(s)",
    "en": "{n} item(s)",
    "tr": "{n} ürün",
-   "de": "{n} Artikel"
+   "de": "{n} Artikel",
+   "es": "{n} artículo(s)",
+   "it": "{n} articolo/i",
+   "ru": "Позиций: {n}"
   },
   "tbPeople": {
    "fr": "{n} pers. · touchez pour voir",
    "en": "{n} people · tap to see",
    "tr": "{n} kişi · görmek için dokunun",
-   "de": "{n} Pers. · zum Ansehen tippen"
+   "de": "{n} Pers. · zum Ansehen tippen",
+   "es": "{n} pers. · toque para ver",
+   "it": "{n} pers. · tocca per vedere",
+   "ru": "{n} чел. · нажмите, чтобы посмотреть"
   },
   "tbAdded": {
    "fr": "{name} a ajouté {item}",
    "en": "{name} added {item}",
    "tr": "{name}, {item} ekledi",
-   "de": "{name} hat {item} hinzugefügt"
+   "de": "{name} hat {item} hinzugefügt",
+   "es": "{name} ha añadido {item}",
+   "it": "{name} ha aggiunto {item}",
+   "ru": "{name} добавил(а) {item}"
   },
   "tbYou": {
    "fr": "vous",
    "en": "you",
    "tr": "siz",
-   "de": "Sie"
+   "de": "Sie",
+   "es": "usted",
+   "it": "tu",
+   "ru": "вы"
   },
   "tbGuest": {
    "fr": "Invité",
    "en": "Guest",
    "tr": "Misafir",
-   "de": "Gast"
+   "de": "Gast",
+   "es": "Invitado",
+   "it": "Ospite",
+   "ru": "Гость"
   },
   "tbDone": {
    "fr": "✓ Fini",
    "en": "✓ Done",
    "tr": "✓ Bitti",
-   "de": "✓ Fertig"
+   "de": "✓ Fertig",
+   "es": "✓ Terminado",
+   "it": "✓ Finito",
+   "ru": "✓ Готово"
   },
   "tbChoosing": {
    "fr": "Choisit encore…",
    "en": "Still choosing…",
    "tr": "Hâlâ seçiyor…",
-   "de": "Wählt noch…"
+   "de": "Wählt noch…",
+   "es": "Sigue eligiendo…",
+   "it": "Sta ancora scegliendo…",
+   "ru": "Ещё выбирает…"
   },
   "tbImDone": {
    "fr": "✓ J'ai fini",
    "en": "✓ I'm done",
    "tr": "✓ Bitirdim",
-   "de": "✓ Ich bin fertig"
+   "de": "✓ Ich bin fertig",
+   "es": "✓ He terminado",
+   "it": "✓ Ho finito",
+   "ru": "✓ Я выбрал(а)"
   },
   "tbNotDone": {
    "fr": "Je n'ai pas fini",
    "en": "I'm not done yet",
    "tr": "Henüz bitirmedim",
-   "de": "Ich bin noch nicht fertig"
+   "de": "Ich bin noch nicht fertig",
+   "es": "No he terminado",
+   "it": "Non ho finito",
+   "ru": "Я ещё не выбрал(а)"
   },
   "tbSend": {
    "fr": "Envoyer pour toute la table",
    "en": "Send for the whole table",
    "tr": "Tüm masa için gönder",
-   "de": "Für den ganzen Tisch senden"
+   "de": "Für den ganzen Tisch senden",
+   "es": "Enviar para toda la mesa",
+   "it": "Invia per tutto il tavolo",
+   "ru": "Отправить за весь стол"
   },
   "tbWait": {
    "fr": "{names} choisit encore. Envoyer quand même ?",
    "en": "{names} is still choosing. Send anyway?",
    "tr": "{names} hâlâ seçiyor. Yine de gönderilsin mi?",
-   "de": "{names} wählt noch. Trotzdem senden?"
+   "de": "{names} wählt noch. Trotzdem senden?",
+   "es": "{names} sigue eligiendo. ¿Enviar de todos modos?",
+   "it": "{names} sta ancora scegliendo. Inviare comunque?",
+   "ru": "{names} ещё выбирает. Всё равно отправить?"
   },
   "tbSendAnyway": {
    "fr": "Envoyer quand même",
    "en": "Send anyway",
    "tr": "Yine de gönder",
-   "de": "Trotzdem senden"
+   "de": "Trotzdem senden",
+   "es": "Enviar de todos modos",
+   "it": "Invia comunque",
+   "ru": "Всё равно отправить"
   },
   "tbRemindH": {
    "fr": "Vous avez fini ?",
    "en": "Are you done?",
    "tr": "Bitirdiniz mi?",
-   "de": "Sind Sie fertig?"
+   "de": "Sind Sie fertig?",
+   "es": "¿Ha terminado?",
+   "it": "Hai finito?",
+   "ru": "Вы выбрали?"
   },
   "tbRemindP": {
    "fr": "Vous avez {n} plat(s) dans le panier de la table.",
    "en": "You have {n} dish(es) in the table basket.",
    "tr": "Masa sepetinde {n} yemeğiniz var.",
-   "de": "Sie haben {n} Gericht(e) im Tisch-Warenkorb."
+   "de": "Sie haben {n} Gericht(e) im Tisch-Warenkorb.",
+   "es": "Tiene {n} plato(s) en la cesta de la mesa.",
+   "it": "Hai {n} piatto/i nel carrello del tavolo.",
+   "ru": "В корзине стола ваших блюд: {n}."
   },
   "tbYes": {
    "fr": "✓ Oui, j'ai fini",
    "en": "✓ Yes, I'm done",
    "tr": "✓ Evet, bitirdim",
-   "de": "✓ Ja, ich bin fertig"
+   "de": "✓ Ja, ich bin fertig",
+   "es": "✓ Sí, he terminado",
+   "it": "✓ Sì, ho finito",
+   "ru": "✓ Да, я выбрал(а)"
   },
   "tbContinue": {
    "fr": "Je continue de choisir",
    "en": "I'm still choosing",
    "tr": "Seçmeye devam ediyorum",
-   "de": "Ich wähle noch"
+   "de": "Ich wähle noch",
+   "es": "Sigo eligiendo",
+   "it": "Continuo a scegliere",
+   "ru": "Я ещё выбираю"
   },
   "tbAllH": {
    "fr": "Tout le monde a fini !",
    "en": "Everyone is done!",
    "tr": "Herkes bitirdi!",
-   "de": "Alle sind fertig!"
+   "de": "Alle sind fertig!",
+   "es": "¡Todos han terminado!",
+   "it": "Tutti hanno finito!",
+   "ru": "Все выбрали!"
   },
   "tbAllP": {
    "fr": "Envoyer la commande de la table à la cuisine ?",
    "en": "Send the table order to the kitchen?",
    "tr": "Masanın siparişi mutfağa gönderilsin mi?",
-   "de": "Bestellung des Tisches an die Küche senden?"
+   "de": "Bestellung des Tisches an die Küche senden?",
+   "es": "¿Enviar el pedido de la mesa a la cocina?",
+   "it": "Inviare l'ordine del tavolo in cucina?",
+   "ru": "Отправить заказ стола на кухню?"
   },
   "tbSentH": {
    "fr": "Commande de la table envoyée !",
    "en": "Table order sent!",
    "tr": "Masanın siparişi gönderildi!",
-   "de": "Bestellung des Tisches gesendet!"
+   "de": "Bestellung des Tisches gesendet!",
+   "es": "¡Pedido de la mesa enviado!",
+   "it": "Ordine del tavolo inviato!",
+   "ru": "Заказ стола отправлен!"
   },
   "tbSentBy": {
    "fr": "Envoyée par {name}",
    "en": "Sent by {name}",
    "tr": "Gönderen: {name}",
-   "de": "Gesendet von {name}"
+   "de": "Gesendet von {name}",
+   "es": "Enviado por {name}",
+   "it": "Inviato da {name}",
+   "ru": "Отправил(а) {name}"
   },
   "tbSwipe": {
    "fr": "Glissez un de vos plats pour le retirer.",
    "en": "Swipe one of your dishes to remove it.",
    "tr": "Kaldırmak için yemeğinizi kaydırın.",
-   "de": "Wischen Sie eines Ihrer Gerichte zum Entfernen."
+   "de": "Wischen Sie eines Ihrer Gerichte zum Entfernen.",
+   "es": "Deslice uno de sus platos para quitarlo.",
+   "it": "Scorri uno dei tuoi piatti per rimuoverlo.",
+   "ru": "Смахните своё блюдо, чтобы убрать его."
   },
   "tbTotal": {
    "fr": "Total de la table",
    "en": "Table total",
    "tr": "Masa toplamı",
-   "de": "Summe des Tisches"
+   "de": "Summe des Tisches",
+   "es": "Total de la mesa",
+   "it": "Totale del tavolo",
+   "ru": "Итого за стол"
   },
   "tbLater": {
    "fr": "Plus tard",
    "en": "Later",
    "tr": "Sonra",
-   "de": "Später"
+   "de": "Später",
+   "es": "Más tarde",
+   "it": "Più tardi",
+   "ru": "Позже"
   },
   "tbBadKey": {
    "fr": "Ce lien de table n'est plus valable. Scannez le QR code posé sur votre table pour commander.",
    "en": "This table link is no longer valid. Scan the QR code on your table to order.",
    "tr": "Bu masa bağlantısı artık geçerli değil. Sipariş için masanızdaki QR kodu okutun.",
-   "de": "Dieser Tisch-Link ist nicht mehr gültig. Scannen Sie den QR-Code auf Ihrem Tisch, um zu bestellen."
+   "de": "Dieser Tisch-Link ist nicht mehr gültig. Scannen Sie den QR-Code auf Ihrem Tisch, um zu bestellen.",
+   "es": "Este enlace de mesa ya no es válido. Escanee el código QR de su mesa para pedir.",
+   "it": "Questo link del tavolo non è più valido. Scansiona il QR code sul tuo tavolo per ordinare.",
+   "ru": "Эта ссылка стола больше не действует. Отсканируйте QR-код на вашем столе, чтобы заказать."
   },
   "tbHours": {
    "fr": "Les commandes depuis la table sont fermées à cette heure-ci. Vous pouvez commander au comptoir.",
    "en": "Table ordering is closed at this time. You can order at the counter.",
    "tr": "Şu anda masadan sipariş kapalı. Kasadan sipariş verebilirsiniz.",
-   "de": "Tischbestellungen sind zu dieser Zeit geschlossen. Sie können an der Theke bestellen."
+   "de": "Tischbestellungen sind zu dieser Zeit geschlossen. Sie können an der Theke bestellen.",
+   "es": "Los pedidos desde la mesa están cerrados a esta hora. Puede pedir en el mostrador.",
+   "it": "Gli ordini dal tavolo sono chiusi a quest'ora. Puoi ordinare alla cassa.",
+   "ru": "Сейчас заказ со стола недоступен. Можно заказать на кассе."
   },
   "tbSplit": {
    "fr": "Chacun paie sa part",
    "en": "Everyone pays their own share",
    "tr": "Herkes kendi payını öder",
-   "de": "Jeder zahlt seinen Anteil"
+   "de": "Jeder zahlt seinen Anteil",
+   "es": "Cada uno paga su parte",
+   "it": "Ognuno paga la sua parte",
+   "ru": "Каждый платит за себя"
   },
   "keptChoices": {
    "fr": "Votre {name} est déjà prêt",
    "en": "Your {name} is all set",
    "tr": "{name} seçimleriniz hazır",
-   "de": "Ihr {name} ist schon fertig"
+   "de": "Ihr {name} ist schon fertig",
+   "es": "Su {name} ya está listo",
+   "it": "Il tuo {name} è già pronto",
+   "ru": "Ваш {name} уже собран"
   },
   "editChoices": {
    "fr": "Modifier",
    "en": "Edit",
    "tr": "Değiştir",
-   "de": "Ändern"
+   "de": "Ändern",
+   "es": "Modificar",
+   "it": "Modifica",
+   "ru": "Изменить"
   },
   "soldOut": {
    "fr": "Épuisé",
    "en": "Sold out",
    "tr": "Tükendi",
-   "de": "Ausverkauft"
+   "de": "Ausverkauft",
+   "es": "Agotado",
+   "it": "Esaurito",
+   "ru": "Нет в наличии"
   },
   "soldOutErr": {
    "fr": "Plus disponible : {items}. Retirez-le de la commande pour l’envoyer.",
    "en": "No longer available: {items}. Remove it from the order to send it.",
    "tr": "Artık mevcut değil: {items}. Göndermek için siparişten çıkarın.",
-   "de": "Nicht mehr verfügbar: {items}. Bitte aus der Bestellung entfernen, um sie zu senden."
+   "de": "Nicht mehr verfügbar: {items}. Bitte aus der Bestellung entfernen, um sie zu senden.",
+   "es": "Ya no disponible: {items}. Quítelo del pedido para enviarlo.",
+   "it": "Non più disponibile: {items}. Rimuovilo dall'ordine per inviarlo.",
+   "ru": "Больше нет в наличии: {items}. Уберите из заказа, чтобы отправить."
   },
   "reviewAsk": {
    "fr": "Vous avez aimé ? Laissez-nous un avis Google",
    "en": "Enjoyed it? Leave us a Google review",
    "tr": "Beğendiniz mi? Bize Google yorumu bırakın",
-   "de": "Hat es geschmeckt? Hinterlassen Sie uns eine Google-Bewertung"
+   "de": "Hat es geschmeckt? Hinterlassen Sie uns eine Google-Bewertung",
+   "es": "¿Le ha gustado? Déjenos una reseña en Google",
+   "it": "Ti è piaciuto? Lasciaci una recensione su Google",
+   "ru": "Понравилось? Оставьте нам отзыв в Google"
   },
   "rateAsk": {
    "fr": "Comment était votre repas ?",
    "en": "How was your meal?",
    "tr": "Yemeğiniz nasıldı?",
-   "de": "Wie hat es Ihnen geschmeckt?"
+   "de": "Wie hat es Ihnen geschmeckt?",
+   "es": "¿Qué tal su comida?",
+   "it": "Com'era il tuo pasto?",
+   "ru": "Как вам еда?"
   },
   "rateThanks5": {
    "fr": "Merci beaucoup ! Un avis Google nous aide énormément.",
    "en": "Thank you so much! A Google review helps us a lot.",
    "tr": "Çok teşekkürler! Bir Google yorumu bize çok yardımcı olur.",
-   "de": "Vielen Dank! Eine Google-Bewertung hilft uns sehr."
+   "de": "Vielen Dank! Eine Google-Bewertung hilft uns sehr.",
+   "es": "¡Muchas gracias! Una reseña en Google nos ayuda muchísimo.",
+   "it": "Grazie mille! Una recensione su Google ci aiuta tantissimo.",
+   "ru": "Большое спасибо! Отзыв в Google нам очень помогает."
   },
   "rateLow": {
    "fr": "Désolé que tout n'ait pas été parfait. Dites-nous ce qui n'allait pas :",
    "en": "Sorry it wasn't perfect. Tell us what went wrong:",
    "tr": "Her şey mükemmel olmadığı için üzgünüz. Neyin yanlış gittiğini bize söyleyin:",
-   "de": "Schade, dass nicht alles perfekt war. Sagen Sie uns, was nicht gepasst hat:"
+   "de": "Schade, dass nicht alles perfekt war. Sagen Sie uns, was nicht gepasst hat:",
+   "es": "Sentimos que no todo haya sido perfecto. Díganos qué ha fallado:",
+   "it": "Ci dispiace che non sia stato tutto perfetto. Dicci cosa non andava:",
+   "ru": "Жаль, что не всё было идеально. Расскажите, что пошло не так:"
   },
   "ratePlaceholder": {
    "fr": "Votre message…",
    "en": "Your message…",
    "tr": "Mesajınız…",
-   "de": "Ihre Nachricht…"
+   "de": "Ihre Nachricht…",
+   "es": "Su mensaje…",
+   "it": "Il tuo messaggio…",
+   "ru": "Ваше сообщение…"
   },
   "rateSend": {
    "fr": "Envoyer au restaurant",
    "en": "Send to the restaurant",
    "tr": "Restorana gönder",
-   "de": "An das Restaurant senden"
+   "de": "An das Restaurant senden",
+   "es": "Enviar al restaurante",
+   "it": "Invia al ristorante",
+   "ru": "Отправить ресторану"
   },
   "ratePrivate": {
    "fr": "Votre message va directement au restaurant, il n'est pas publié.",
    "en": "Your message goes straight to the restaurant and is not published.",
    "tr": "Mesajınız doğrudan restorana gider, yayınlanmaz.",
-   "de": "Ihre Nachricht geht direkt an das Restaurant und wird nicht veröffentlicht."
+   "de": "Ihre Nachricht geht direkt an das Restaurant und wird nicht veröffentlicht.",
+   "es": "Su mensaje va directamente al restaurante, no se publica.",
+   "it": "Il tuo messaggio va direttamente al ristorante, non viene pubblicato.",
+   "ru": "Ваше сообщение придёт прямо в ресторан, оно не публикуется."
   },
   "rateGoogleAnyway": {
    "fr": "Publier un avis sur Google",
    "en": "Post a review on Google",
    "tr": "Google'da yorum yayınla",
-   "de": "Bewertung auf Google veröffentlichen"
+   "de": "Bewertung auf Google veröffentlichen",
+   "es": "Publicar una reseña en Google",
+   "it": "Pubblica una recensione su Google",
+   "ru": "Оставить отзыв в Google"
   },
   "rateThanks": {
    "fr": "Merci, le restaurant a bien reçu votre message.",
    "en": "Thank you, the restaurant has received your message.",
    "tr": "Teşekkürler, restoran mesajınızı aldı.",
-   "de": "Danke, das Restaurant hat Ihre Nachricht erhalten."
+   "de": "Danke, das Restaurant hat Ihre Nachricht erhalten.",
+   "es": "Gracias, el restaurante ha recibido su mensaje.",
+   "it": "Grazie, il ristorante ha ricevuto il tuo messaggio.",
+   "ru": "Спасибо, ресторан получил ваше сообщение."
   },
   "gameBtn": {
    "fr": "Tournez la roue et tentez de gagner !",
    "en": "Spin the wheel for a chance to win!",
    "tr": "Çarkı çevir, kazanma şansını dene!",
-   "de": "Drehen Sie am Glücksrad und gewinnen Sie!"
+   "de": "Drehen Sie am Glücksrad und gewinnen Sie!",
+   "es": "¡Gire la ruleta y pruebe suerte!",
+   "it": "Gira la ruota e tenta la fortuna!",
+   "ru": "Крутите колесо и попробуйте выиграть!"
   },
   "gameTitle": {
    "fr": "Roue de la chance",
    "en": "Wheel of fortune",
    "tr": "Şans çarkı",
-   "de": "Glücksrad"
+   "de": "Glücksrad",
+   "es": "Ruleta de la suerte",
+   "it": "Ruota della fortuna",
+   "ru": "Колесо удачи"
   },
   "gameSpin": {
    "fr": "Lancer la roue",
    "en": "Spin",
    "tr": "Çevir",
-   "de": "Drehen"
+   "de": "Drehen",
+   "es": "Girar la ruleta",
+   "it": "Gira la ruota",
+   "ru": "Крутить колесо"
   },
   "gameLose": {
    "fr": "Perdu",
    "en": "No luck",
    "tr": "Boş",
-   "de": "Niete"
+   "de": "Niete",
+   "es": "Perdido",
+   "it": "Niente",
+   "ru": "Мимо"
   },
   "gameLoseMsg": {
    "fr": "Pas de chance cette fois… Retentez à votre prochaine commande !",
    "en": "Not this time… Try again with your next order!",
    "tr": "Bu sefer olmadı… Bir sonraki siparişinizde tekrar deneyin!",
-   "de": "Diesmal leider nicht… Versuchen Sie es bei Ihrer nächsten Bestellung erneut!"
+   "de": "Diesmal leider nicht… Versuchen Sie es bei Ihrer nächsten Bestellung erneut!",
+   "es": "No ha habido suerte esta vez… ¡Vuelva a intentarlo en su próximo pedido!",
+   "it": "Niente questa volta… Riprova al prossimo ordine!",
+   "ru": "В этот раз не повезло… Попробуйте при следующем заказе!"
   },
   "gameWin": {
    "fr": "Gagné : {prize} !",
    "en": "You won: {prize}!",
    "tr": "Kazandınız: {prize}!",
-   "de": "Gewonnen: {prize}!"
+   "de": "Gewonnen: {prize}!",
+   "es": "Ha ganado: ¡{prize}!",
+   "it": "Hai vinto: {prize}!",
+   "ru": "Вы выиграли: {prize}!"
   },
   "gameWinMsg": {
    "fr": "Le restaurant est prévenu, votre cadeau vous sera servi avec la commande n° {n}.",
    "en": "The restaurant has been told: your gift will be served with order #{n}.",
    "tr": "Restorana bildirildi, hediyeniz {n} numaralı siparişle servis edilecek.",
-   "de": "Das Restaurant ist informiert: Ihr Geschenk wird mit Bestellung Nr. {n} serviert."
+   "de": "Das Restaurant ist informiert: Ihr Geschenk wird mit Bestellung Nr. {n} serviert.",
+   "es": "El restaurante está avisado, su regalo se servirá con el pedido n.º {n}.",
+   "it": "Il ristorante è avvisato, il tuo regalo sarà servito con l'ordine n. {n}.",
+   "ru": "Ресторан предупреждён, ваш подарок подадут с заказом № {n}."
   },
   "gamePlayed": {
    "fr": "Vous avez déjà joué récemment sur ce téléphone. Rejouez après {time}.",
    "en": "You already played recently on this phone. Play again after {time}.",
    "tr": "Bu telefonda yakın zamanda oynadınız. {time} sonra tekrar oynayın.",
-   "de": "Sie haben auf diesem Handy schon gespielt. Wieder ab {time}."
+   "de": "Sie haben auf diesem Handy schon gespielt. Wieder ab {time}.",
+   "es": "Ya ha jugado hace poco en este teléfono. Vuelva a jugar después de las {time}.",
+   "it": "Hai già giocato di recente su questo telefono. Riprova dopo le {time}.",
+   "ru": "Вы недавно уже играли с этого телефона. Снова можно после {time}."
   },
   "gameClose": {
    "fr": "Fermer",
    "en": "Close",
    "tr": "Kapat",
-   "de": "Schließen"
+   "de": "Schließen",
+   "es": "Cerrar",
+   "it": "Chiudi",
+   "ru": "Закрыть"
   },
   "gameBtnN": {
    "fr": "Tournez la roue : vous avez {n} chances !",
    "en": "Spin the wheel: you have {n} chances!",
    "tr": "Çarkı çevir: {n} şansınız var!",
-   "de": "Drehen Sie das Glücksrad: Sie haben {n} Chancen!"
+   "de": "Drehen Sie das Glücksrad: Sie haben {n} Chancen!",
+   "es": "Gire la ruleta: ¡tiene {n} oportunidades!",
+   "it": "Gira la ruota: hai {n} possibilità!",
+   "ru": "Крутите колесо: у вас {n} попыток!"
   },
   "gameLeft": {
    "fr": "Tours restants : {n} sur {t}",
    "en": "Spins left: {n} of {t}",
    "tr": "Kalan çevirme: {n} / {t}",
-   "de": "Verbleibende Drehungen: {n} von {t}"
+   "de": "Verbleibende Drehungen: {n} von {t}",
+   "es": "Tiradas restantes: {n} de {t}",
+   "it": "Giri rimasti: {n} su {t}",
+   "ru": "Осталось попыток: {n} из {t}"
   },
   "gameLoseAgain": {
    "fr": "Perdu… Tentez encore votre chance !",
    "en": "No luck… Try again!",
    "tr": "Olmadı… Tekrar deneyin!",
-   "de": "Leider nicht… Versuchen Sie es noch einmal!"
+   "de": "Leider nicht… Versuchen Sie es noch einmal!",
+   "es": "Perdido… ¡Pruebe otra vez!",
+   "it": "Niente… Ritenta!",
+   "ru": "Мимо… Попробуйте ещё!"
   },
   "gameLoseLast": {
    "fr": "Perdu pour ce dernier tour.",
    "en": "No luck on this last spin.",
    "tr": "Son çevirmede olmadı.",
-   "de": "Bei der letzten Drehung leider nicht."
+   "de": "Bei der letzten Drehung leider nicht.",
+   "es": "Perdido en esta última tirada.",
+   "it": "Niente all'ultimo giro.",
+   "ru": "Последняя попытка — мимо."
   },
   "tbWaitFor": {
    "fr": "En attente de {names}",
    "en": "Waiting for {names}",
    "tr": "{names} bekleniyor",
-   "de": "Warten auf {names}"
+   "de": "Warten auf {names}",
+   "es": "Esperando a {names}",
+   "it": "In attesa di {names}",
+   "ru": "Ждём: {names}"
   },
   "tbWait2": {
    "fr": "Pas encore fini : {names}. Attendez son « J'ai fini » pour ne rien oublier, ou envoyez quand même.",
    "en": "Not finished yet: {names}. Wait for “I'm done” so nothing is forgotten, or send anyway.",
    "tr": "Henüz bitirmedi: {names}. Hiçbir şey unutulmasın diye « Bitirdim »i bekleyin ya da yine de gönderin.",
-   "de": "Noch nicht fertig: {names}. Warten Sie auf „Ich bin fertig“, damit nichts vergessen wird, oder senden Sie trotzdem."
+   "de": "Noch nicht fertig: {names}. Warten Sie auf „Ich bin fertig“, damit nichts vergessen wird, oder senden Sie trotzdem.",
+   "es": "Aún no ha terminado: {names}. Espere su «He terminado» para no olvidar nada, o envíe de todos modos.",
+   "it": "Non ha ancora finito: {names}. Aspetta il suo «Ho finito» per non dimenticare niente, o invia comunque.",
+   "ru": "Ещё не выбрал(а): {names}. Дождитесь «Я выбрал(а)», чтобы ничего не забыть, или отправьте сразу."
   },
   "maxHint": {
    "fr": "{n} choix maximum",
    "en": "Up to {n}",
    "tr": "En fazla {n} seçim",
-   "de": "Höchstens {n}"
+   "de": "Höchstens {n}",
+   "es": "{n} opciones como máximo",
+   "it": "Massimo {n} scelte",
+   "ru": "Не больше {n}"
   },
   "drinkH": {
    "fr": "Votre boisson 33 cl",
    "en": "Your 33 cl drink",
    "tr": "33 cl içeceğiniz",
-   "de": "Ihr Getränk 33 cl"
+   "de": "Ihr Getränk 33 cl",
+   "es": "Su bebida de 33 cl",
+   "it": "La tua bibita da 33 cl",
+   "ru": "Ваш напиток 0,33 л"
   },
   "drinkP": {
    "fr": "Servez-vous dans le frigo, la canette de votre choix.",
    "en": "Help yourself from the fridge: pick any can you like.",
    "tr": "Buzdolabından istediğiniz kutuyu kendiniz alın.",
-   "de": "Bedienen Sie sich im Kühlschrank: eine Dose Ihrer Wahl."
+   "de": "Bedienen Sie sich im Kühlschrank: eine Dose Ihrer Wahl.",
+   "es": "Sírvase en la nevera la lata que prefiera.",
+   "it": "Serviti dal frigo, la lattina che preferisci.",
+   "ru": "Возьмите в холодильнике любую банку на выбор."
   },
   "drinkOk": {
    "fr": "C'est noté 👍",
    "en": "Got it 👍",
    "tr": "Tamam 👍",
-   "de": "Alles klar 👍"
+   "de": "Alles klar 👍",
+   "es": "Entendido 👍",
+   "it": "Ok 👍",
+   "ru": "Понятно 👍"
   },
   "noCrud": {
    "fr": "Sans crudités",
    "en": "No salad/veggies",
    "tr": "Sebzesiz",
-   "de": "Ohne Rohkost"
+   "de": "Ohne Rohkost",
+   "es": "Sin verduras",
+   "it": "Senza verdure",
+   "ru": "Без овощей"
   },
   "noCrudH": {
    "fr": "Sans crudités ?",
    "en": "No salad or veggies?",
    "tr": "Sebze olmadan mı?",
-   "de": "Ohne Rohkost?"
+   "de": "Ohne Rohkost?",
+   "es": "¿Sin verduras?",
+   "it": "Senza verdure?",
+   "ru": "Без овощей?"
   },
   "noCrudYes": {
    "fr": "Oui, sans crudités",
    "en": "Yes, none",
    "tr": "Evet, sebzesiz",
-   "de": "Ja, ohne"
+   "de": "Ja, ohne",
+   "es": "Sí, sin verduras",
+   "it": "Sì, senza verdure",
+   "ru": "Да, без овощей"
   },
   "noCrudPick": {
    "fr": "Choisir",
    "en": "Choose",
    "tr": "Seç",
-   "de": "Auswählen"
+   "de": "Auswählen",
+   "es": "Elegir",
+   "it": "Scegli",
+   "ru": "Выбрать"
   },
   "teaH": {
    "fr": "Le thé est offert 🍵",
    "en": "Tea is on us 🍵",
    "tr": "Çay bizden 🍵",
-   "de": "Der Tee geht aufs Haus 🍵"
+   "de": "Der Tee geht aufs Haus 🍵",
+   "es": "El té es gratis 🍵",
+   "it": "Il tè è offerto 🍵",
+   "ru": "Чай в подарок 🍵"
   },
   "teaP": {
    "fr": "Après votre repas, servez-vous à la théière en libre service.",
    "en": "After your meal, help yourself from the self-service teapot.",
    "tr": "Yemekten sonra self servis demlikten kendiniz alın.",
-   "de": "Nach dem Essen bedienen Sie sich gern an der Teekanne (Selbstbedienung)."
+   "de": "Nach dem Essen bedienen Sie sich gern an der Teekanne (Selbstbedienung).",
+   "es": "Después de comer, sírvase en la tetera de autoservicio.",
+   "it": "Dopo il pasto, serviti dalla teiera self-service.",
+   "ru": "После еды наливайте себе чай из чайника самообслуживания."
   },
   "extraH": {
    "fr": "{n}e viande = supplément",
    "en": "Extra meat costs more",
    "tr": "{n}. et ekstra ücretli",
-   "de": "{n}. Fleisch kostet extra"
+   "de": "{n}. Fleisch kostet extra",
+   "es": "{n}.ª carne = suplemento",
+   "it": "{n}ª carne = supplemento",
+   "ru": "{n}-е мясо — за доплату"
   },
   "extraP": {
    "fr": "2 viandes sont comprises. {item} est en supplément : +{p}.",
    "en": "2 meats are included. {item} is extra: +{p}.",
    "tr": "2 et dahil. {item} ekstra: +{p}.",
-   "de": "2 Fleischsorten sind inklusive. {item} kostet extra: +{p}."
+   "de": "2 Fleischsorten sind inklusive. {item} kostet extra: +{p}.",
+   "es": "2 carnes incluidas. {item} es un suplemento: +{p}.",
+   "it": "2 carni sono incluse. {item} è un supplemento: +{p}.",
+   "ru": "2 вида мяса включены. {item} — за доплату: +{p}."
   },
   "extraDrop": {
    "fr": "Retirer",
    "en": "Remove",
    "tr": "Kaldır",
-   "de": "Entfernen"
+   "de": "Entfernen",
+   "es": "Quitar",
+   "it": "Rimuovi",
+   "ru": "Убрать"
   },
   "extraKeep": {
    "fr": "Garder (+{p})",
    "en": "Keep (+{p})",
    "tr": "Kalsın (+{p})",
-   "de": "Behalten (+{p})"
+   "de": "Behalten (+{p})",
+   "es": "Mantener (+{p})",
+   "it": "Tieni (+{p})",
+   "ru": "Оставить (+{p})"
   }
  },
  "categories": [
@@ -772,7 +1153,10 @@
     "fr": "Menus avantageux",
     "en": "Value meals",
     "tr": "Avantajlı menüler",
-    "de": "Spar-Menüs"
+    "de": "Spar-Menüs",
+    "es": "Menús económicos",
+    "it": "Menu convenienti",
+    "ru": "Выгодные комбо"
    },
    "items": [
     {
@@ -780,14 +1164,20 @@
       "fr": "Menu Kebab",
       "en": "Kebab meal",
       "tr": "Kebap menü",
-      "de": "Kebab-Menü"
+      "de": "Kebab-Menü",
+      "es": "Menú Kebab",
+      "it": "Menu Kebab",
+      "ru": "Комбо Кебаб"
      },
      "price": 11,
      "description": {
       "fr": "Kebab, frites, boisson 33 cl",
       "en": "Kebab, fries, 33 cl drink",
       "tr": "Kebab, patates kızartması, 33 cl içecek",
-      "de": "Kebab, Pommes, Getränk 33 cl"
+      "de": "Kebab, Pommes, Getränk 33 cl",
+      "es": "Kebab, patatas fritas, bebida 33 cl",
+      "it": "Kebab, patatine, bibita 33 cl",
+      "ru": "Кебаб, картофель фри, напиток 0,33 л"
      },
      "bestseller": true,
      "id": "menus-menu-kebab",
@@ -807,14 +1197,20 @@
       "fr": "Menu Tacos",
       "en": "Tacos meal",
       "tr": "Tacos menü",
-      "de": "Tacos-Menü"
+      "de": "Tacos-Menü",
+      "es": "Menú Tacos",
+      "it": "Menu Tacos",
+      "ru": "Комбо Такос"
      },
      "price": 12,
      "description": {
       "fr": "Tacos, frites, boisson 33 cl",
       "en": "Tacos, fries, 33 cl drink",
       "tr": "Tacos, patates kızartması, 33 cl içecek",
-      "de": "Tacos, Pommes, Getränk 33 cl"
+      "de": "Tacos, Pommes, Getränk 33 cl",
+      "es": "Tacos, patatas fritas, bebida 33 cl",
+      "it": "Tacos, patatine, bibita 33 cl",
+      "ru": "Такос, картофель фри, напиток 0,33 л"
      },
      "bestseller": true,
      "id": "menus-menu-tacos",
@@ -834,14 +1230,20 @@
       "fr": "Menu Yufka",
       "en": "Yufka meal",
       "tr": "Dürüm menü",
-      "de": "Yufka-Menü"
+      "de": "Yufka-Menü",
+      "es": "Menú Yufka",
+      "it": "Menu Yufka",
+      "ru": "Комбо Юфка"
      },
      "price": 11.5,
      "description": {
       "fr": "Yufka kebab, frites, boisson 33 cl",
       "en": "Yufka kebab, fries, 33 cl drink",
       "tr": "Yufka kebab, patates kızartması, 33 cl içecek",
-      "de": "Yufka kebab, Pommes, Getränk 33 cl"
+      "de": "Yufka kebab, Pommes, Getränk 33 cl",
+      "es": "Yufka kebab, patatas fritas, bebida 33 cl",
+      "it": "Yufka kebab, patatine, bibita 33 cl",
+      "ru": "Юфка-кебаб, картофель фри, напиток 0,33 л"
      },
      "id": "menus-menu-yufka",
      "bestseller": false,
@@ -861,14 +1263,20 @@
       "fr": "Menu Hamburger",
       "en": "Burger meal",
       "tr": "Hamburger menü",
-      "de": "Hamburger-Menü"
+      "de": "Hamburger-Menü",
+      "es": "Menú Hamburguesa",
+      "it": "Menu Hamburger",
+      "ru": "Комбо Гамбургер"
      },
      "price": 9.5,
      "description": {
       "fr": "Hamburger, frites, boisson 33 cl",
       "en": "Hamburger, fries, 33 cl drink",
       "tr": "Hamburger, patates kızartması, 33 cl içecek",
-      "de": "Hamburger, Pommes, Getränk 33 cl"
+      "de": "Hamburger, Pommes, Getränk 33 cl",
+      "es": "Hamburguesa, patatas fritas, bebida 33 cl",
+      "it": "Hamburger, patatine, bibita 33 cl",
+      "ru": "Гамбургер, картофель фри, напиток 0,33 л"
      },
      "id": "menus-menu-hamburger",
      "bestseller": false,
@@ -900,14 +1308,20 @@
       "fr": "Menu Assiette",
       "en": "Plate meal",
       "tr": "Tabak menü",
-      "de": "Teller-Menü"
+      "de": "Teller-Menü",
+      "es": "Menú Plato",
+      "it": "Menu Piatto",
+      "ru": "Комбо Тарелка"
      },
      "price": 15,
      "description": {
       "fr": "Assiette kebab bœuf, poulet ou mixte, boisson 33 cl, thé",
       "en": "Beef, chicken or mixed kebab plate, 33 cl drink, tea",
       "tr": "Dana, tavuk veya karışık döner tabağı, 33 cl içecek, çay",
-      "de": "Kebab-Teller Rind, Hähnchen oder gemischt, Getränk 33 cl, Tee"
+      "de": "Kebab-Teller Rind, Hähnchen oder gemischt, Getränk 33 cl, Tee",
+      "es": "Plato de kebab de ternera, pollo o mixto, bebida 33 cl, té",
+      "it": "Piatto kebab di manzo, pollo o misto, bibita 33 cl, tè",
+      "ru": "Тарелка кебаба: говядина, курица или микс, напиток 0,33 л, чай"
      },
      "id": "menus-menu-assiette",
      "bestseller": false,
@@ -931,14 +1345,20 @@
       "fr": "Menu Lahmacun",
       "en": "Lahmacun meal",
       "tr": "Lahmacun menü",
-      "de": "Lahmacun-Menü"
+      "de": "Lahmacun-Menü",
+      "es": "Menú Lahmacun",
+      "it": "Menu Lahmacun",
+      "ru": "Комбо Лахмаджун"
      },
      "price": 12,
      "description": {
       "fr": "Lahmacun, frites, boisson 33 cl",
       "en": "Lahmacun, fries, 33 cl drink",
       "tr": "Lahmacun, patates kızartması, 33 cl içecek",
-      "de": "Lahmacun, Pommes, Getränk 33 cl"
+      "de": "Lahmacun, Pommes, Getränk 33 cl",
+      "es": "Lahmacun, patatas fritas, bebida 33 cl",
+      "it": "Lahmacun, patatine, bibita 33 cl",
+      "ru": "Лахмаджун, картофель фри, напиток 0,33 л"
      },
      "id": "menus-menu-lahmacun",
      "bestseller": false,
@@ -958,14 +1378,20 @@
       "fr": "Menu Maxi Tacos",
       "en": "Maxi tacos meal",
       "tr": "Maxi tacos menü",
-      "de": "Maxi-Tacos-Menü"
+      "de": "Maxi-Tacos-Menü",
+      "es": "Menú Maxi Tacos",
+      "it": "Menu Maxi Tacos",
+      "ru": "Комбо Макси-такос"
      },
      "price": 15,
      "description": {
       "fr": "Maxi tacos, frites, boisson 33 cl",
       "en": "Maxi tacos, fries, 33 cl drink",
       "tr": "Maxi tacos, patates kızartması, 33 cl içecek",
-      "de": "Maxi tacos, Pommes, Getränk 33 cl"
+      "de": "Maxi tacos, Pommes, Getränk 33 cl",
+      "es": "Maxi tacos, patatas fritas, bebida 33 cl",
+      "it": "Maxi tacos, patatine, bibita 33 cl",
+      "ru": "Макси-такос, картофель фри, напиток 0,33 л"
      },
      "id": "menus-menu-maxi-tacos",
      "bestseller": false,
@@ -985,14 +1411,20 @@
       "fr": "Menu Falafel",
       "en": "Falafel meal",
       "tr": "Falafel menü",
-      "de": "Falafel-Menü"
+      "de": "Falafel-Menü",
+      "es": "Menú Falafel",
+      "it": "Menu Falafel",
+      "ru": "Комбо Фалафель"
      },
      "price": 10,
      "description": {
       "fr": "Falafel, frites, boisson 33 cl",
       "en": "Falafel, fries, 33 cl drink",
       "tr": "Falafel, patates kızartması, 33 cl içecek",
-      "de": "Falafel, Pommes, Getränk 33 cl"
+      "de": "Falafel, Pommes, Getränk 33 cl",
+      "es": "Falafel, patatas fritas, bebida 33 cl",
+      "it": "Falafel, patatine, bibita 33 cl",
+      "ru": "Фалафель, картофель фри, напиток 0,33 л"
      },
      "id": "menus-menu-falafel",
      "bestseller": false,
@@ -1010,14 +1442,20 @@
       "fr": "Menu Bowl",
       "en": "Bowl meal",
       "tr": "Bowl menü",
-      "de": "Bowl-Menü"
+      "de": "Bowl-Menü",
+      "es": "Menú Bowl",
+      "it": "Menu Bowl",
+      "ru": "Комбо Боул"
      },
      "price": 13,
      "description": {
       "fr": "PokeBowl, boisson 33 cl",
       "en": "Poke bowl, 33 cl drink",
       "tr": "Poke bowl, 33 cl içecek",
-      "de": "Poke Bowl, Getränk 33 cl"
+      "de": "Poke Bowl, Getränk 33 cl",
+      "es": "Poke bowl, bebida 33 cl",
+      "it": "Poke bowl, bibita 33 cl",
+      "ru": "Поке-боул, напиток 0,33 л"
      },
      "id": "menus-menu-bowl",
      "bestseller": false,
@@ -1036,14 +1474,20 @@
       "fr": "Menu Enfant",
       "en": "Kids' meal",
       "tr": "Çocuk menüsü",
-      "de": "Kindermenü"
+      "de": "Kindermenü",
+      "es": "Menú Infantil",
+      "it": "Menu Bambini",
+      "ru": "Детское комбо"
      },
      "price": 8,
      "description": {
       "fr": "Nuggets, frites, Capri-Sun",
       "en": "Nuggets, fries, Capri-Sun",
       "tr": "Nugget, patates kızartması, Capri-Sun",
-      "de": "Nuggets, Pommes, Capri-Sun"
+      "de": "Nuggets, Pommes, Capri-Sun",
+      "es": "Nuggets, patatas fritas, Capri-Sun",
+      "it": "Nuggets, patatine, Capri-Sun",
+      "ru": "Наггетсы, картофель фри, Capri-Sun"
      },
      "id": "menus-menu-enfant",
      "bestseller": false,
@@ -1059,7 +1503,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "accompagnements-nuggets-6-pieces",
@@ -1074,7 +1521,10 @@
     "fr": "Pokebowl",
     "en": "Pokebowl",
     "tr": "Pokebowl",
-    "de": "Pokebowl"
+    "de": "Pokebowl",
+    "es": "Pokebowl",
+    "it": "Pokebowl",
+    "ru": "Поке-боул"
    },
    "items": [
     {
@@ -1082,7 +1532,10 @@
       "fr": "Pokebowl",
       "en": "Pokebowl",
       "tr": "Pokebowl",
-      "de": "Pokebowl"
+      "de": "Pokebowl",
+      "es": "Pokebowl",
+      "it": "Pokebowl",
+      "ru": "Поке-боул"
      },
      "price": 12,
      "bestseller": true,
@@ -1093,7 +1546,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "bowl",
@@ -1108,7 +1564,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "boissons-canette-33-cl-coca-cola-fanta-lipton",
@@ -1121,7 +1580,10 @@
     "fr": "Sandwichs",
     "en": "Sandwiches",
     "tr": "Sandviçler",
-    "de": "Sandwiches"
+    "de": "Sandwiches",
+    "es": "Bocadillos",
+    "it": "Panini",
+    "ru": "Сэндвичи"
    },
    "items": [
     {
@@ -1129,7 +1591,10 @@
       "fr": "Kebab",
       "en": "Kebab",
       "tr": "Kebab",
-      "de": "Kebab"
+      "de": "Kebab",
+      "es": "Kebab",
+      "it": "Kebab",
+      "ru": "Кебаб"
      },
      "price": 7.5,
      "bestseller": true,
@@ -1140,7 +1605,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "viande",
@@ -1155,7 +1623,10 @@
       "fr": "Yufka Kebab",
       "en": "Yufka kebab (wrap)",
       "tr": "Dürüm",
-      "de": "Yufka-Kebab"
+      "de": "Yufka-Kebab",
+      "es": "Yufka Kebab",
+      "it": "Yufka Kebab",
+      "ru": "Юфка-кебаб (ролл)"
      },
      "price": 8,
      "id": "sandwichs-yufka-kebab",
@@ -1166,7 +1637,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "viande",
@@ -1181,7 +1655,10 @@
       "fr": "Tacos",
       "en": "Tacos",
       "tr": "Tacos",
-      "de": "Tacos"
+      "de": "Tacos",
+      "es": "Tacos",
+      "it": "Tacos",
+      "ru": "Такос"
      },
      "price": 8.5,
      "id": "sandwichs-tacos",
@@ -1192,7 +1669,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "viande-tacos",
@@ -1207,7 +1687,10 @@
       "fr": "Escalope de poulet",
       "en": "Chicken breast",
       "tr": "Tavuk göğsü",
-      "de": "Hähnchenschnitzel"
+      "de": "Hähnchenschnitzel",
+      "es": "Escalope de pollo",
+      "it": "Scaloppina di pollo",
+      "ru": "Куриный шницель"
      },
      "price": 8,
      "id": "sandwichs-escalope-de-poulet",
@@ -1218,7 +1701,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "crudites",
@@ -1232,7 +1718,10 @@
       "fr": "Köfte",
       "en": "Köfte",
       "tr": "Köfte",
-      "de": "Köfte"
+      "de": "Köfte",
+      "es": "Köfte",
+      "it": "Köfte",
+      "ru": "Кёфте"
      },
      "price": 8,
      "id": "sandwichs-kofte",
@@ -1243,7 +1732,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "crudites",
@@ -1257,7 +1749,10 @@
       "fr": "Lahmacun (roulé)",
       "en": "Lahmacun (wrap)",
       "tr": "Lahmacun dürüm",
-      "de": "Lahmacun (gerollt)"
+      "de": "Lahmacun (gerollt)",
+      "es": "Lahmacun (enrollado)",
+      "it": "Lahmacun (arrotolato)",
+      "ru": "Лахмаджун (ролл)"
      },
      "price": 8.5,
      "id": "sandwichs-lahmacun-roule",
@@ -1268,7 +1763,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "viande",
@@ -1283,7 +1781,10 @@
       "fr": "Maxi Tacos",
       "en": "Maxi Tacos",
       "tr": "Maxi Tacos",
-      "de": "Maxi Tacos"
+      "de": "Maxi Tacos",
+      "es": "Maxi Tacos",
+      "it": "Maxi Tacos",
+      "ru": "Макси-такос"
      },
      "price": 12,
      "id": "sandwichs-maxi-tacos",
@@ -1294,7 +1795,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "viande-tacos",
@@ -1309,7 +1813,10 @@
       "fr": "Végétarien",
       "en": "Vegetarian",
       "tr": "Vejetaryen",
-      "de": "Vegetarisch"
+      "de": "Vegetarisch",
+      "es": "Vegetariano",
+      "it": "Vegetariano",
+      "ru": "Вегетарианский"
      },
      "price": 6,
      "id": "sandwichs-vegetarien",
@@ -1320,7 +1827,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "crudites",
@@ -1333,7 +1843,10 @@
       "fr": "Falafel",
       "en": "Falafel",
       "tr": "Falafel",
-      "de": "Falafel"
+      "de": "Falafel",
+      "es": "Falafel",
+      "it": "Falafel",
+      "ru": "Фалафель"
      },
      "price": 6.5,
      "id": "sandwichs-falafel",
@@ -1344,7 +1857,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "crudites",
@@ -1357,7 +1873,10 @@
       "fr": "Hamburger",
       "en": "Hamburger",
       "tr": "Hamburger",
-      "de": "Hamburger"
+      "de": "Hamburger",
+      "es": "Hamburguesa",
+      "it": "Hamburger",
+      "ru": "Гамбургер"
      },
      "price": 6,
      "id": "sandwichs-hamburger",
@@ -1368,7 +1887,10 @@
       "fr": "Salade, tomate, oignons, sauce burger, cheddar",
       "en": "Lettuce, tomato, onions, burger sauce, cheddar",
       "tr": "Marul, domates, soğan, burger sos, çedar",
-      "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar"
+      "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar",
+      "es": "Lechuga, tomate, cebolla, salsa burger, cheddar",
+      "it": "Insalata, pomodoro, cipolla, salsa burger, cheddar",
+      "ru": "Салат, помидор, лук, бургерный соус, чеддер"
      },
      "options": [
       "crudites",
@@ -1395,7 +1917,10 @@
       "fr": "Hamburger double",
       "en": "Double burger",
       "tr": "Duble hamburger",
-      "de": "Doppel-Hamburger"
+      "de": "Doppel-Hamburger",
+      "es": "Hamburguesa doble",
+      "it": "Hamburger doppio",
+      "ru": "Двойной гамбургер"
      },
      "price": 8.5,
      "id": "sandwichs-hamburger-double",
@@ -1406,7 +1931,10 @@
       "fr": "Salade, tomate, oignons, sauce burger, cheddar",
       "en": "Lettuce, tomato, onions, burger sauce, cheddar",
       "tr": "Marul, domates, soğan, burger sos, çedar",
-      "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar"
+      "de": "Salat, Tomate, Zwiebeln, Burgersoße, Cheddar",
+      "es": "Lechuga, tomate, cebolla, salsa burger, cheddar",
+      "it": "Insalata, pomodoro, cipolla, salsa burger, cheddar",
+      "ru": "Салат, помидор, лук, бургерный соус, чеддер"
      },
      "options": [
       "crudites",
@@ -1433,7 +1961,10 @@
       "fr": "Box Kebab",
       "en": "Box Kebab",
       "tr": "Box Kebab",
-      "de": "Box Kebab"
+      "de": "Box Kebab",
+      "es": "Box Kebab",
+      "it": "Box Kebab",
+      "ru": "Кебаб-бокс"
      },
      "price": 8,
      "id": "sandwichs-box-kebab",
@@ -1444,7 +1975,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "viande",
@@ -1459,7 +1993,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "accompagnements-moyenne-frites",
@@ -1474,13 +2011,19 @@
     "fr": "Assiettes",
     "en": "Plates",
     "tr": "Tabaklar",
-    "de": "Teller"
+    "de": "Teller",
+    "es": "Platos",
+    "it": "Piatti",
+    "ru": "Тарелки"
    },
    "note": {
     "fr": "Toutes nos assiettes sont accompagnées de crudités et de frites ou de boulgour, au choix.",
     "en": "All our plates come with salad and your choice of fries or bulgur.",
     "tr": "Tüm tabaklarımız salata ve seçiminize göre patates kızartması veya bulgur ile servis edilir.",
-    "de": "Alle Teller werden mit Salat und wahlweise Pommes oder Bulgur serviert."
+    "de": "Alle Teller werden mit Salat und wahlweise Pommes oder Bulgur serviert.",
+    "es": "Todos nuestros platos llevan verduras y patatas fritas o bulgur, a elegir.",
+    "it": "Tutti i nostri piatti sono serviti con verdure e patatine o bulgur, a scelta.",
+    "ru": "Все тарелки подаются с овощами и картофелем фри или булгуром на выбор."
    },
    "items": [
     {
@@ -1488,7 +2031,10 @@
       "fr": "Lahmacun",
       "en": "Lahmacun",
       "tr": "Lahmacun",
-      "de": "Lahmacun"
+      "de": "Lahmacun",
+      "es": "Lahmacun",
+      "it": "Lahmacun",
+      "ru": "Лахмаджун"
      },
      "price": 11,
      "id": "assiettes-lahmacun",
@@ -1499,7 +2045,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1517,7 +2066,10 @@
       "fr": "Assiette Döner",
       "en": "Döner plate",
       "tr": "Döner tabağı",
-      "de": "Döner-Teller"
+      "de": "Döner-Teller",
+      "es": "Plato Döner",
+      "it": "Piatto Döner",
+      "ru": "Тарелка дёнер"
      },
      "price": 14,
      "id": "assiettes-assiette-doner",
@@ -1528,7 +2080,10 @@
       "fr": "Bœuf, poulet ou mixte",
       "en": "Beef, chicken or mixed",
       "tr": "Dana, tavuk veya karışık",
-      "de": "Rind, Hähnchen oder gemischt"
+      "de": "Rind, Hähnchen oder gemischt",
+      "es": "Ternera, pollo o mixto",
+      "it": "Manzo, pollo o misto",
+      "ru": "Говядина, курица или микс"
      },
      "options": [
       "viande",
@@ -1548,7 +2103,10 @@
       "fr": "Assiette Döner bœuf",
       "en": "Beef döner plate",
       "tr": "Dana döner tabağı",
-      "de": "Rinder-Döner-Teller"
+      "de": "Rinder-Döner-Teller",
+      "es": "Plato Döner de ternera",
+      "it": "Piatto Döner di manzo",
+      "ru": "Тарелка дёнер с говядиной"
      },
      "price": 14,
      "id": "assiettes-assiette-doner-buf",
@@ -1559,7 +2117,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1578,7 +2139,10 @@
       "fr": "Assiette Döner poulet",
       "en": "Chicken döner plate",
       "tr": "Tavuk döner tabağı",
-      "de": "Hähnchen-Döner-Teller"
+      "de": "Hähnchen-Döner-Teller",
+      "es": "Plato Döner de pollo",
+      "it": "Piatto Döner di pollo",
+      "ru": "Тарелка дёнер с курицей"
      },
      "price": 14,
      "id": "assiettes-assiette-doner-poulet",
@@ -1589,7 +2153,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1608,7 +2175,10 @@
       "fr": "Assiette Döner mix (bœuf/poulet)",
       "en": "Mixed döner plate (beef/chicken)",
       "tr": "Karışık döner tabağı (dana/tavuk)",
-      "de": "Gemischter Döner-Teller (Rind/Hähnchen)"
+      "de": "Gemischter Döner-Teller (Rind/Hähnchen)",
+      "es": "Plato Döner mixto (ternera/pollo)",
+      "it": "Piatto Döner misto (manzo/pollo)",
+      "ru": "Тарелка дёнер микс (говядина/курица)"
      },
      "price": 14,
      "bestseller": true,
@@ -1619,7 +2189,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1638,7 +2211,10 @@
       "fr": "Assiette Köfte",
       "en": "Köfte plate",
       "tr": "Köfte tabağı",
-      "de": "Köfte-Teller"
+      "de": "Köfte-Teller",
+      "es": "Plato Köfte",
+      "it": "Piatto Köfte",
+      "ru": "Тарелка кёфте"
      },
      "price": 15,
      "id": "assiettes-assiette-kofte",
@@ -1649,7 +2225,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1668,7 +2247,10 @@
       "fr": "Assiette Escalope de poulet",
       "en": "Chicken breast plate",
       "tr": "Tavuk göğsü tabağı",
-      "de": "Hähnchenschnitzel-Teller"
+      "de": "Hähnchenschnitzel-Teller",
+      "es": "Plato de escalope de pollo",
+      "it": "Piatto scaloppina di pollo",
+      "ru": "Тарелка с куриным шницелем"
      },
      "price": 15,
      "id": "assiettes-assiette-escalope-de-poulet",
@@ -1679,7 +2261,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1698,7 +2283,10 @@
       "fr": "Assiette Sucuk",
       "en": "Sucuk plate",
       "tr": "Sucuk tabağı",
-      "de": "Sucuk-Teller"
+      "de": "Sucuk-Teller",
+      "es": "Plato Sucuk",
+      "it": "Piatto Sucuk",
+      "ru": "Тарелка суджук"
      },
      "price": 11,
      "id": "assiettes-assiette-sucuk",
@@ -1709,7 +2297,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1728,7 +2319,10 @@
       "fr": "Assiette Falafel",
       "en": "Falafel plate",
       "tr": "Falafel tabağı",
-      "de": "Falafel-Teller"
+      "de": "Falafel-Teller",
+      "es": "Plato Falafel",
+      "it": "Piatto Falafel",
+      "ru": "Тарелка фалафель"
      },
      "price": 11,
      "id": "assiettes-assiette-falafel",
@@ -1739,7 +2333,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "accompagnement",
@@ -1765,7 +2362,10 @@
     "fr": "Pides",
     "en": "Pides",
     "tr": "Pideler",
-    "de": "Pides"
+    "de": "Pides",
+    "es": "Pides",
+    "it": "Pide",
+    "ru": "Пиде"
    },
    "items": [
     {
@@ -1773,14 +2373,20 @@
       "fr": "Pide Champignons",
       "en": "Mushroom pide",
       "tr": "Mantarlı pide",
-      "de": "Pide mit Champignons"
+      "de": "Pide mit Champignons",
+      "es": "Pide de champiñones",
+      "it": "Pide ai funghi",
+      "ru": "Пиде с грибами"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, champignons, olives, tomates fraîches",
       "en": "Mozzarella, mushrooms, olives, fresh tomatoes",
       "tr": "Mozzarella, mantar, zeytin, taze domates",
-      "de": "Mozzarella, Champignons, Oliven, frische Tomaten"
+      "de": "Mozzarella, Champignons, Oliven, frische Tomaten",
+      "es": "Mozzarella, champiñones, aceitunas, tomate fresco",
+      "it": "Mozzarella, funghi, olive, pomodori freschi",
+      "ru": "Моцарелла, грибы, оливки, свежие помидоры"
      },
      "id": "pides-pide-champignons",
      "bestseller": false,
@@ -1794,14 +2400,20 @@
       "fr": "Pide Chèvre miel",
       "en": "Goat cheese & honey pide",
       "tr": "Keçi peynirli ballı pide",
-      "de": "Pide Ziegenkäse-Honig"
+      "de": "Pide Ziegenkäse-Honig",
+      "es": "Pide de queso de cabra y miel",
+      "it": "Pide caprino e miele",
+      "ru": "Пиде с козьим сыром и мёдом"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, fromage de chèvre, feta, miel",
       "en": "Mozzarella, goat cheese, feta, honey",
       "tr": "Mozzarella, keçi peyniri, beyaz peynir, bal",
-      "de": "Mozzarella, Ziegenkäse, Feta, Honig"
+      "de": "Mozzarella, Ziegenkäse, Feta, Honig",
+      "es": "Mozzarella, queso de cabra, feta, miel",
+      "it": "Mozzarella, formaggio di capra, feta, miele",
+      "ru": "Моцарелла, козий сыр, фета, мёд"
      },
      "id": "pides-pide-chevre-miel",
      "bestseller": false,
@@ -1815,14 +2427,20 @@
       "fr": "Pide Döner",
       "en": "Döner pide",
       "tr": "Dönerli pide",
-      "de": "Döner-Pide"
+      "de": "Döner-Pide",
+      "es": "Pide Döner",
+      "it": "Pide Döner",
+      "ru": "Пиде с дёнером"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, döner poulet, oignons, tomates fraîches",
       "en": "Mozzarella, chicken döner, onions, fresh tomatoes",
       "tr": "Mozzarella, tavuk döner, soğan, taze domates",
-      "de": "Mozzarella, Hähnchen-Döner, Zwiebeln, frische Tomaten"
+      "de": "Mozzarella, Hähnchen-Döner, Zwiebeln, frische Tomaten",
+      "es": "Mozzarella, döner de pollo, cebolla, tomate fresco",
+      "it": "Mozzarella, döner di pollo, cipolla, pomodori freschi",
+      "ru": "Моцарелла, куриный дёнер, лук, свежие помидоры"
      },
      "bestseller": true,
      "id": "pides-pide-doner",
@@ -1836,14 +2454,20 @@
       "fr": "Pide Fromage",
       "en": "Cheese pide",
       "tr": "Peynirli pide",
-      "de": "Käse-Pide"
+      "de": "Käse-Pide",
+      "es": "Pide de queso",
+      "it": "Pide al formaggio",
+      "ru": "Пиде с сыром"
      },
      "price": 8,
      "description": {
       "fr": "Mozzarella, feta, persil",
       "en": "Mozzarella, feta, parsley",
       "tr": "Mozzarella, beyaz peynir, maydanoz",
-      "de": "Mozzarella, Feta, Petersilie"
+      "de": "Mozzarella, Feta, Petersilie",
+      "es": "Mozzarella, feta, perejil",
+      "it": "Mozzarella, feta, prezzemolo",
+      "ru": "Моцарелла, фета, петрушка"
      },
      "id": "pides-pide-fromage",
      "bestseller": false,
@@ -1857,14 +2481,20 @@
       "fr": "Pide Mado",
       "en": "Pide Mado",
       "tr": "Pide Mado",
-      "de": "Pide Mado"
+      "de": "Pide Mado",
+      "es": "Pide Mado",
+      "it": "Pide Mado",
+      "ru": "Пиде Мадо"
      },
      "price": 13,
      "description": {
       "fr": "Mozzarella, sucuk, pastirma, salami, champignons, tomates fraîches, persil",
       "en": "Mozzarella, sucuk, pastirma, salami, mushrooms, fresh tomatoes, parsley",
       "tr": "Mozzarella, sucuk, pastırma, salam, mantar, taze domates, maydanoz",
-      "de": "Mozzarella, Sucuk, Pastirma, Salami, Champignons, frische Tomaten, Petersilie"
+      "de": "Mozzarella, Sucuk, Pastirma, Salami, Champignons, frische Tomaten, Petersilie",
+      "es": "Mozzarella, sucuk, pastirma, salami, champiñones, tomate fresco, perejil",
+      "it": "Mozzarella, sucuk, pastirma, salame, funghi, pomodori freschi, prezzemolo",
+      "ru": "Моцарелла, суджук, бастурма, салями, грибы, свежие помидоры, петрушка"
      },
      "id": "pides-pide-mado",
      "bestseller": false,
@@ -1878,14 +2508,20 @@
       "fr": "Pide Pastirma",
       "en": "Pastirma pide",
       "tr": "Pastırmalı pide",
-      "de": "Pastirma-Pide"
+      "de": "Pastirma-Pide",
+      "es": "Pide Pastirma",
+      "it": "Pide Pastirma",
+      "ru": "Пиде с бастурмой"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, pastirma, tomates fraîches, persil",
       "en": "Mozzarella, pastirma, fresh tomatoes, parsley",
       "tr": "Mozzarella, pastırma, taze domates, maydanoz",
-      "de": "Mozzarella, Pastirma, frische Tomaten, Petersilie"
+      "de": "Mozzarella, Pastirma, frische Tomaten, Petersilie",
+      "es": "Mozzarella, pastirma, tomate fresco, perejil",
+      "it": "Mozzarella, pastirma, pomodori freschi, prezzemolo",
+      "ru": "Моцарелла, бастурма, свежие помидоры, петрушка"
      },
      "id": "pides-pide-pastirma",
      "bestseller": false,
@@ -1899,14 +2535,20 @@
       "fr": "Pide Sucuk",
       "en": "Sucuk pide",
       "tr": "Sucuklu pide",
-      "de": "Sucuk-Pide"
+      "de": "Sucuk-Pide",
+      "es": "Pide Sucuk",
+      "it": "Pide Sucuk",
+      "ru": "Пиде с суджуком"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, sucuk, tomates fraîches, champignons, olives",
       "en": "Mozzarella, sucuk, fresh tomatoes, mushrooms, olives",
       "tr": "Mozzarella, sucuk, taze domates, mantar, zeytin",
-      "de": "Mozzarella, Sucuk, frische Tomaten, Champignons, Oliven"
+      "de": "Mozzarella, Sucuk, frische Tomaten, Champignons, Oliven",
+      "es": "Mozzarella, sucuk, tomate fresco, champiñones, aceitunas",
+      "it": "Mozzarella, sucuk, pomodori freschi, funghi, olive",
+      "ru": "Моцарелла, суджук, свежие помидоры, грибы, оливки"
      },
      "id": "pides-pide-sucuk",
      "bestseller": false,
@@ -1920,14 +2562,20 @@
       "fr": "Pide Thon",
       "en": "Tuna pide",
       "tr": "Ton balıklı pide",
-      "de": "Thunfisch-Pide"
+      "de": "Thunfisch-Pide",
+      "es": "Pide de atún",
+      "it": "Pide al tonno",
+      "ru": "Пиде с тунцом"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, thon, oignons",
       "en": "Mozzarella, tuna, onions",
       "tr": "Mozzarella, ton balığı, soğan",
-      "de": "Mozzarella, Thunfisch, Zwiebeln"
+      "de": "Mozzarella, Thunfisch, Zwiebeln",
+      "es": "Mozzarella, atún, cebolla",
+      "it": "Mozzarella, tonno, cipolla",
+      "ru": "Моцарелла, тунец, лук"
      },
      "id": "pides-pide-thon",
      "bestseller": false,
@@ -1941,14 +2589,20 @@
       "fr": "Pide Viande hachée",
       "en": "Minced meat pide",
       "tr": "Kıymalı pide",
-      "de": "Hackfleisch-Pide"
+      "de": "Hackfleisch-Pide",
+      "es": "Pide de carne picada",
+      "it": "Pide con carne macinata",
+      "ru": "Пиде с фаршем"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, viande hachée, emmental, tomates fraîches",
       "en": "Mozzarella, minced meat, Emmental, fresh tomatoes",
       "tr": "Mozzarella, kıyma, emmental peyniri, taze domates",
-      "de": "Mozzarella, Hackfleisch, Emmentaler, frische Tomaten"
+      "de": "Mozzarella, Hackfleisch, Emmentaler, frische Tomaten",
+      "es": "Mozzarella, carne picada, emmental, tomate fresco",
+      "it": "Mozzarella, carne macinata, emmental, pomodori freschi",
+      "ru": "Моцарелла, фарш, эмменталь, свежие помидоры"
      },
      "id": "pides-pide-viande-hachee",
      "bestseller": false,
@@ -1962,14 +2616,20 @@
       "fr": "Pide Végétarien",
       "en": "Vegetarian pide",
       "tr": "Vejetaryen pide",
-      "de": "Vegetarische Pide"
+      "de": "Vegetarische Pide",
+      "es": "Pide vegetariano",
+      "it": "Pide vegetariano",
+      "ru": "Вегетарианский пиде"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, champignons, aubergines, poivrons, olives, tomates fraîches, oignons, maïs",
       "en": "Mozzarella, mushrooms, aubergines, peppers, olives, fresh tomatoes, onions, corn",
       "tr": "Mozzarella, mantar, patlıcan, biber, zeytin, taze domates, soğan, mısır",
-      "de": "Mozzarella, Champignons, Auberginen, Paprika, Oliven, frische Tomaten, Zwiebeln, Mais"
+      "de": "Mozzarella, Champignons, Auberginen, Paprika, Oliven, frische Tomaten, Zwiebeln, Mais",
+      "es": "Mozzarella, champiñones, berenjena, pimientos, aceitunas, tomate fresco, cebolla, maíz",
+      "it": "Mozzarella, funghi, melanzane, peperoni, olive, pomodori freschi, cipolla, mais",
+      "ru": "Моцарелла, грибы, баклажаны, перец, оливки, свежие помидоры, лук, кукуруза"
      },
      "id": "pides-pide-vegetarien",
      "bestseller": false,
@@ -1983,14 +2643,20 @@
       "fr": "Pide Épinards",
       "en": "Spinach pide",
       "tr": "Ispanaklı pide",
-      "de": "Spinat-Pide"
+      "de": "Spinat-Pide",
+      "es": "Pide de espinacas",
+      "it": "Pide agli spinaci",
+      "ru": "Пиде со шпинатом"
      },
      "price": 10,
      "description": {
       "fr": "Épinards, oignons, feta",
       "en": "Spinach, onions, feta",
       "tr": "Ispanak, soğan, beyaz peynir",
-      "de": "Spinat, Zwiebeln, Feta"
+      "de": "Spinat, Zwiebeln, Feta",
+      "es": "Espinacas, cebolla, feta",
+      "it": "Spinaci, cipolla, feta",
+      "ru": "Шпинат, лук, фета"
      },
      "id": "pides-pide-epinards",
      "bestseller": false,
@@ -2004,7 +2670,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "boissons-canette-33-cl-coca-cola-fanta-lipton",
@@ -2019,7 +2688,10 @@
     "fr": "Pizzas",
     "en": "Pizzas",
     "tr": "Pizzalar",
-    "de": "Pizzen"
+    "de": "Pizzen",
+    "es": "Pizzas",
+    "it": "Pizze",
+    "ru": "Пицца"
    },
    "items": [
     {
@@ -2027,14 +2699,20 @@
       "fr": "Pizza 4 Fromages",
       "en": "Four cheese pizza",
       "tr": "Dört peynirli pizza",
-      "de": "Pizza Vier Käse"
+      "de": "Pizza Vier Käse",
+      "es": "Pizza 4 quesos",
+      "it": "Pizza 4 formaggi",
+      "ru": "Пицца 4 сыра"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce tomate, emmental, roquefort, fromage de chèvre, fines herbes",
       "en": "Mozzarella, tomato sauce, Emmental, Roquefort, goat cheese, fine herbs",
       "tr": "Mozzarella, domates sosu, emmental peyniri, rokfor peyniri, keçi peyniri, ince otlar",
-      "de": "Mozzarella, Tomatensauce, Emmentaler, Roquefort, Ziegenkäse, Kräuter"
+      "de": "Mozzarella, Tomatensauce, Emmentaler, Roquefort, Ziegenkäse, Kräuter",
+      "es": "Mozzarella, salsa de tomate, emmental, roquefort, queso de cabra, finas hierbas",
+      "it": "Mozzarella, salsa di pomodoro, emmental, roquefort, formaggio di capra, erbe aromatiche",
+      "ru": "Моцарелла, томатный соус, эмменталь, рокфор, козий сыр, травы"
      },
      "id": "pizzas-pizza-4-fromages",
      "bestseller": false,
@@ -2048,14 +2726,20 @@
       "fr": "Pizza 4 Saisons",
       "en": "Four seasons pizza",
       "tr": "Dört mevsim pizza",
-      "de": "Pizza Vier Jahreszeiten"
+      "de": "Pizza Vier Jahreszeiten",
+      "es": "Pizza 4 estaciones",
+      "it": "Pizza 4 stagioni",
+      "ru": "Пицца 4 сезона"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce tomate, champignons, olives, poivrons, tomate, oignons, aubergines, fines herbes",
       "en": "Mozzarella, tomato sauce, mushrooms, olives, peppers, tomato, onions, aubergines, fine herbs",
       "tr": "Mozzarella, domates sosu, mantar, zeytin, biber, domates, soğan, patlıcan, ince otlar",
-      "de": "Mozzarella, Tomatensauce, Champignons, Oliven, Paprika, Tomate, Zwiebeln, Auberginen, Kräuter"
+      "de": "Mozzarella, Tomatensauce, Champignons, Oliven, Paprika, Tomate, Zwiebeln, Auberginen, Kräuter",
+      "es": "Mozzarella, salsa de tomate, champiñones, aceitunas, pimientos, tomate, cebolla, berenjena, finas hierbas",
+      "it": "Mozzarella, salsa di pomodoro, funghi, olive, peperoni, pomodoro, cipolla, melanzane, erbe aromatiche",
+      "ru": "Моцарелла, томатный соус, грибы, оливки, перец, помидор, лук, баклажаны, травы"
      },
      "id": "pizzas-pizza-4-saisons",
      "bestseller": false,
@@ -2069,14 +2753,20 @@
       "fr": "Pizza Champignons",
       "en": "Mushroom pizza",
       "tr": "Mantarlı pizza",
-      "de": "Pizza Champignons"
+      "de": "Pizza Champignons",
+      "es": "Pizza de champiñones",
+      "it": "Pizza ai funghi",
+      "ru": "Пицца с грибами"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, sauce tomate, champignons, olives",
       "en": "Mozzarella, tomato sauce, mushrooms, olives",
       "tr": "Mozzarella, domates sosu, mantar, zeytin",
-      "de": "Mozzarella, Tomatensauce, Champignons, Oliven"
+      "de": "Mozzarella, Tomatensauce, Champignons, Oliven",
+      "es": "Mozzarella, salsa de tomate, champiñones, aceitunas",
+      "it": "Mozzarella, salsa di pomodoro, funghi, olive",
+      "ru": "Моцарелла, томатный соус, грибы, оливки"
      },
      "id": "pizzas-pizza-champignons",
      "bestseller": false,
@@ -2090,14 +2780,20 @@
       "fr": "Pizza Chèvre miel",
       "en": "Goat cheese & honey pizza",
       "tr": "Keçi peynirli ballı pizza",
-      "de": "Pizza Ziegenkäse-Honig"
+      "de": "Pizza Ziegenkäse-Honig",
+      "es": "Pizza de queso de cabra y miel",
+      "it": "Pizza caprino e miele",
+      "ru": "Пицца с козьим сыром и мёдом"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce crème, fromage de chèvre, miel",
       "en": "Mozzarella, cream sauce, goat cheese, honey",
       "tr": "Mozzarella, krema sosu, keçi peyniri, bal",
-      "de": "Mozzarella, Sahnesauce, Ziegenkäse, Honig"
+      "de": "Mozzarella, Sahnesauce, Ziegenkäse, Honig",
+      "es": "Mozzarella, salsa de nata, queso de cabra, miel",
+      "it": "Mozzarella, salsa alla panna, formaggio di capra, miele",
+      "ru": "Моцарелла, сливочный соус, козий сыр, мёд"
      },
      "id": "pizzas-pizza-chevre-miel",
      "bestseller": false,
@@ -2111,14 +2807,20 @@
       "fr": "Pizza Kebab",
       "en": "Pizza Kebab",
       "tr": "Pizza Kebab",
-      "de": "Pizza Kebab"
+      "de": "Pizza Kebab",
+      "es": "Pizza Kebab",
+      "it": "Pizza Kebab",
+      "ru": "Пицца Кебаб"
      },
      "price": 12,
      "description": {
       "fr": "Mozzarella, sauce tomate, kebab poulet, oignons, poivrons",
       "en": "Mozzarella, tomato sauce, chicken kebab, onions, peppers",
       "tr": "Mozzarella, domates sosu, tavuk döner, soğan, biber",
-      "de": "Mozzarella, Tomatensauce, Hähnchen-Kebab, Zwiebeln, Paprika"
+      "de": "Mozzarella, Tomatensauce, Hähnchen-Kebab, Zwiebeln, Paprika",
+      "es": "Mozzarella, salsa de tomate, kebab de pollo, cebolla, pimientos",
+      "it": "Mozzarella, salsa di pomodoro, kebab di pollo, cipolla, peperoni",
+      "ru": "Моцарелла, томатный соус, куриный кебаб, лук, перец"
      },
      "id": "pizzas-pizza-kebab",
      "bestseller": false,
@@ -2132,14 +2834,20 @@
       "fr": "Pizza Margherita",
       "en": "Pizza Margherita",
       "tr": "Pizza Margherita",
-      "de": "Pizza Margherita"
+      "de": "Pizza Margherita",
+      "es": "Pizza Margarita",
+      "it": "Pizza Margherita",
+      "ru": "Пицца Маргарита"
      },
      "price": 8,
      "description": {
       "fr": "Mozzarella, sauce tomate",
       "en": "Mozzarella, tomato sauce",
       "tr": "Mozzarella, domates sosu",
-      "de": "Mozzarella, Tomatensauce"
+      "de": "Mozzarella, Tomatensauce",
+      "es": "Mozzarella, salsa de tomate",
+      "it": "Mozzarella, salsa di pomodoro",
+      "ru": "Моцарелла, томатный соус"
      },
      "bestseller": true,
      "id": "pizzas-pizza-margherita",
@@ -2153,14 +2861,20 @@
       "fr": "Pizza Olive",
       "en": "Olive pizza",
       "tr": "Zeytinli pizza",
-      "de": "Pizza Oliven"
+      "de": "Pizza Oliven",
+      "es": "Pizza de aceitunas",
+      "it": "Pizza alle olive",
+      "ru": "Пицца с оливками"
      },
      "price": 9,
      "description": {
       "fr": "Mozzarella, sauce tomate, olives",
       "en": "Mozzarella, tomato sauce, olives",
       "tr": "Mozzarella, domates sosu, zeytin",
-      "de": "Mozzarella, Tomatensauce, Oliven"
+      "de": "Mozzarella, Tomatensauce, Oliven",
+      "es": "Mozzarella, salsa de tomate, aceitunas",
+      "it": "Mozzarella, salsa di pomodoro, olive",
+      "ru": "Моцарелла, томатный соус, оливки"
      },
      "id": "pizzas-pizza-olive",
      "bestseller": false,
@@ -2174,14 +2888,20 @@
       "fr": "Pizza Orientale",
       "en": "Oriental pizza",
       "tr": "Oryantal pizza",
-      "de": "Pizza Orientale"
+      "de": "Pizza Orientale",
+      "es": "Pizza oriental",
+      "it": "Pizza orientale",
+      "ru": "Пицца «Восточная»"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce tomate, merguez, olives, poivrons, oignons",
       "en": "Mozzarella, tomato sauce, merguez, olives, peppers, onions",
       "tr": "Mozzarella, domates sosu, merguez sucuğu, zeytin, biber, soğan",
-      "de": "Mozzarella, Tomatensauce, Merguez, Oliven, Paprika, Zwiebeln"
+      "de": "Mozzarella, Tomatensauce, Merguez, Oliven, Paprika, Zwiebeln",
+      "es": "Mozzarella, salsa de tomate, merguez, aceitunas, pimientos, cebolla",
+      "it": "Mozzarella, salsa di pomodoro, merguez, olive, peperoni, cipolla",
+      "ru": "Моцарелла, томатный соус, мергез, оливки, перец, лук"
      },
      "id": "pizzas-pizza-orientale",
      "bestseller": false,
@@ -2195,14 +2915,20 @@
       "fr": "Pizza Pastirma",
       "en": "Pizza Pastirma",
       "tr": "Pizza Pastirma",
-      "de": "Pizza Pastirma"
+      "de": "Pizza Pastirma",
+      "es": "Pizza Pastirma",
+      "it": "Pizza Pastirma",
+      "ru": "Пицца с бастурмой"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce tomate, pastirma, olives, oignons, tomate",
       "en": "Mozzarella, tomato sauce, pastirma, olives, onions, tomato",
       "tr": "Mozzarella, domates sosu, pastırma, zeytin, soğan, domates",
-      "de": "Mozzarella, Tomatensauce, Pastirma, Oliven, Zwiebeln, Tomate"
+      "de": "Mozzarella, Tomatensauce, Pastirma, Oliven, Zwiebeln, Tomate",
+      "es": "Mozzarella, salsa de tomate, pastirma, aceitunas, cebolla, tomate",
+      "it": "Mozzarella, salsa di pomodoro, pastirma, olive, cipolla, pomodoro",
+      "ru": "Моцарелла, томатный соус, бастурма, оливки, лук, помидор"
      },
      "id": "pizzas-pizza-pastirma",
      "bestseller": false,
@@ -2216,14 +2942,20 @@
       "fr": "Pizza Reine",
       "en": "Pizza Regina",
       "tr": "Regina pizza",
-      "de": "Pizza Regina"
+      "de": "Pizza Regina",
+      "es": "Pizza Regina",
+      "it": "Pizza Regina",
+      "ru": "Пицца Регина"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce tomate, lardon de dinde, olives, champignons",
       "en": "Mozzarella, tomato sauce, turkey bacon, olives, mushrooms",
       "tr": "Mozzarella, domates sosu, hindi füme, zeytin, mantar",
-      "de": "Mozzarella, Tomatensauce, Putenspeck, Oliven, Champignons"
+      "de": "Mozzarella, Tomatensauce, Putenspeck, Oliven, Champignons",
+      "es": "Mozzarella, salsa de tomate, bacon de pavo, aceitunas, champiñones",
+      "it": "Mozzarella, salsa di pomodoro, pancetta di tacchino, olive, funghi",
+      "ru": "Моцарелла, томатный соус, бекон из индейки, оливки, грибы"
      },
      "id": "pizzas-pizza-reine",
      "bestseller": false,
@@ -2237,14 +2969,20 @@
       "fr": "Pizza Salami",
       "en": "Pizza Salami",
       "tr": "Pizza Salami",
-      "de": "Pizza Salami"
+      "de": "Pizza Salami",
+      "es": "Pizza Salami",
+      "it": "Pizza Salame",
+      "ru": "Пицца Салями"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, sauce tomate, salami, olives",
       "en": "Mozzarella, tomato sauce, salami, olives",
       "tr": "Mozzarella, domates sosu, salam, zeytin",
-      "de": "Mozzarella, Tomatensauce, Salami, Oliven"
+      "de": "Mozzarella, Tomatensauce, Salami, Oliven",
+      "es": "Mozzarella, salsa de tomate, salami, aceitunas",
+      "it": "Mozzarella, salsa di pomodoro, salame, olive",
+      "ru": "Моцарелла, томатный соус, салями, оливки"
      },
      "id": "pizzas-pizza-salami",
      "bestseller": false,
@@ -2258,14 +2996,20 @@
       "fr": "Pizza Sucuk",
       "en": "Pizza Sucuk",
       "tr": "Pizza Sucuk",
-      "de": "Pizza Sucuk"
+      "de": "Pizza Sucuk",
+      "es": "Pizza Sucuk",
+      "it": "Pizza Sucuk",
+      "ru": "Пицца с суджуком"
      },
      "price": 11,
      "description": {
       "fr": "Mozzarella, sauce tomate, sucuk, olives, champignons, poivrons",
       "en": "Mozzarella, tomato sauce, sucuk, olives, mushrooms, peppers",
       "tr": "Mozzarella, domates sosu, sucuk, zeytin, mantar, biber",
-      "de": "Mozzarella, Tomatensauce, Sucuk, Oliven, Champignons, Paprika"
+      "de": "Mozzarella, Tomatensauce, Sucuk, Oliven, Champignons, Paprika",
+      "es": "Mozzarella, salsa de tomate, sucuk, aceitunas, champiñones, pimientos",
+      "it": "Mozzarella, salsa di pomodoro, sucuk, olive, funghi, peperoni",
+      "ru": "Моцарелла, томатный соус, суджук, оливки, грибы, перец"
      },
      "id": "pizzas-pizza-sucuk",
      "bestseller": false,
@@ -2279,14 +3023,20 @@
       "fr": "Pizza Thon",
       "en": "Tuna pizza",
       "tr": "Ton balıklı pizza",
-      "de": "Pizza Thunfisch"
+      "de": "Pizza Thunfisch",
+      "es": "Pizza de atún",
+      "it": "Pizza al tonno",
+      "ru": "Пицца с тунцом"
      },
      "price": 10,
      "description": {
       "fr": "Mozzarella, sauce tomate, thon, oignons, olives",
       "en": "Mozzarella, tomato sauce, tuna, onions, olives",
       "tr": "Mozzarella, domates sosu, ton balığı, soğan, zeytin",
-      "de": "Mozzarella, Tomatensauce, Thunfisch, Zwiebeln, Oliven"
+      "de": "Mozzarella, Tomatensauce, Thunfisch, Zwiebeln, Oliven",
+      "es": "Mozzarella, salsa de tomate, atún, cebolla, aceitunas",
+      "it": "Mozzarella, salsa di pomodoro, tonno, cipolla, olive",
+      "ru": "Моцарелла, томатный соус, тунец, лук, оливки"
      },
      "id": "pizzas-pizza-thon",
      "bestseller": false,
@@ -2300,14 +3050,20 @@
       "fr": "Pizza Texane",
       "en": "Texan pizza",
       "tr": "Teksas pizza",
-      "de": "Pizza Texas"
+      "de": "Pizza Texas",
+      "es": "Pizza Texana",
+      "it": "Pizza Texana",
+      "ru": "Пицца «Техасская»"
      },
      "price": 12,
      "description": {
       "fr": "Sauce tomate BBQ, mozzarella, escalope de poulet, oignons, poivrons",
       "en": "BBQ tomato sauce, mozzarella, chicken breast, onions, peppers",
       "tr": "Barbekü domates sosu, mozzarella, tavuk göğsü, soğan, biber",
-      "de": "BBQ-Tomatensauce, Mozzarella, Hähnchenschnitzel, Zwiebeln, Paprika"
+      "de": "BBQ-Tomatensauce, Mozzarella, Hähnchenschnitzel, Zwiebeln, Paprika",
+      "es": "Salsa de tomate barbacoa, mozzarella, escalope de pollo, cebolla, pimientos",
+      "it": "Salsa di pomodoro BBQ, mozzarella, scaloppina di pollo, cipolla, peperoni",
+      "ru": "Томатный соус барбекю, моцарелла, куриный шницель, лук, перец"
      },
      "id": "pizzas-pizza-texane",
      "bestseller": false,
@@ -2321,14 +3077,20 @@
       "fr": "Pizza Poulet crème",
       "en": "Chicken & cream pizza",
       "tr": "Kremalı tavuklu pizza",
-      "de": "Pizza Hähnchen-Sahne"
+      "de": "Pizza Hähnchen-Sahne",
+      "es": "Pizza de pollo con nata",
+      "it": "Pizza pollo e panna",
+      "ru": "Пицца с курицей и сливками"
      },
      "price": 12,
      "description": {
       "fr": "Base crème, mozzarella, escalope de poulet, oignons, olives, champignons",
       "en": "Cream base, mozzarella, chicken breast, onions, olives, mushrooms",
       "tr": "Krema tabanı, mozzarella, tavuk göğsü, soğan, zeytin, mantar",
-      "de": "Sahnebasis, Mozzarella, Hähnchenschnitzel, Zwiebeln, Oliven, Champignons"
+      "de": "Sahnebasis, Mozzarella, Hähnchenschnitzel, Zwiebeln, Oliven, Champignons",
+      "es": "Base de nata, mozzarella, escalope de pollo, cebolla, aceitunas, champiñones",
+      "it": "Base panna, mozzarella, scaloppina di pollo, cipolla, olive, funghi",
+      "ru": "Сливочная основа, моцарелла, куриный шницель, лук, оливки, грибы"
      },
      "id": "pizzas-pizza-poulet-creme",
      "bestseller": false,
@@ -2342,14 +3104,20 @@
       "fr": "Pizza Mado",
       "en": "Pizza Mado",
       "tr": "Pizza Mado",
-      "de": "Pizza Mado"
+      "de": "Pizza Mado",
+      "es": "Pizza Mado",
+      "it": "Pizza Mado",
+      "ru": "Пицца Мадо"
      },
      "price": 13,
      "description": {
       "fr": "Sauce tomate, mozzarella, sucuk, pastirma, champignons, olives, poivrons",
       "en": "Tomato sauce, mozzarella, sucuk, pastirma, mushrooms, olives, peppers",
       "tr": "Domates sosu, mozzarella, sucuk, pastırma, mantar, zeytin, biber",
-      "de": "Tomatensauce, Mozzarella, Sucuk, Pastirma, Champignons, Oliven, Paprika"
+      "de": "Tomatensauce, Mozzarella, Sucuk, Pastirma, Champignons, Oliven, Paprika",
+      "es": "Salsa de tomate, mozzarella, sucuk, pastirma, champiñones, aceitunas, pimientos",
+      "it": "Salsa di pomodoro, mozzarella, sucuk, pastirma, funghi, olive, peperoni",
+      "ru": "Томатный соус, моцарелла, суджук, бастурма, грибы, оливки, перец"
      },
      "id": "pizzas-pizza-mado",
      "bestseller": false,
@@ -2363,7 +3131,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "boissons-canette-33-cl-coca-cola-fanta-lipton",
@@ -2379,7 +3150,10 @@
     "fr": "Accompagnements",
     "en": "Sides",
     "tr": "Yan ürünler",
-    "de": "Beilagen"
+    "de": "Beilagen",
+    "es": "Acompañamientos",
+    "it": "Contorni",
+    "ru": "Гарниры"
    },
    "items": [
     {
@@ -2387,7 +3161,10 @@
       "fr": "Grande frites",
       "en": "Large fries",
       "tr": "Büyük patates",
-      "de": "Große Pommes"
+      "de": "Große Pommes",
+      "es": "Patatas fritas grandes",
+      "it": "Patatine grandi",
+      "ru": "Картофель фри, большой"
      },
      "price": 6.5,
      "id": "accompagnements-grande-frites",
@@ -2398,7 +3175,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "sauce-frites"
@@ -2410,7 +3190,10 @@
       "fr": "Moyenne frites",
       "en": "Medium fries",
       "tr": "Orta patates",
-      "de": "Mittlere Pommes"
+      "de": "Mittlere Pommes",
+      "es": "Patatas fritas medianas",
+      "it": "Patatine medie",
+      "ru": "Картофель фри, средний"
      },
      "price": 4,
      "bestseller": true,
@@ -2421,7 +3204,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "sauce-frites"
@@ -2433,7 +3219,10 @@
       "fr": "Petite frites",
       "en": "Small fries",
       "tr": "Küçük patates",
-      "de": "Kleine Pommes"
+      "de": "Kleine Pommes",
+      "es": "Patatas fritas pequeñas",
+      "it": "Patatine piccole",
+      "ru": "Картофель фри, маленький"
      },
      "price": 3,
      "id": "accompagnements-petite-frites",
@@ -2444,7 +3233,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [
       "sauce-frites"
@@ -2456,7 +3248,10 @@
       "fr": "Nuggets (6 pièces)",
       "en": "Nuggets (6 pcs)",
       "tr": "Nugget (6 adet)",
-      "de": "Nuggets (6 Stück)"
+      "de": "Nuggets (6 Stück)",
+      "es": "Nuggets (6 piezas)",
+      "it": "Nuggets (6 pezzi)",
+      "ru": "Наггетсы (6 шт.)"
      },
      "price": 4.5,
      "id": "accompagnements-nuggets-6-pieces",
@@ -2467,7 +3262,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2477,7 +3275,10 @@
       "fr": "Nuggets (12 pièces)",
       "en": "Nuggets (12 pcs)",
       "tr": "Nugget (12 adet)",
-      "de": "Nuggets (12 Stück)"
+      "de": "Nuggets (12 Stück)",
+      "es": "Nuggets (12 piezas)",
+      "it": "Nuggets (12 pezzi)",
+      "ru": "Наггетсы (12 шт.)"
      },
      "price": 8,
      "id": "accompagnements-nuggets-12-pieces",
@@ -2488,7 +3289,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2498,7 +3302,10 @@
       "fr": "Nuggets (20 pièces)",
       "en": "Nuggets (20 pcs)",
       "tr": "Nugget (20 adet)",
-      "de": "Nuggets (20 Stück)"
+      "de": "Nuggets (20 Stück)",
+      "es": "Nuggets (20 piezas)",
+      "it": "Nuggets (20 pezzi)",
+      "ru": "Наггетсы (20 шт.)"
      },
      "price": 12,
      "id": "accompagnements-nuggets-20-pieces",
@@ -2509,7 +3316,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2519,7 +3329,10 @@
       "fr": "Tenders (2 pièces)",
       "en": "Tenders (2 pcs)",
       "tr": "Tenders (2 adet)",
-      "de": "Tenders (2 Stück)"
+      "de": "Tenders (2 Stück)",
+      "es": "Tenders (2 piezas)",
+      "it": "Tenders (2 pezzi)",
+      "ru": "Тендерс (2 шт.)"
      },
      "price": 4,
      "id": "accompagnements-tenders-2-pieces",
@@ -2530,7 +3343,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2540,7 +3356,10 @@
       "fr": "Tenders (5 pièces)",
       "en": "Tenders (5 pcs)",
       "tr": "Tenders (5 adet)",
-      "de": "Tenders (5 Stück)"
+      "de": "Tenders (5 Stück)",
+      "es": "Tenders (5 piezas)",
+      "it": "Tenders (5 pezzi)",
+      "ru": "Тендерс (5 шт.)"
      },
      "price": 8,
      "id": "accompagnements-tenders-5-pieces",
@@ -2551,7 +3370,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2561,7 +3383,10 @@
       "fr": "Supplément feta",
       "en": "Extra feta",
       "tr": "Ekstra beyaz peynir",
-      "de": "Extra Feta"
+      "de": "Extra Feta",
+      "es": "Suplemento feta",
+      "it": "Supplemento feta",
+      "ru": "Доп. фета"
      },
      "price": 1,
      "id": "accompagnements-supplement-feta",
@@ -2572,7 +3397,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2582,7 +3410,10 @@
       "fr": "Supplément viande",
       "en": "Extra meat",
       "tr": "Ekstra et",
-      "de": "Extra Fleisch"
+      "de": "Extra Fleisch",
+      "es": "Suplemento de carne",
+      "it": "Supplemento carne",
+      "ru": "Доп. мясо"
      },
      "price": 2,
      "id": "accompagnements-supplement-viande",
@@ -2593,7 +3424,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2603,7 +3437,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "boissons-canette-33-cl-coca-cola-fanta-lipton",
@@ -2616,7 +3453,10 @@
     "fr": "Boissons",
     "en": "Drinks",
     "tr": "İçecekler",
-    "de": "Getränke"
+    "de": "Getränke",
+    "es": "Bebidas",
+    "it": "Bevande",
+    "ru": "Напитки"
    },
    "items": [
     {
@@ -2624,7 +3464,10 @@
       "fr": "Carola",
       "en": "Carola",
       "tr": "Carola",
-      "de": "Carola"
+      "de": "Carola",
+      "es": "Carola",
+      "it": "Carola",
+      "ru": "Carola"
      },
      "price": 2,
      "bestseller": true,
@@ -2635,7 +3478,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2645,7 +3491,10 @@
       "fr": "Cristaline",
       "en": "Cristaline",
       "tr": "Cristaline",
-      "de": "Cristaline"
+      "de": "Cristaline",
+      "es": "Cristaline",
+      "it": "Cristaline",
+      "ru": "Cristaline"
      },
      "price": 1.5,
      "id": "boissons-cristaline",
@@ -2656,7 +3505,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2666,7 +3518,10 @@
       "fr": "Capri-Sun",
       "en": "Capri-Sun",
       "tr": "Capri-Sun",
-      "de": "Capri-Sun"
+      "de": "Capri-Sun",
+      "es": "Capri-Sun",
+      "it": "Capri-Sun",
+      "ru": "Capri-Sun"
      },
      "price": 1,
      "id": "boissons-capri-sun",
@@ -2677,7 +3532,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2687,7 +3545,10 @@
       "fr": "Boisson 33 cl",
       "en": "Drink 33 cl",
       "tr": "İçecek 33 cl",
-      "de": "Getränk 33 cl"
+      "de": "Getränk 33 cl",
+      "es": "Bebida 33 cl",
+      "it": "Bibita 33 cl",
+      "ru": "Напиток 0,33 л"
      },
      "price": 2,
      "id": "boissons-canette-33-cl-coca-cola-fanta-lipton",
@@ -2698,7 +3559,10 @@
       "fr": "Au choix dans le frigo : Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
       "en": "Your pick from the fridge: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
       "tr": "Buzdolabından seçin: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
-      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…"
+      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
+      "es": "A elegir en la nevera: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
+      "it": "A scelta dal frigo: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, Ayran…",
+      "ru": "На выбор из холодильника: Coca-Cola, Sprite, Orangina, Oasis, Lipton, Schweppes, айран…"
      },
      "options": [],
      "upgrade": ""
@@ -2708,7 +3572,10 @@
       "fr": "Boisson 50 cl",
       "en": "Drink 50 cl",
       "tr": "İçecek 50 cl",
-      "de": "Getränk 50 cl"
+      "de": "Getränk 50 cl",
+      "es": "Bebida 50 cl",
+      "it": "Bibita 50 cl",
+      "ru": "Напиток 0,5 л"
      },
      "price": 2.5,
      "id": "boissons-bouteille-50-cl-coca-cola-oasis-san-pellegrino",
@@ -2719,7 +3586,10 @@
       "fr": "Au choix dans le frigo : Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
       "en": "Your pick from the fridge: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
       "tr": "Buzdolabından seçin: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
-      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…"
+      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
+      "es": "A elegir en la nevera: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
+      "it": "A scelta dal frigo: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…",
+      "ru": "На выбор из холодильника: Coca-Cola, Coca-Cola Cherry, Coca-Cola Zero, Oasis…"
      },
      "options": [],
      "upgrade": ""
@@ -2729,7 +3599,10 @@
       "fr": "Coca-Cola 1,25 L",
       "en": "Coca-Cola 1,25 L",
       "tr": "Coca-Cola 1,25 L",
-      "de": "Coca-Cola 1,25 L"
+      "de": "Coca-Cola 1,25 L",
+      "es": "Coca-Cola 1,25 L",
+      "it": "Coca-Cola 1,25 L",
+      "ru": "Coca-Cola 1,25 л"
      },
      "price": 4,
      "id": "boissons-coca-cola-1-25-l",
@@ -2740,7 +3613,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2750,7 +3626,10 @@
       "fr": "Boisson 1,5 L",
       "en": "Drink 1.5 L",
       "tr": "İçecek 1,5 L",
-      "de": "Getränk 1,5 L"
+      "de": "Getränk 1,5 L",
+      "es": "Bebida 1,5 L",
+      "it": "Bibita 1,5 L",
+      "ru": "Напиток 1,5 л"
      },
      "price": 4,
      "id": "boissons-coca-cola-1-5-l",
@@ -2761,7 +3640,10 @@
       "fr": "Au choix dans le frigo : Coca-Cola, Fanta, Lipton Ice Tea…",
       "en": "Your pick from the fridge: Coca-Cola, Fanta, Lipton Ice Tea…",
       "tr": "Buzdolabından seçin: Coca-Cola, Fanta, Lipton Ice Tea…",
-      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Fanta, Lipton Ice Tea…"
+      "de": "Freie Wahl aus dem Kühlschrank: Coca-Cola, Fanta, Lipton Ice Tea…",
+      "es": "A elegir en la nevera: Coca-Cola, Fanta, Lipton Ice Tea…",
+      "it": "A scelta dal frigo: Coca-Cola, Fanta, Lipton Ice Tea…",
+      "ru": "На выбор из холодильника: Coca-Cola, Fanta, Lipton Ice Tea…"
      },
      "options": [],
      "upgrade": ""
@@ -2771,7 +3653,10 @@
       "fr": "Red Bull",
       "en": "Red Bull",
       "tr": "Red Bull",
-      "de": "Red Bull"
+      "de": "Red Bull",
+      "es": "Red Bull",
+      "it": "Red Bull",
+      "ru": "Red Bull"
      },
      "price": 3,
      "id": "boissons-red-bull",
@@ -2782,7 +3667,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2792,7 +3680,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "desserts-baklava-piece"
@@ -2804,7 +3695,10 @@
     "fr": "Boissons alcoolisées",
     "en": "Alcoholic drinks",
     "tr": "Alkollü içecekler",
-    "de": "Alkoholische Getränke"
+    "de": "Alkoholische Getränke",
+    "es": "Bebidas alcohólicas",
+    "it": "Bevande alcoliche",
+    "ru": "Алкогольные напитки"
    },
    "items": [
     {
@@ -2812,7 +3706,10 @@
       "fr": "Bière 1664 / Kronenbourg 75 cl",
       "en": "1664 / Kronenbourg beer 75 cl",
       "tr": "1664 / Kronenbourg bira 75 cl",
-      "de": "Bier 1664 / Kronenbourg 75 cl"
+      "de": "Bier 1664 / Kronenbourg 75 cl",
+      "es": "Cerveza 1664 / Kronenbourg 75 cl",
+      "it": "Birra 1664 / Kronenbourg 75 cl",
+      "ru": "Пиво 1664 / Kronenbourg 0,75 л"
      },
      "price": 5,
      "id": "alcools-biere-1664-kronenbourg-75-cl",
@@ -2823,7 +3720,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2833,7 +3733,10 @@
       "fr": "Bière 1664 50 cl",
       "en": "1664 beer 50 cl",
       "tr": "1664 bira 50 cl",
-      "de": "Bier 1664 50 cl"
+      "de": "Bier 1664 50 cl",
+      "es": "Cerveza 1664 50 cl",
+      "it": "Birra 1664 50 cl",
+      "ru": "Пиво 1664 0,5 л"
      },
      "price": 3.5,
      "id": "alcools-biere-1664-50-cl",
@@ -2844,7 +3747,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2854,7 +3760,10 @@
       "fr": "Bière Bavaria 50 cl",
       "en": "Bavaria beer 50 cl",
       "tr": "Bavaria bira 50 cl",
-      "de": "Bier Bavaria 50 cl"
+      "de": "Bier Bavaria 50 cl",
+      "es": "Cerveza Bavaria 50 cl",
+      "it": "Birra Bavaria 50 cl",
+      "ru": "Пиво Bavaria 0,5 л"
      },
      "price": 4,
      "bestseller": true,
@@ -2865,7 +3774,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2875,7 +3787,10 @@
       "fr": "Bière Desperados 50 cl",
       "en": "Desperados beer 50 cl",
       "tr": "Desperados bira 50 cl",
-      "de": "Bier Desperados 50 cl"
+      "de": "Bier Desperados 50 cl",
+      "es": "Cerveza Desperados 50 cl",
+      "it": "Birra Desperados 50 cl",
+      "ru": "Пиво Desperados 0,5 л"
      },
      "price": 4.5,
      "id": "alcools-biere-desperados-50-cl",
@@ -2886,7 +3801,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2896,7 +3814,10 @@
       "fr": "Bière Efes 50 cl",
       "en": "Efes beer 50 cl",
       "tr": "Efes bira 50 cl",
-      "de": "Bier Efes 50 cl"
+      "de": "Bier Efes 50 cl",
+      "es": "Cerveza Efes 50 cl",
+      "it": "Birra Efes 50 cl",
+      "ru": "Пиво Efes 0,5 л"
      },
      "price": 4,
      "id": "alcools-biere-efes-50-cl",
@@ -2907,7 +3828,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2917,7 +3841,10 @@
       "fr": "Bière Heineken 50 cl",
       "en": "Heineken beer 50 cl",
       "tr": "Heineken bira 50 cl",
-      "de": "Bier Heineken 50 cl"
+      "de": "Bier Heineken 50 cl",
+      "es": "Cerveza Heineken 50 cl",
+      "it": "Birra Heineken 50 cl",
+      "ru": "Пиво Heineken 0,5 л"
      },
      "price": 3.5,
      "id": "alcools-biere-heineken-50-cl",
@@ -2928,7 +3855,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2938,7 +3868,10 @@
       "fr": "Bière Kronenbourg 50 cl",
       "en": "Kronenbourg beer 50 cl",
       "tr": "Kronenbourg bira 50 cl",
-      "de": "Bier Kronenbourg 50 cl"
+      "de": "Bier Kronenbourg 50 cl",
+      "es": "Cerveza Kronenbourg 50 cl",
+      "it": "Birra Kronenbourg 50 cl",
+      "ru": "Пиво Kronenbourg 0,5 л"
      },
      "price": 3.5,
      "id": "alcools-biere-kronenbourg-50-cl",
@@ -2949,7 +3882,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2959,7 +3895,10 @@
       "fr": "Verre de vin rosé",
       "en": "Glass of rosé wine",
       "tr": "Kadeh roze şarap",
-      "de": "Glas Roséwein"
+      "de": "Glas Roséwein",
+      "es": "Copa de vino rosado",
+      "it": "Calice di vino rosato",
+      "ru": "Бокал розового вина"
      },
      "price": 2.5,
      "id": "alcools-verre-de-vin",
@@ -2970,7 +3909,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -2980,7 +3922,10 @@
       "fr": "Verre de vin rouge",
       "en": "Glass of red wine",
       "tr": "Kadeh kırmızı şarap",
-      "de": "Glas Rotwein"
+      "de": "Glas Rotwein",
+      "es": "Copa de vino tinto",
+      "it": "Calice di vino rosso",
+      "ru": "Бокал красного вина"
      },
      "price": 2.5,
      "id": "alcools-verre-de-vin-rouge",
@@ -2991,7 +3936,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3001,7 +3949,10 @@
       "fr": "Carafe de vin rosé 1/4",
       "en": "Carafe of rosé wine 1/4",
       "tr": "Sürahi roze şarap 1/4",
-      "de": "Karaffe Roséwein 1/4"
+      "de": "Karaffe Roséwein 1/4",
+      "es": "Jarra de vino rosado 1/4",
+      "it": "Caraffa di vino rosato 1/4",
+      "ru": "Графин розового вина 1/4"
      },
      "price": 6,
      "id": "alcools-carafe-de-vin-1-4",
@@ -3012,7 +3963,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3022,7 +3976,10 @@
       "fr": "Carafe de vin rouge 1/4",
       "en": "Carafe of red wine 1/4",
       "tr": "Sürahi kırmızı şarap 1/4",
-      "de": "Karaffe Rotwein 1/4"
+      "de": "Karaffe Rotwein 1/4",
+      "es": "Jarra de vino tinto 1/4",
+      "it": "Caraffa di vino rosso 1/4",
+      "ru": "Графин красного вина 1/4"
      },
      "price": 6,
      "id": "alcools-carafe-de-vin-1-4-rouge",
@@ -3033,7 +3990,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3043,7 +4003,10 @@
       "fr": "Carafe de vin rosé 1/2",
       "en": "Carafe of rosé wine 1/2",
       "tr": "Sürahi roze şarap 1/2",
-      "de": "Karaffe Roséwein 1/2"
+      "de": "Karaffe Roséwein 1/2",
+      "es": "Jarra de vino rosado 1/2",
+      "it": "Caraffa di vino rosato 1/2",
+      "ru": "Графин розового вина 1/2"
      },
      "price": 9,
      "id": "alcools-carafe-de-vin-1-2",
@@ -3054,7 +4017,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3064,7 +4030,10 @@
       "fr": "Carafe de vin rouge 1/2",
       "en": "Carafe of red wine 1/2",
       "tr": "Sürahi kırmızı şarap 1/2",
-      "de": "Karaffe Rotwein 1/2"
+      "de": "Karaffe Rotwein 1/2",
+      "es": "Jarra de vino tinto 1/2",
+      "it": "Caraffa di vino rosso 1/2",
+      "ru": "Графин красного вина 1/2"
      },
      "price": 9,
      "id": "alcools-carafe-de-vin-1-2-rouge",
@@ -3075,7 +4044,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3085,7 +4057,10 @@
       "fr": "Bouteille de vin rosé",
       "en": "Bottle of rosé wine",
       "tr": "Şişe roze şarap",
-      "de": "Flasche Roséwein"
+      "de": "Flasche Roséwein",
+      "es": "Botella de vino rosado",
+      "it": "Bottiglia di vino rosato",
+      "ru": "Бутылка розового вина"
      },
      "price": 16,
      "id": "alcools-bouteille-de-vin",
@@ -3096,7 +4071,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3106,7 +4084,10 @@
       "fr": "Bouteille de vin rouge",
       "en": "Bottle of red wine",
       "tr": "Şişe kırmızı şarap",
-      "de": "Flasche Rotwein"
+      "de": "Flasche Rotwein",
+      "es": "Botella de vino tinto",
+      "it": "Bottiglia di vino rosso",
+      "ru": "Бутылка красного вина"
      },
      "price": 16,
      "id": "alcools-bouteille-de-vin-rouge",
@@ -3117,7 +4098,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3127,7 +4111,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": [
     "accompagnements-nuggets-6-pieces"
@@ -3139,7 +4126,10 @@
     "fr": "Desserts",
     "en": "Desserts",
     "tr": "Tatlılar",
-    "de": "Desserts"
+    "de": "Desserts",
+    "es": "Postres",
+    "it": "Dolci",
+    "ru": "Десерты"
    },
    "items": [
     {
@@ -3147,7 +4137,10 @@
       "fr": "Baklava (pièce)",
       "en": "Baklava (per piece)",
       "tr": "Baklava (adet)",
-      "de": "Baklava (Stück)"
+      "de": "Baklava (Stück)",
+      "es": "Baklava (pieza)",
+      "it": "Baklava (pezzo)",
+      "ru": "Пахлава (1 шт.)"
      },
      "price": 2,
      "bestseller": true,
@@ -3158,7 +4151,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3168,7 +4164,10 @@
       "fr": "Künefe",
       "en": "Künefe",
       "tr": "Künefe",
-      "de": "Künefe"
+      "de": "Künefe",
+      "es": "Künefe",
+      "it": "Künefe",
+      "ru": "Кюнефе"
      },
      "price": 6,
      "id": "desserts-kunefe",
@@ -3179,7 +4178,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3189,7 +4191,10 @@
       "fr": "Künefe avec glace",
       "en": "Künefe with ice cream",
       "tr": "Dondurmalı künefe",
-      "de": "Künefe mit Eis"
+      "de": "Künefe mit Eis",
+      "es": "Künefe con helado",
+      "it": "Künefe con gelato",
+      "ru": "Кюнефе с мороженым"
      },
      "price": 7.5,
      "id": "desserts-kunefe-avec-glace",
@@ -3200,7 +4205,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3210,7 +4218,10 @@
       "fr": "Tiramisu",
       "en": "Tiramisu",
       "tr": "Tiramisu",
-      "de": "Tiramisu"
+      "de": "Tiramisu",
+      "es": "Tiramisú",
+      "it": "Tiramisù",
+      "ru": "Тирамису"
      },
      "price": 3.5,
      "id": "desserts-tiramisu",
@@ -3221,7 +4232,10 @@
       "fr": "",
       "en": "",
       "tr": "",
-      "de": ""
+      "de": "",
+      "es": "",
+      "it": "",
+      "ru": ""
      },
      "options": [],
      "upgrade": ""
@@ -3231,7 +4245,10 @@
     "fr": "",
     "en": "",
     "tr": "",
-    "de": ""
+    "de": "",
+    "es": "",
+    "it": "",
+    "ru": ""
    },
    "suggest": []
   }
@@ -3243,7 +4260,10 @@
    "fr": "",
    "en": "",
    "tr": "",
-   "de": ""
+   "de": "",
+   "es": "",
+   "it": "",
+   "ru": ""
   }
  },
  "promos": [],
@@ -3254,7 +4274,10 @@
     "fr": "Viande kebab",
     "en": "Kebab meat",
     "tr": "Döner eti",
-    "de": "Döner-Fleisch"
+    "de": "Döner-Fleisch",
+    "es": "Carne de kebab",
+    "it": "Carne kebab",
+    "ru": "Мясо для кебаба"
    },
    "multi": false,
    "max": 1,
@@ -3265,7 +4288,10 @@
       "fr": "Kebab bœuf",
       "en": "Beef kebab",
       "tr": "Dana döner",
-      "de": "Rind-Döner"
+      "de": "Rind-Döner",
+      "es": "Kebab de ternera",
+      "it": "Kebab di manzo",
+      "ru": "Кебаб из говядины"
      },
      "icon": "boeuf",
      "photo": "",
@@ -3278,7 +4304,10 @@
       "fr": "Kebab poulet",
       "en": "Chicken kebab",
       "tr": "Tavuk döner",
-      "de": "Hähnchen-Döner"
+      "de": "Hähnchen-Döner",
+      "es": "Kebab de pollo",
+      "it": "Kebab di pollo",
+      "ru": "Кебаб из курицы"
      },
      "icon": "poulet",
      "photo": "",
@@ -3291,7 +4320,10 @@
       "fr": "Kebab mixte",
       "en": "Mixed kebab",
       "tr": "Karışık döner",
-      "de": "Gemischter Döner"
+      "de": "Gemischter Döner",
+      "es": "Kebab mixto",
+      "it": "Kebab misto",
+      "ru": "Кебаб микс"
      },
      "icon": "mixte",
      "photo": "",
@@ -3308,7 +4340,10 @@
     "fr": "Viande",
     "en": "Meat",
     "tr": "Et",
-    "de": "Fleisch"
+    "de": "Fleisch",
+    "es": "Carne",
+    "it": "Carne",
+    "ru": "Мясо"
    },
    "multi": true,
    "max": 3,
@@ -3319,7 +4354,10 @@
       "fr": "Kebab bœuf",
       "en": "Beef kebab",
       "tr": "Dana döner",
-      "de": "Rind-Döner"
+      "de": "Rind-Döner",
+      "es": "Kebab de ternera",
+      "it": "Kebab di manzo",
+      "ru": "Кебаб из говядины"
      },
      "icon": "boeuf",
      "photo": "",
@@ -3332,7 +4370,10 @@
       "fr": "Kebab poulet",
       "en": "Chicken kebab",
       "tr": "Tavuk döner",
-      "de": "Hähnchen-Döner"
+      "de": "Hähnchen-Döner",
+      "es": "Kebab de pollo",
+      "it": "Kebab di pollo",
+      "ru": "Кебаб из курицы"
      },
      "icon": "poulet",
      "photo": "",
@@ -3345,7 +4386,10 @@
       "fr": "Kebab mixte",
       "en": "Mixed kebab",
       "tr": "Karışık döner",
-      "de": "Gemischter Döner"
+      "de": "Gemischter Döner",
+      "es": "Kebab mixto",
+      "it": "Kebab misto",
+      "ru": "Кебаб микс"
      },
      "icon": "mixte",
      "photo": "",
@@ -3358,7 +4402,10 @@
       "fr": "Escalope de poulet",
       "en": "Chicken escalope",
       "tr": "Tavuk şinitzel",
-      "de": "Hähnchenschnitzel"
+      "de": "Hähnchenschnitzel",
+      "es": "Escalope de pollo",
+      "it": "Scaloppina di pollo",
+      "ru": "Куриный шницель"
      },
      "icon": "escalope",
      "photo": "",
@@ -3371,7 +4418,10 @@
       "fr": "Tenders",
       "en": "Tenders",
       "tr": "Tenders",
-      "de": "Tenders"
+      "de": "Tenders",
+      "es": "Tenders",
+      "it": "Tenders",
+      "ru": "Тендерс"
      },
      "icon": "tenders",
      "photo": "",
@@ -3384,7 +4434,10 @@
       "fr": "Nuggets",
       "en": "Nuggets",
       "tr": "Nuggets",
-      "de": "Nuggets"
+      "de": "Nuggets",
+      "es": "Nuggets",
+      "it": "Nuggets",
+      "ru": "Наггетсы"
      },
      "icon": "nuggets",
      "photo": "",
@@ -3411,7 +4464,10 @@
     "fr": "Votre bowl",
     "en": "Your bowl",
     "tr": "Bowl seçimi",
-    "de": "Ihre Bowl"
+    "de": "Ihre Bowl",
+    "es": "Su bowl",
+    "it": "Il tuo bowl",
+    "ru": "Ваш боул"
    },
    "multi": false,
    "max": 1,
@@ -3422,7 +4478,10 @@
       "fr": "Bowl kebab bœuf",
       "en": "Beef kebab bowl",
       "tr": "Dana döner bowl",
-      "de": "Rind-Döner-Bowl"
+      "de": "Rind-Döner-Bowl",
+      "es": "Bowl kebab de ternera",
+      "it": "Bowl kebab di manzo",
+      "ru": "Боул с кебабом из говядины"
      },
      "icon": "bowl-boeuf",
      "photo": "",
@@ -3435,7 +4494,10 @@
       "fr": "Bowl kebab poulet",
       "en": "Chicken kebab bowl",
       "tr": "Tavuk döner bowl",
-      "de": "Hähnchen-Döner-Bowl"
+      "de": "Hähnchen-Döner-Bowl",
+      "es": "Bowl kebab de pollo",
+      "it": "Bowl kebab di pollo",
+      "ru": "Боул с кебабом из курицы"
      },
      "icon": "bowl-poulet",
      "photo": "",
@@ -3448,7 +4510,10 @@
       "fr": "Bowl kebab mixte",
       "en": "Mixed kebab bowl",
       "tr": "Karışık döner bowl",
-      "de": "Gemischte Döner-Bowl"
+      "de": "Gemischte Döner-Bowl",
+      "es": "Bowl kebab mixto",
+      "it": "Bowl kebab misto",
+      "ru": "Боул с кебабом микс"
      },
      "icon": "bowl-mixte",
      "photo": "",
@@ -3461,7 +4526,10 @@
       "fr": "Chicken bowl",
       "en": "Chicken bowl",
       "tr": "Chicken bowl",
-      "de": "Chicken Bowl"
+      "de": "Chicken Bowl",
+      "es": "Chicken bowl",
+      "it": "Chicken bowl",
+      "ru": "Чикен-боул"
      },
      "icon": "bowl-chicken",
      "photo": "",
@@ -3474,7 +4542,10 @@
       "fr": "Köfte bowl",
       "en": "Köfte bowl",
       "tr": "Köfte bowl",
-      "de": "Köfte-Bowl"
+      "de": "Köfte-Bowl",
+      "es": "Köfte bowl",
+      "it": "Köfte bowl",
+      "ru": "Боул с кёфте"
      },
      "icon": "bowl-kofte",
      "photo": "",
@@ -3491,7 +4562,10 @@
     "fr": "Accompagnement",
     "en": "Side",
     "tr": "Yanında",
-    "de": "Beilage"
+    "de": "Beilage",
+    "es": "Acompañamiento",
+    "it": "Contorno",
+    "ru": "Гарнир"
    },
    "multi": false,
    "max": 1,
@@ -3502,7 +4576,10 @@
       "fr": "Frites",
       "en": "Fries",
       "tr": "Patates kızartması",
-      "de": "Pommes"
+      "de": "Pommes",
+      "es": "Patatas fritas",
+      "it": "Patatine",
+      "ru": "Картофель фри"
      },
      "icon": "frites",
      "photo": "",
@@ -3515,7 +4592,10 @@
       "fr": "Boulgour",
       "en": "Bulgur",
       "tr": "Bulgur pilavı",
-      "de": "Bulgur"
+      "de": "Bulgur",
+      "es": "Bulgur",
+      "it": "Bulgur",
+      "ru": "Булгур"
      },
      "icon": "boulgour",
      "photo": "",
@@ -3532,7 +4612,10 @@
     "fr": "Crudités",
     "en": "Salad & veggies",
     "tr": "Sebzeler",
-    "de": "Rohkost"
+    "de": "Rohkost",
+    "es": "Verduras",
+    "it": "Verdure",
+    "ru": "Овощи"
    },
    "multi": true,
    "max": 0,
@@ -3543,7 +4626,10 @@
       "fr": "Tout",
       "en": "Everything",
       "tr": "Hepsi",
-      "de": "Alles"
+      "de": "Alles",
+      "es": "Todo",
+      "it": "Tutto",
+      "ru": "Всё"
      },
      "icon": "tout",
      "photo": "",
@@ -3557,7 +4643,10 @@
       "fr": "Salade",
       "en": "Lettuce",
       "tr": "Marul",
-      "de": "Salat"
+      "de": "Salat",
+      "es": "Lechuga",
+      "it": "Insalata",
+      "ru": "Салат"
      },
      "icon": "salade",
      "photo": "",
@@ -3570,7 +4659,10 @@
       "fr": "Tomate",
       "en": "Tomato",
       "tr": "Domates",
-      "de": "Tomate"
+      "de": "Tomate",
+      "es": "Tomate",
+      "it": "Pomodoro",
+      "ru": "Помидор"
      },
      "icon": "tomate",
      "photo": "",
@@ -3583,7 +4675,10 @@
       "fr": "Oignons",
       "en": "Onions",
       "tr": "Soğan",
-      "de": "Zwiebeln"
+      "de": "Zwiebeln",
+      "es": "Cebolla",
+      "it": "Cipolla",
+      "ru": "Лук"
      },
      "icon": "oignons",
      "photo": "",
@@ -3596,7 +4691,10 @@
       "fr": "Chou rouge",
       "en": "Red cabbage",
       "tr": "Kırmızı lahana",
-      "de": "Rotkohl"
+      "de": "Rotkohl",
+      "es": "Col lombarda",
+      "it": "Cavolo rosso",
+      "ru": "Красная капуста"
      },
      "icon": "chou-rouge",
      "photo": "",
@@ -3609,7 +4707,10 @@
       "fr": "Carottes",
       "en": "Carrots",
       "tr": "Havuç",
-      "de": "Karotten"
+      "de": "Karotten",
+      "es": "Zanahoria",
+      "it": "Carote",
+      "ru": "Морковь"
      },
      "icon": "carottes",
      "photo": "",
@@ -3622,7 +4723,10 @@
       "fr": "Concombre",
       "en": "Cucumber",
       "tr": "Salatalık",
-      "de": "Gurke"
+      "de": "Gurke",
+      "es": "Pepino",
+      "it": "Cetriolo",
+      "ru": "Огурец"
      },
      "icon": "concombre",
      "photo": "",
@@ -3635,7 +4739,10 @@
       "fr": "Maïs",
       "en": "Sweetcorn",
       "tr": "Mısır",
-      "de": "Mais"
+      "de": "Mais",
+      "es": "Maíz",
+      "it": "Mais",
+      "ru": "Кукуруза"
      },
      "icon": "mais",
      "photo": "",
@@ -3648,7 +4755,10 @@
       "fr": "Olives",
       "en": "Olives",
       "tr": "Zeytin",
-      "de": "Oliven"
+      "de": "Oliven",
+      "es": "Aceitunas",
+      "it": "Olive",
+      "ru": "Оливки"
      },
      "icon": "olives",
      "photo": "",
@@ -3661,7 +4771,10 @@
       "fr": "Piment vert",
       "en": "Green chili",
       "tr": "Yeşil biber",
-      "de": "Grüne Peperoni"
+      "de": "Grüne Peperoni",
+      "es": "Guindilla verde",
+      "it": "Peperoncino verde",
+      "ru": "Зелёный перец чили"
      },
      "icon": "piment-vert",
      "photo": "",
@@ -3675,7 +4788,10 @@
       "fr": "Feta",
       "en": "Feta",
       "tr": "Beyaz peynir",
-      "de": "Feta"
+      "de": "Feta",
+      "es": "Feta",
+      "it": "Feta",
+      "ru": "Фета"
      },
      "icon": "feta",
      "photo": "",
@@ -3692,7 +4808,10 @@
     "fr": "Sauces",
     "en": "Sauces",
     "tr": "Soslar",
-    "de": "Soßen"
+    "de": "Soßen",
+    "es": "Salsas",
+    "it": "Salse",
+    "ru": "Соусы"
    },
    "multi": true,
    "max": 0,
@@ -3703,7 +4822,10 @@
       "fr": "Ketchup",
       "en": "Ketchup",
       "tr": "Ketçap",
-      "de": "Ketchup"
+      "de": "Ketchup",
+      "es": "Kétchup",
+      "it": "Ketchup",
+      "ru": "Кетчуп"
      },
      "icon": "ketchup",
      "photo": "",
@@ -3716,7 +4838,10 @@
       "fr": "Mayonnaise",
       "en": "Mayonnaise",
       "tr": "Mayonez",
-      "de": "Mayonnaise"
+      "de": "Mayonnaise",
+      "es": "Mayonesa",
+      "it": "Maionese",
+      "ru": "Майонез"
      },
      "icon": "mayonnaise",
      "photo": "",
@@ -3729,7 +4854,10 @@
       "fr": "Algérienne",
       "en": "Algerian",
       "tr": "Cezayir sos",
-      "de": "Algerische"
+      "de": "Algerische",
+      "es": "Argelina",
+      "it": "Algerina",
+      "ru": "Алжирский"
      },
      "icon": "algerienne",
      "photo": "",
@@ -3742,7 +4870,10 @@
       "fr": "Rouge",
       "en": "Red sauce",
       "tr": "Kırmızı sos",
-      "de": "Rote Soße"
+      "de": "Rote Soße",
+      "es": "Roja",
+      "it": "Rossa",
+      "ru": "Красный соус"
      },
      "icon": "rouge",
      "photo": "",
@@ -3755,7 +4886,10 @@
       "fr": "Barbecue",
       "en": "BBQ",
       "tr": "Barbekü",
-      "de": "BBQ"
+      "de": "BBQ",
+      "es": "Barbacoa",
+      "it": "Barbecue",
+      "ru": "Барбекю"
      },
      "icon": "bbq",
      "photo": "",
@@ -3768,7 +4902,10 @@
       "fr": "Brésilienne",
       "en": "Brazilian",
       "tr": "Brezilya sos",
-      "de": "Brasilianische"
+      "de": "Brasilianische",
+      "es": "Brasileña",
+      "it": "Brasiliana",
+      "ru": "Бразильский"
      },
      "icon": "bresilienne",
      "photo": "",
@@ -3781,7 +4918,10 @@
       "fr": "Blanche",
       "en": "White sauce",
       "tr": "Beyaz sos",
-      "de": "Weiße Soße"
+      "de": "Weiße Soße",
+      "es": "Blanca",
+      "it": "Bianca",
+      "ru": "Белый соус"
      },
      "icon": "blanche",
      "photo": "",
@@ -3794,7 +4934,10 @@
       "fr": "Samouraï",
       "en": "Samurai",
       "tr": "Samuray",
-      "de": "Samurai"
+      "de": "Samurai",
+      "es": "Samurái",
+      "it": "Samurai",
+      "ru": "Самурай"
      },
      "icon": "samourai",
      "photo": "",
@@ -3807,7 +4950,10 @@
       "fr": "Curry",
       "en": "Curry",
       "tr": "Köri",
-      "de": "Curry"
+      "de": "Curry",
+      "es": "Curry",
+      "it": "Curry",
+      "ru": "Карри"
      },
      "icon": "curry",
      "photo": "",
@@ -3820,7 +4966,10 @@
       "fr": "Biggy burger",
       "en": "Biggy burger",
       "tr": "Biggy burger",
-      "de": "Biggy Burger"
+      "de": "Biggy Burger",
+      "es": "Biggy burger",
+      "it": "Biggy burger",
+      "ru": "Biggy burger"
      },
      "icon": "biggy-burger",
      "photo": "",
@@ -3833,7 +4982,10 @@
       "fr": "Andalouse",
       "en": "Andalusian",
       "tr": "Endülüs sos",
-      "de": "Andalusische"
+      "de": "Andalusische",
+      "es": "Andaluza",
+      "it": "Andalusa",
+      "ru": "Андалузский"
      },
      "icon": "andalouse",
      "photo": "",
@@ -3846,7 +4998,10 @@
       "fr": "Tartare",
       "en": "Tartar",
       "tr": "Tartar",
-      "de": "Tartar"
+      "de": "Tartar",
+      "es": "Tártara",
+      "it": "Tartara",
+      "ru": "Тартар"
      },
      "icon": "tartare",
      "photo": "",
@@ -3859,7 +5014,10 @@
       "fr": "Harissa",
       "en": "Harissa",
       "tr": "Harissa",
-      "de": "Harissa"
+      "de": "Harissa",
+      "es": "Harissa",
+      "it": "Harissa",
+      "ru": "Харисса"
      },
      "icon": "harissa",
      "photo": "",
@@ -3872,7 +5030,10 @@
       "fr": "Piment en poudre",
       "en": "Spicy (chili powder)",
       "tr": "Pul biber",
-      "de": "Chilipulver (scharf)"
+      "de": "Chilipulver (scharf)",
+      "es": "Guindilla en polvo",
+      "it": "Peperoncino in polvere",
+      "ru": "Молотый перец чили"
      },
      "icon": "piment-poudre",
      "photo": "",
@@ -3890,7 +5051,10 @@
     "fr": "Sauce pour les frites",
     "en": "Sauce for the fries",
     "tr": "Patates için sos",
-    "de": "Soße für die Pommes"
+    "de": "Soße für die Pommes",
+    "es": "Salsa para las patatas",
+    "it": "Salsa per le patatine",
+    "ru": "Соус к картофелю фри"
    },
    "multi": true,
    "max": 0,
@@ -3901,7 +5065,10 @@
       "fr": "Ketchup",
       "en": "Ketchup",
       "tr": "Ketçap",
-      "de": "Ketchup"
+      "de": "Ketchup",
+      "es": "Kétchup",
+      "it": "Ketchup",
+      "ru": "Кетчуп"
      },
      "icon": "ketchup",
      "photo": "",
@@ -3914,7 +5081,10 @@
       "fr": "Mayonnaise",
       "en": "Mayonnaise",
       "tr": "Mayonez",
-      "de": "Mayonnaise"
+      "de": "Mayonnaise",
+      "es": "Mayonesa",
+      "it": "Maionese",
+      "ru": "Майонез"
      },
      "icon": "mayonnaise",
      "photo": "",
@@ -3927,7 +5097,10 @@
       "fr": "Algérienne",
       "en": "Algerian",
       "tr": "Cezayir sos",
-      "de": "Algerische"
+      "de": "Algerische",
+      "es": "Argelina",
+      "it": "Algerina",
+      "ru": "Алжирский"
      },
      "icon": "algerienne",
      "photo": "",
@@ -3940,7 +5113,10 @@
       "fr": "Rouge",
       "en": "Red sauce",
       "tr": "Kırmızı sos",
-      "de": "Rote Soße"
+      "de": "Rote Soße",
+      "es": "Roja",
+      "it": "Rossa",
+      "ru": "Красный соус"
      },
      "icon": "rouge",
      "photo": "",
@@ -3953,7 +5129,10 @@
       "fr": "Barbecue",
       "en": "BBQ",
       "tr": "Barbekü",
-      "de": "BBQ"
+      "de": "BBQ",
+      "es": "Barbacoa",
+      "it": "Barbecue",
+      "ru": "Барбекю"
      },
      "icon": "bbq",
      "photo": "",
@@ -3966,7 +5145,10 @@
       "fr": "Brésilienne",
       "en": "Brazilian",
       "tr": "Brezilya sos",
-      "de": "Brasilianische"
+      "de": "Brasilianische",
+      "es": "Brasileña",
+      "it": "Brasiliana",
+      "ru": "Бразильский"
      },
      "icon": "bresilienne",
      "photo": "",
@@ -3979,7 +5161,10 @@
       "fr": "Blanche",
       "en": "White sauce",
       "tr": "Beyaz sos",
-      "de": "Weiße Soße"
+      "de": "Weiße Soße",
+      "es": "Blanca",
+      "it": "Bianca",
+      "ru": "Белый соус"
      },
      "icon": "blanche",
      "photo": "",
@@ -3992,7 +5177,10 @@
       "fr": "Samouraï",
       "en": "Samurai",
       "tr": "Samuray",
-      "de": "Samurai"
+      "de": "Samurai",
+      "es": "Samurái",
+      "it": "Samurai",
+      "ru": "Самурай"
      },
      "icon": "samourai",
      "photo": "",
@@ -4005,7 +5193,10 @@
       "fr": "Curry",
       "en": "Curry",
       "tr": "Köri",
-      "de": "Curry"
+      "de": "Curry",
+      "es": "Curry",
+      "it": "Curry",
+      "ru": "Карри"
      },
      "icon": "curry",
      "photo": "",
@@ -4018,7 +5209,10 @@
       "fr": "Biggy burger",
       "en": "Biggy burger",
       "tr": "Biggy burger",
-      "de": "Biggy Burger"
+      "de": "Biggy Burger",
+      "es": "Biggy burger",
+      "it": "Biggy burger",
+      "ru": "Biggy burger"
      },
      "icon": "biggy-burger",
      "photo": "",
@@ -4031,7 +5225,10 @@
       "fr": "Andalouse",
       "en": "Andalusian",
       "tr": "Endülüs sos",
-      "de": "Andalusische"
+      "de": "Andalusische",
+      "es": "Andaluza",
+      "it": "Andalusa",
+      "ru": "Андалузский"
      },
      "icon": "andalouse",
      "photo": "",
@@ -4044,7 +5241,10 @@
       "fr": "Tartare",
       "en": "Tartar",
       "tr": "Tartar",
-      "de": "Tartar"
+      "de": "Tartar",
+      "es": "Tártara",
+      "it": "Tartara",
+      "ru": "Тартар"
      },
      "icon": "tartare",
      "photo": "",
@@ -4057,7 +5257,10 @@
       "fr": "Piment",
       "en": "Hot chili",
       "tr": "Acı sos",
-      "de": "Scharf"
+      "de": "Scharf",
+      "es": "Picante",
+      "it": "Piccante",
+      "ru": "Острый перец"
      },
      "icon": "piment",
      "photo": "",
@@ -4070,7 +5273,10 @@
       "fr": "Harissa",
       "en": "Harissa",
       "tr": "Harissa",
-      "de": "Harissa"
+      "de": "Harissa",
+      "es": "Harissa",
+      "it": "Harissa",
+      "ru": "Харисса"
      },
      "icon": "harissa",
      "photo": "",
@@ -4091,7 +5297,10 @@
     "fr": "Suppléments",
     "en": "Extras",
     "tr": "Ekstralar",
-    "de": "Extras"
+    "de": "Extras",
+    "es": "Suplementos",
+    "it": "Supplementi",
+    "ru": "Добавки"
    },
    "multi": true,
    "max": 0,
@@ -4102,7 +5311,10 @@
       "fr": "Supplément viande",
       "en": "Extra meat",
       "tr": "Ekstra et",
-      "de": "Extra Fleisch"
+      "de": "Extra Fleisch",
+      "es": "Suplemento de carne",
+      "it": "Supplemento carne",
+      "ru": "Доп. мясо"
      },
      "icon": "supp-viande",
      "photo": "",
@@ -4115,7 +5327,10 @@
       "fr": "Supplément feta",
       "en": "Extra feta",
       "tr": "Ekstra beyaz peynir",
-      "de": "Extra Feta"
+      "de": "Extra Feta",
+      "es": "Suplemento feta",
+      "it": "Supplemento feta",
+      "ru": "Доп. фета"
      },
      "icon": "supp-feta",
      "photo": "",
@@ -4132,7 +5347,10 @@
     "fr": "Boisson 33 cl",
     "en": "33 cl drink",
     "tr": "33 cl içecek",
-    "de": "Getränk 33 cl"
+    "de": "Getränk 33 cl",
+    "es": "Bebida 33 cl",
+    "it": "Bibita 33 cl",
+    "ru": "Напиток 0,33 л"
    },
    "multi": false,
    "max": 1,
@@ -4145,7 +5363,10 @@
       "fr": "Coca-Cola",
       "en": "Coca-Cola",
       "tr": "Coca-Cola",
-      "de": "Coca-Cola"
+      "de": "Coca-Cola",
+      "es": "Coca-Cola",
+      "it": "Coca-Cola",
+      "ru": "Coca-Cola"
      },
      "icon": "can-cola",
      "photo": "",
@@ -4158,7 +5379,10 @@
       "fr": "Coca-Cola Zero",
       "en": "Coca-Cola Zero",
       "tr": "Coca-Cola Zero",
-      "de": "Coca-Cola Zero"
+      "de": "Coca-Cola Zero",
+      "es": "Coca-Cola Zero",
+      "it": "Coca-Cola Zero",
+      "ru": "Coca-Cola Zero"
      },
      "icon": "can-zero",
      "photo": "",
@@ -4171,7 +5395,10 @@
       "fr": "Fanta",
       "en": "Fanta",
       "tr": "Fanta",
-      "de": "Fanta"
+      "de": "Fanta",
+      "es": "Fanta",
+      "it": "Fanta",
+      "ru": "Fanta"
      },
      "icon": "can-orange",
      "photo": "",
@@ -4184,7 +5411,10 @@
       "fr": "Oasis Tropical",
       "en": "Oasis Tropical",
       "tr": "Oasis Tropical",
-      "de": "Oasis Tropical"
+      "de": "Oasis Tropical",
+      "es": "Oasis Tropical",
+      "it": "Oasis Tropical",
+      "ru": "Oasis Tropical"
      },
      "icon": "can-tropical",
      "photo": "",
@@ -4197,7 +5427,10 @@
       "fr": "Lipton Ice Tea",
       "en": "Lipton Ice Tea",
       "tr": "Lipton Ice Tea",
-      "de": "Lipton Ice Tea"
+      "de": "Lipton Ice Tea",
+      "es": "Lipton Ice Tea",
+      "it": "Lipton Ice Tea",
+      "ru": "Lipton Ice Tea"
      },
      "icon": "can-tea",
      "photo": "",
@@ -4210,7 +5443,10 @@
       "fr": "Sprite",
       "en": "Sprite",
       "tr": "Sprite",
-      "de": "Sprite"
+      "de": "Sprite",
+      "es": "Sprite",
+      "it": "Sprite",
+      "ru": "Sprite"
      },
      "icon": "can-lemon",
      "photo": "",
@@ -4228,6 +5464,7 @@
  "applied": [
   "boissons-2026-11",
   "capri-sun-2026-11",
+  "langues-es-it-ru-2026-11",
   "photo-4fromages2-2026-11",
   "photo-4saisons2-2026-11",
   "photo-margherita-2026-11",
@@ -4252,7 +5489,10 @@
      "fr": "Boisson offerte",
      "en": "Free drink",
      "tr": "İkram içecek",
-     "de": "Gratis-Getränk"
+     "de": "Gratis-Getränk",
+     "es": "Bebida gratis",
+     "it": "Bibita offerta",
+     "ru": "Напиток в подарок"
     },
     "chance": 10
    },
@@ -4262,7 +5502,10 @@
      "fr": "Dessert offert",
      "en": "Free dessert",
      "tr": "İkram tatlı",
-     "de": "Gratis-Dessert"
+     "de": "Gratis-Dessert",
+     "es": "Postre gratis",
+     "it": "Dolce offerto",
+     "ru": "Десерт в подарок"
     },
     "chance": 5,
     "size": 0.5
@@ -4273,7 +5516,10 @@
      "fr": "Menu offert",
      "en": "Free meal",
      "tr": "İkram menü",
-     "de": "Gratis-Menü"
+     "de": "Gratis-Menü",
+     "es": "Menú gratis",
+     "it": "Menu offerto",
+     "ru": "Комбо в подарок"
     },
     "chance": 0.2,
     "size": 0.25
