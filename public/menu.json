@@ -1144,6 +1144,24 @@
    "es": "Mantener (+{p})",
    "it": "Tieni (+{p})",
    "ru": "Оставить (+{p})"
+  },
+  "needChoice": {
+   "fr": "Choisissez d'abord : {g}",
+   "en": "Please choose first: {g}",
+   "tr": "Önce seçin: {g}",
+   "de": "Bitte zuerst wählen: {g}",
+   "es": "Elija primero: {g}",
+   "it": "Scegli prima: {g}",
+   "ru": "Сначала выберите: {g}"
+  },
+  "requiredTag": {
+   "fr": "Obligatoire",
+   "en": "Required",
+   "tr": "Zorunlu",
+   "de": "Pflicht",
+   "es": "Obligatorio",
+   "it": "Obbligatorio",
+   "ru": "Обязательно"
   }
  },
  "categories": [

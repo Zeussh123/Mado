@@ -202,6 +202,7 @@ main{padding-bottom:96px}
 .nocrud{flex:1;display:flex;flex-direction:column;gap:8px;animation:popin .35s cubic-bezier(.3,1.6,.5,1) both}
 .nocrud b{text-align:center;font-size:1.05rem}
 .nc-btns{display:flex;gap:8px}
+.grp.need .grp-h small{color:#ff8a65;font-weight:800}
 .grp.flash{animation:grpflash 1.2s ease}
 @keyframes grpflash{0%,60%{background:rgba(143,216,143,.18)}100%{background:transparent}}
 .tea{display:flex;align-items:center;gap:12px;text-align:left;margin:14px auto 4px;max-width:360px;padding:10px 12px;border-radius:16px;background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.35);animation:popin .5s .3s cubic-bezier(.3,1.6,.5,1) both}
@@ -600,7 +601,8 @@ function extras(it, sel){
   }
   return Math.round(x * 100) / 100;
 }
-const groupHint = (g) => (+g.free && +g.extraPrice && !(+g.max && +g.max <= +g.free)) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
+const groupHint = (g) => (isRequired(g) ? ui("requiredTag") + " · " : "") + groupHint0(g);
+const groupHint0 = (g) => (+g.free && +g.extraPrice && !(+g.max && +g.max <= +g.free)) ? fill(ui("freeHint"), {n: g.free, p: fmtPrice(g.extraPrice)}) + (g.multi && +g.max ? " · " + fill(ui("maxHint"), {n: g.max}) : "")
   : g.multi && +g.max ? fill(ui("maxHint"), {n: g.max}) : ui(g.multi ? "severalChoices" : "oneChoice");
 const cntText = (g, n) => n + (!g.multi ? "/1" : +g.max ? "/" + g.max : "");
 function choiceSummary(it, sel){
@@ -753,6 +755,15 @@ function warnExtra(g, cid, tileEl){
     if ((SEL[g.id] || []).includes(cid)) toggleChoice(g.id, cid, tileEl);   // retire la viande qu'il vient de prendre
   });
   $("#sheet").appendChild(box);
+}
+// choix obligatoires : viande, viande du tacos, bowl, accompagnement (réglable par groupe avec « required »)
+const isRequired = (g) => g.required !== undefined ? !!g.required : ["viande", "viande-tacos", "bowl", "accompagnement"].includes(g.id);
+function askRequired(g){
+  if (FOCUS && !FOCUS.has(g.id)) { FOCUS = null; drawSheet(); }
+  const box = document.querySelector(`.grp[data-g="${CSS.escape(g.id)}"]`);
+  if (box) { box.scrollIntoView({behavior: "smooth", block: "start"}); box.classList.remove("flash", "need"); void box.offsetWidth; box.classList.add("flash", "need"); }
+  $("#shBar").innerHTML = `<div class="nocrud"><b>👆 ${esc(fill(ui("needChoice"), {g: t(g.name)}))}</b></div>`;
+  setTimeout(() => { if (STEP === "item" && $("#shBar .nocrud")) drawBar(); }, 2200);
 }
 function askNoCrud(){
   $("#shBar").innerHTML = `<div class="nocrud"><b>🥗 ${esc(ui("noCrudH"))}</b><div class="nc-btns"><button class="btn ghost" data-sh="noCrudPick">${esc(ui("noCrudPick"))}</button><button class="btn grow" data-sh="noCrudYes">${esc(ui("noCrudYes"))}</button></div></div>`;
@@ -1329,6 +1340,9 @@ $("#sheet").addEventListener("click", (e) => {
   else if (a === "reset") { if (FOCUS) for (const g of FOCUS) delete SEL[g]; else SEL = {}; drawSheet(); }
   else if (a === "editAll") { FOCUS = null; drawSheet(); }
   else if (a === "add") {
+    // viande (ou accompagnement) pas choisie : obligatoire, on l'indique au lieu d'ajouter
+    const miss = itemGroups(CUR).find(g => isRequired(g) && groupOn(CUR, g, SEL) && !(SEL[g.id] || []).length && g.choices.some(c => !c.hidden && !choiceOut(c.id)));
+    if (miss) return askRequired(miss);
     // aucune crudité cochée : on demande confirmation avant d'ajouter (« Sans crudités ? »)
     const cg = itemGroups(CUR).find(g => g.id === "crudites");
     if (cg && !(SEL.crudites || []).length && (!FOCUS || FOCUS.has("crudites"))) return askNoCrud();
