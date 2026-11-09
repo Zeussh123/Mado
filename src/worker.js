@@ -244,6 +244,9 @@ function applyTestClient(m) {
   if (t) { t.multi = true; t.max = 2; }
 }
 const PRODUCT_PHOTOS = {
+  "assiettes-assiette-kofte": "/img/produits/assiette-kofte.jpg",
+  "assiettes-assiette-escalope-de-poulet": "/img/produits/assiette-escalope.jpg",
+  "menus-menu-enfant": "/img/produits/menu-enfant.jpg",
   "pizzas-pizza-margherita": "/img/produits/pizza-margherita.jpg",
   "pizzas-pizza-kebab": "/img/produits/pizza-kebab.jpg",
   "menus-menu-tacos": "/img/produits/menu-tacos.jpg",

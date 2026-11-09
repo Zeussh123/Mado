@@ -1510,7 +1510,7 @@
      "id": "menus-menu-enfant",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/menu-enfant.jpg",
      "options": [
       "sauce-frites"
      ],
@@ -2238,7 +2238,7 @@
      "id": "assiettes-assiette-kofte",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/assiette-kofte.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -2274,7 +2274,7 @@
      "id": "assiettes-assiette-escalope-de-poulet",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/assiette-escalope.jpg",
      "description": {
       "fr": "",
       "en": "",
