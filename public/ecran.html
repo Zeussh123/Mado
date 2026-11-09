@@ -331,11 +331,14 @@ function show(i){
   $("#dots").innerHTML = SLIDES.length > 1 ? SLIDES.map((_, k) => `<i class="${k === cur ? "on" : ""}"></i>`).join("") : "";
   tick();
 }
+let ending = false;
 function tick(){
   const now = parisNow();
   $("#clock").textContent = now.hm;
   document.querySelectorAll("[data-left]").forEach(el => {
     const p = (MENU.promos || []).find(x => x.id === el.dataset.left); if (!p) return;
+    // l'heure de fin est passée : on recharge tout de suite (la promo disparaît sans attendre les 20 s)
+    if (!promoActive(p, now)) { if (!ending) { ending = true; load().finally(() => { ending = false; }); } return; }
     const s = secondsLeft(p, now); if (s === null) return;
     el.lastElementChild.textContent = `${t(TXT.left)} ${fmtLeft(s)} ${t(TXT.leftEnd)}`.trim();
   });
