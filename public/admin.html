@@ -229,7 +229,31 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <div class="panel" style="margin-top:16px">
         <b>📺 Écran TV</b>
         <p class="small">Ouvrez <a href="/ecran" target="_blank" style="color:var(--accent)">/ecran</a> en plein écran (touche F11) sur la TV du restaurant. Les promos en cours s'affichent en grand avec un visuel animé et le temps restant, puis la carte défile. Tout se met à jour seul quand vous enregistrez une promo.</p>
-        <p class="small">Options : <code>/ecran?promos=1</code> (seulement les promos) · <code>/ecran?lang=en</code> (en anglais) · <code>/ecran?duree=15</code> (15 secondes par écran).</p>
+        <p class="small">Options : <code>/ecran?promos=1</code> (seulement les promos) · <code>/ecran?lang=en</code> (en anglais) · <code>/ecran?radio=0</code> (sans la radio).</p>
+        <div class="lbl">Pages affichées et durée de chaque page</div>
+        <p class="small">Décochez les pages à ne pas montrer. Durée en secondes ; laissez vide pour la durée par défaut.</p>
+        <div style="display:flex;gap:8px;align-items:center;margin:6px 0">Durée par défaut <input id="scrDur" type="number" min="3" max="300" style="width:80px"> secondes</div>
+        <div id="scrPages" style="display:grid;gap:6px"></div>
+        <div class="lbl" style="margin-top:14px">📻 Radio en fond</div>
+        <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="scrRadioOn" style="width:auto"> Jouer une radio sur l'écran TV</label>
+        <div id="scrRadioBox">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <input id="scrRadioQ" placeholder="Chercher une radio (ex. Kral, TRT, Power, Best FM…)" style="flex:1;min-width:200px">
+            <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="scrRadioTr" checked style="width:auto"> Turques</label>
+            <button type="button" id="scrRadioSearch">Chercher</button>
+          </div>
+          <div id="scrRadioList" style="display:grid;gap:6px;max-height:320px;overflow:auto"></div>
+          <div class="lbl">Radio choisie</div>
+          <div style="display:grid;gap:6px;grid-template-columns:1fr 2fr">
+            <input id="scrRadioName" placeholder="Nom (affiché en bas de l'écran)">
+            <input id="scrRadioUrl" placeholder="Adresse du flux (https://…)">
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+            <button type="button" id="scrRadioTest">▶ Écouter ici</button>
+            Volume <input id="scrRadioVol" type="range" min="0" max="100" style="width:160px"> <span id="scrRadioVolV" class="small"></span>
+          </div>
+          <p class="small">Sur la TV, un bouton « Lancer la radio » apparaît à l'ouverture de /ecran : appuyez une fois sur OK avec la télécommande (les navigateurs bloquent le son automatique). Ensuite la radio se relance seule si elle coupe. Rappel : diffuser de la musique dans le restaurant demande une licence Sacem.</p>
+        </div>
         <div class="lbl">Style de l'écran</div>
         <div id="scrThemes" style="display:flex;flex-wrap:wrap;gap:8px"></div>
         <div class="lbl">Arrière-plan personnalisé (photo, idéalement 1920 × 1080)</div>
@@ -366,6 +390,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 <script src="vendor/qrcode.min.js"></script>
 <script src="icons.js"></script>
 <script src="floor.js"></script>
+<script src="screen-pages.js"></script>
 <script>
 const LANGS = ["fr","en","tr","de","es","it","ru"];
 const LNAME = {fr:"Français",en:"English",tr:"Türkçe",de:"Deutsch",es:"Español",it:"Italiano",ru:"Русский"};
@@ -562,8 +587,83 @@ $("#scrBgPick").onclick = () => {
   pickPhoto(holder, $("#scrBgPrev"), () => { menu.screen = {...(menu.screen || {}), bg: holder.photo}; renderScreen(); }, 1920);
 };
 
+/* ---------- écran TV : pages affichées, durées, radio ---------- */
+const scr = () => (menu.screen = menu.screen || {});
+function renderScreenPages(){
+  const sc = scr(), slides = sc.slides || {};
+  const rows = [{key: "@promos", label: "🔥 Promos en cours (une page par produit en promo)"}]
+    .concat(MADO_SCREEN.screenPlan(menu).map(pg => ({key: pg.key, label: pg.cats.map(c => (c.name && c.name.fr) || c.id).join(" · ")})));
+  $("#scrDur").value = sc.dur || "";
+  $("#scrDur").placeholder = "10";
+  $("#scrPages").innerHTML = rows.map(r => { const c = MADO_SCREEN.slideCfg(menu, r.key);
+    return `<div style="display:flex;gap:10px;align-items:center"><label style="display:flex;gap:8px;align-items:center;flex:1"><input type="checkbox" data-sk="${esc(r.key)}" ${c.on ? "checked" : ""} style="width:auto"> ${esc(r.label)}</label><input type="number" min="3" max="300" data-sd="${esc(r.key)}" value="${c.dur || ""}" placeholder="${sc.dur || 10}" style="width:80px"> s</div>`; }).join("");
+}
+function setSlide(key, patch){
+  const sc = scr(); sc.slides = {...(sc.slides || {})};
+  const v = {...(sc.slides[key] || {}), ...patch};
+  if (v.on !== false) delete v.on; if (!v.dur) delete v.dur;
+  if (Object.keys(v).length) sc.slides[key] = v; else delete sc.slides[key];
+  updateStatus();
+}
+$("#scrPages").addEventListener("change", (e) => {
+  const k = e.target.dataset.sk, d = e.target.dataset.sd;
+  if (k) setSlide(k, {on: e.target.checked});
+  if (d) setSlide(d, {dur: Math.max(0, Math.min(300, parseInt(e.target.value) || 0))});
+});
+$("#scrDur").onchange = () => { const v = parseInt($("#scrDur").value) || 0; if (v) scr().dur = Math.max(3, Math.min(300, v)); else delete scr().dur; renderScreenPages(); updateStatus(); };
+function renderRadio(){
+  const r = scr().radio || {};
+  $("#scrRadioOn").checked = !!r.on;
+  $("#scrRadioBox").style.opacity = r.on ? "" : ".55";
+  $("#scrRadioName").value = r.name || ""; $("#scrRadioUrl").value = r.url || "";
+  $("#scrRadioVol").value = r.vol ?? 70; $("#scrRadioVolV").textContent = (r.vol ?? 70) + " %";
+}
+const setRadio = (patch) => { scr().radio = {...(scr().radio || {}), ...patch}; renderRadio(); updateStatus(); };
+$("#scrRadioOn").onchange = () => setRadio({on: $("#scrRadioOn").checked});
+$("#scrRadioName").onchange = () => setRadio({name: $("#scrRadioName").value.trim()});
+$("#scrRadioUrl").onchange = () => setRadio({url: $("#scrRadioUrl").value.trim()});
+$("#scrRadioVol").oninput = () => { setRadio({vol: +$("#scrRadioVol").value}); if (testAudio) testAudio.volume = +$("#scrRadioVol").value / 100; };
+let testAudio = null;
+function playTest(url, btn){
+  if (testAudio) { testAudio.pause(); const was = testAudio.dataset.url; testAudio = null; document.querySelectorAll("[data-playing]").forEach(b => { b.textContent = "▶"; b.removeAttribute("data-playing"); }); $("#scrRadioTest").textContent = "▶ Écouter ici"; if (was === url) return; }
+  if (!url) return;
+  if (/\.m3u8(\?|$)/i.test(url)) { alert("Ce flux (m3u8) ne peut pas être écouté ici, mais il marchera sur l'écran TV."); return; }
+  testAudio = new Audio(url); testAudio.dataset.url = url; testAudio.volume = ($("#scrRadioVol").value || 70) / 100;
+  testAudio.play().catch(() => { alert("Impossible de lire cette radio. Essayez-en une autre."); playTest(url); });
+  if (btn) { btn.textContent = "⏸"; btn.dataset.playing = "1"; }
+}
+$("#scrRadioTest").onclick = () => { const u = $("#scrRadioUrl").value.trim(); playTest(u); if (testAudio) $("#scrRadioTest").textContent = "⏸ Arrêter"; };
+// Annuaire gratuit radio-browser.info (seulement les flux https, sinon le navigateur les bloque)
+const RB = ["de1", "de2", "fi1", "nl1", "at1"].map(h => `https://${h}.api.radio-browser.info`);
+let radioResults = [];
+async function radioSearch(){
+  const q = $("#scrRadioQ").value.trim(), tr = $("#scrRadioTr").checked;
+  const p = new URLSearchParams({order: "clickcount", reverse: "true", limit: "40", hidebroken: "true", is_https: "true"});
+  if (q) p.set("name", q); if (tr) p.set("countrycode", "TR");
+  $("#scrRadioList").innerHTML = `<span class="small">Recherche…</span>`;
+  for (const h of RB) {
+    try {
+      const res = await fetch(`${h}/json/stations/search?${p}`); if (!res.ok) continue;
+      radioResults = (await res.json()).filter(x => /^https:/.test(x.url_resolved || ""));
+      $("#scrRadioList").innerHTML = radioResults.length ? radioResults.map((x, i) => `<div style="display:flex;gap:8px;align-items:center;background:var(--bg);border-radius:8px;padding:6px 8px">
+        ${x.favicon && /^https:/.test(x.favicon) ? `<img src="${esc(x.favicon)}" alt="" style="width:28px;height:28px;object-fit:contain;border-radius:4px" onerror="this.remove()">` : "📻"}
+        <span style="flex:1"><b>${esc(x.name.trim())}</b> <span class="small">${esc([x.state, x.codec, x.bitrate ? x.bitrate + " kb/s" : ""].filter(Boolean).join(" · "))}</span></span>
+        <button type="button" data-rplay="${i}" style="width:auto">▶</button><button type="button" data-rpick="${i}" style="width:auto">Choisir</button></div>`).join("") : `<span class="small">Aucune radio trouvée.</span>`;
+      return;
+    } catch {}
+  }
+  $("#scrRadioList").innerHTML = `<span class="small">L'annuaire des radios ne répond pas. Réessayez, ou collez l'adresse du flux ci-dessous.</span>`;
+}
+$("#scrRadioSearch").onclick = radioSearch;
+$("#scrRadioQ").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); radioSearch(); } };
+$("#scrRadioList").addEventListener("click", (e) => {
+  const pl = e.target.closest("[data-rplay]"), pk = e.target.closest("[data-rpick]");
+  if (pl) playTest(radioResults[pl.dataset.rplay].url_resolved, pl);
+  if (pk) { const x = radioResults[pk.dataset.rpick]; setRadio({on: true, name: x.name.trim(), url: x.url_resolved}); }
+});
+
 function renderInfo(){
-  renderScreen();
+  renderScreen(); renderScreenPages(); renderRadio();
   if ($("#tab-floor").style.display === "block") drawFloor();
   const info = menu.info || (menu.info = {address:"",phone:"",hours:blankL()});
   $("#infoAddress").value = info.address || "";

@@ -145,20 +145,34 @@ body[data-theme=prestige] .pv .disc{box-shadow:0 0 0 .3vw #d9b45a,0 0 0 1vw rgba
 footer{position:fixed;z-index:3;left:0;right:0;bottom:0;padding:1.4vw 3vw;display:flex;justify-content:space-between;font-size:1.6vw;color:var(--muted)}
 #dots{display:flex;gap:.6vw}#dots i{width:.9vw;height:.9vw;border-radius:50%;background:rgba(255,255,255,.25)}#dots i.on{background:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+#onair{font-size:1.1vw;opacity:.75;margin:0 1.5vw;white-space:nowrap}
+#radioGo{position:fixed;inset:0;z-index:50;display:grid;place-content:center;justify-items:center;gap:1.4vw;background:rgba(0,0,0,.55)}
+#radioGo[hidden]{display:none}
+#radioBtn{font:inherit;font-size:3vw;font-weight:700;padding:1.4vw 3.4vw;border-radius:99px;border:0;background:#f2c14e;color:#1a1a1a;box-shadow:0 0 0 .5vw rgba(242,193,78,.35);cursor:pointer}
+#radioBtn:focus{outline:.35vw solid #fff;outline-offset:.4vw}
+#radioGo small{font-size:1.4vw;color:#fff;opacity:.85}
 </style>
 </head>
 <body>
 <div class="bg"><i></i><i></i><i></i></div><div class="bgimg"></div><div class="deco"></div>
 <header><img src="img/logo.png" alt="Mado"><span id="clock"></span></header>
 <div id="stage"></div>
-<footer><span id="info"></span><span id="dots"></span></footer>
+<footer><span id="info"></span><span id="onair" hidden></span><span id="dots"></span></footer>
+<audio id="radio" preload="none"></audio>
+<div id="radioGo" hidden><button type="button" id="radioBtn">▶&nbsp; Lancer la radio</button><small>Appuyez sur OK avec la télécommande</small></div>
 
 <script src="icons.js"></script>
+<script src="screen-pages.js"></script>
 <script>
-// Paramètres possibles dans l'adresse : ?lang=en  ?duree=12 (secondes par écran)  ?promos=1 (seulement les promos)
+// Paramètres possibles dans l'adresse : ?lang=en  ?duree=12 (secondes par écran)  ?promos=1 (seulement les promos)  ?radio=0 (sans radio)
+// Pages affichées, durée de chaque page et radio : réglés dans l'admin (menu.screen)
 const Q = new URLSearchParams(location.search);
 const LANG = ["fr", "en", "tr", "de", "es", "it", "ru"].includes(Q.get("lang")) ? Q.get("lang") : "fr";
-const DUR = Math.max(5, Math.min(60, parseInt(Q.get("duree")) || 10)) * 1000;
+const clampDur = (n) => Math.max(3, Math.min(300, n));
+const durOf = (key) => { // millisecondes
+  const sc = MENU.screen || {}, own = MADO_SCREEN.slideCfg(MENU, key).dur;
+  return clampDur(own || parseInt(Q.get("duree")) || +sc.dur || 10) * 1000;
+};
 const ONLY_PROMOS = Q.get("promos") === "1";
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -202,42 +216,32 @@ const findItem = (id) => { for (const c of MENU.categories) for (const it of c.i
 function visual(it, cat){ return it.photo ? `<img src="${esc(it.photo)}" alt="">` : `<span class="emo">${ICONS[cat && cat.id] || "🍴"}</span>`; }
 function build(){
   const now = parisNow(), promos = (MENU.promos || []).filter(p => promoActive(p, now));
-  const slides = [];
-  for (const p of promos) {
+  const slides = [], showPromos = ONLY_PROMOS || MADO_SCREEN.slideCfg(MENU, "@promos").on;
+  if (showPromos) for (const p of promos) {
     const items = (p.items || []).map(x => { const [it, c] = findItem(x.id); return it && !it.hidden && x.price !== "" && x.price !== null && +x.price < +it.price ? {it, c, price: +x.price} : null; }).filter(Boolean);
     if (!items.length) slides.push({kind: "text", p});
     for (const x of items) slides.push({kind: "promo", p, ...x});
   }
-  if (!ONLY_PROMOS || !slides.length) for (const pg of pages()) slides.push({kind: "panel", ...pg, promos});
+  if (!ONLY_PROMOS || !slides.length) {
+    const all = pages(), on = all.filter(pg => MADO_SCREEN.slideCfg(MENU, pg.key).on);
+    for (const pg of (on.length || slides.length ? on : all)) slides.push({kind: "panel", ...pg, promos});
+  }
   return slides;
 }
-/* Panneaux : chaque écran = une colonne « vedettes » + deux colonnes de rubriques (comme le tableau du resto).
-   "@box" = encadré crudités + sauces. Les rubriques inconnues sont ajoutées à la fin, deux par écran. */
-const PLAN = [
-  [["sandwichs", "pokebowl"], ["assiettes", "@box"]],
-  [["menus"], ["accompagnements", "desserts"]],
-  [["pizzas"], ["pides"]],
-  [["boissons"], ["alcools"]],
-];
 const TXT2 = {
   meats: {fr: "Bœuf, poulet ou mixte", en: "Beef, chicken or mixed", tr: "Dana, tavuk veya karışık", de: "Rind, Hähnchen oder gemischt", es: "Ternera, pollo o mixto", it: "Manzo, pollo o misto", ru: "Говядина, курица или микс"},
 };
 function pages(){
-  const cats = MENU.categories.filter(c => !c.hidden && c.items.some(i => !i.hidden));
-  const byId = Object.fromEntries(cats.map(c => [c.id, c])), used = new Set(["@box"]);
-  const plan = PLAN.map(pg => pg.map(col => col.filter(id => byId[id] || id === "@box"))).filter(pg => pg.some(col => col.some(id => id !== "@box")));
-  plan.flat(2).forEach(id => used.add(id));
-  const rest = cats.filter(c => !used.has(c.id)).map(c => c.id);
-  for (let i = 0; i < rest.length; i += 2) plan.push([[rest[i]], rest[i + 1] ? [rest[i + 1]] : []]);
-  return plan.map(pg => {
-    const first = pg.flat().find(id => id !== "@box"), fc = byId[first];
+  const byId = Object.fromEntries(MENU.categories.map(c => [c.id, c]));
+  return MADO_SCREEN.screenPlan(MENU).map(({key, cols: pg}) => {
+    const fc = byId[key];
     const vis = fc.items.filter(i => !i.hidden);
     // vedettes : d'abord les produits avec photo, puis les meilleures ventes, puis l'ordre de la carte
     const rank = (i) => (i.photo ? 0 : 2) + (i.bestseller ? 0 : 1);
     const feat = vis.length > 4 ? [...vis].sort((a, b) => rank(a) - rank(b) || vis.indexOf(a) - vis.indexOf(b)).slice(0, 3) : [];
     const fid = new Set(feat.map(i => i.id));
     const cols = pg.map(col => col.map(id => id === "@box" ? {box: true} : {c: byId[id], items: byId[id].items.filter(i => !i.hidden && !fid.has(i.id))}).filter(x => x.box || x.items.length));
-    return {fc, feat, cols};
+    return {key, fc, feat, cols};
   });
 }
 function sub(it){
@@ -311,7 +315,9 @@ function slideHtml(s){
   if (s.kind === "text") return `<div class="pt" style="text-align:center;justify-items:center"><span class="kicker">🔥 ${esc(t(TXT.promo))}</span><div class="name">${esc(t(s.p.title))}</div><div class="ptext" style="font-size:3vw">${esc(t(s.p.text))}</div></div>`;
   return panelHtml(s);
 }
+let timer = 0;
 function show(i){
+  clearTimeout(timer);
   if (!SLIDES.length) return;
   cur = i % SLIDES.length;
   const stage = $("#stage"), el = document.createElement("div");
@@ -321,6 +327,7 @@ function show(i){
   fit(el); document.fonts.ready.then(() => fit(el));
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("on")));
   [...stage.children].slice(0, -1).forEach(o => { o.classList.remove("on"); setTimeout(() => o.remove(), 1000); });
+  timer = setTimeout(() => show(cur + 1), durOf(sl.kind === "panel" ? sl.key : "@promos"));
   $("#dots").innerHTML = SLIDES.length > 1 ? SLIDES.map((_, k) => `<i class="${k === cur ? "on" : ""}"></i>`).join("") : "";
   tick();
 }
@@ -347,11 +354,57 @@ function applyTheme(){
   if (th === "braise") deco.innerHTML = Array.from({length: 34}, () => `<i style="left:${(Math.random() * 100).toFixed(1)}%;--dx:${(Math.random() * 16 - 8).toFixed(1)}vw;animation-duration:${(6 + Math.random() * 8).toFixed(1)}s;animation-delay:-${(Math.random() * 14).toFixed(1)}s;transform:scale(${(.5 + Math.random()).toFixed(2)})"></i>`).join("");
   if (cur >= 0) document.fonts.ready.then(() => document.querySelectorAll(".slide").forEach(fit));
 }
+/* ---------- radio en fond (réglée dans l'admin : menu.screen.radio) ---------- */
+// Les navigateurs bloquent le son tant qu'on n'a pas appuyé sur l'écran : si la lecture est refusée,
+// un gros bouton « Lancer la radio » s'affiche (OK sur la télécommande). La radio se relance seule si le flux coupe.
+const audio = $("#radio");
+let radioUrl = "", radioWant = false, hls = null, lastTime = -1, stuck = 0;
+function radioCfg(){ const r = (MENU && MENU.screen && MENU.screen.radio) || {}; return Q.get("radio") === "0" || !r.on || !r.url ? null : r; }
+function loadHls(){
+  return window.Hls ? Promise.resolve() : new Promise((ok, ko) => { const sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"; sc.onload = ok; sc.onerror = ko; document.head.appendChild(sc); });
+}
+async function radioStart(){
+  const r = radioCfg(); if (!r) return;
+  radioWant = true;
+  audio.volume = Math.max(0, Math.min(1, (r.vol ?? 70) / 100));
+  try {
+    if (hls) { hls.destroy(); hls = null; }
+    if (/\.m3u8(\?|$)/i.test(r.url) && !audio.canPlayType("application/vnd.apple.mpegurl")) {
+      await loadHls(); hls = new Hls(); hls.loadSource(r.url); hls.attachMedia(audio);
+    } else audio.src = r.url + (r.url.includes("?") ? "&" : "?") + "_=" + Date.now(); // évite un vieux tampon
+    await audio.play();
+    $("#radioGo").hidden = true;
+  } catch (e) {
+    if (e && e.name === "NotAllowedError") { $("#radioGo").hidden = false; $("#radioBtn").focus(); }
+    else setTimeout(() => radioWant && radioStart(), 5000);
+  }
+}
+function radioStop(){ radioWant = false; if (hls) { hls.destroy(); hls = null; } audio.pause(); audio.removeAttribute("src"); audio.load(); $("#radioGo").hidden = true; }
+function radioSync(){
+  const r = radioCfg(), url = r ? r.url : "";
+  $("#onair").hidden = !r; $("#onair").textContent = r ? "📻 " + (r.name || "Radio") : "";
+  if (r) audio.volume = Math.max(0, Math.min(1, (r.vol ?? 70) / 100));
+  if (url === radioUrl) return;
+  radioUrl = url;
+  if (r) radioStart(); else radioStop();
+}
+$("#radioBtn").onclick = () => radioStart();
+document.addEventListener("keydown", () => { if (!$("#radioGo").hidden) radioStart(); });
+document.addEventListener("click", () => { if (!$("#radioGo").hidden) radioStart(); });
+for (const ev of ["error", "ended"]) audio.addEventListener(ev, () => { if (radioWant && !hls) setTimeout(radioStart, 3000); });
+// surveillance : si le son n'avance plus depuis 20 s, on relance le flux
+setInterval(() => {
+  if (!radioWant || !$("#radioGo").hidden) return;
+  if (audio.currentTime === lastTime || audio.paused) { if (++stuck >= 2) { stuck = 0; radioStart(); } } else stuck = 0;
+  lastTime = audio.currentTime;
+}, 10000);
+
 async function load(){
   try {
     const m = await (await fetch("/api/menu", {cache: "no-store"})).json();
     MENU = m; applyTheme();
-    const slides = build(), s = JSON.stringify(slides.map(x => [x.kind, x.p && x.p.id, x.it && x.it.id, x.price, x.c && x.c.id, x.cols && x.cols.flat().map(y => y.items ? y.items.map(i => i.id + i.price).join() : "box"), x.feat && x.feat.map(i => i.id + i.price + i.photo)]));
+    radioSync();
+    const slides = build(), s = JSON.stringify(slides.map(x => [x.kind, x.key, x.p && x.p.id, x.it && x.it.id, x.price, x.c && x.c.id, x.cols && x.cols.flat().map(y => y.items ? y.items.map(i => i.id + i.price).join() : "box"), x.feat && x.feat.map(i => i.id + i.price + i.photo)]));
     if (s !== sig) {
       // une promo vient d'être créée ou modifiée : on l'affiche tout de suite
       const firstNewPromo = slides.findIndex(x => x.kind === "promo" && !sig.includes(`"${x.p.id}"`));
@@ -361,7 +414,6 @@ async function load(){
     $("#info").textContent = t(TXT.order);
   } catch {}
 }
-setInterval(() => show(cur + 1), DUR);
 setInterval(tick, 1000);
 setInterval(load, 20000);
 load();
