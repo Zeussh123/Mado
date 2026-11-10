@@ -314,7 +314,7 @@ function mascotHtml(s){
   const d = dayName(), D = d.charAt(0).toLocaleUpperCase(LANG) + d.slice(1);
   const hello = t(TXT.hello).replace("{d}", d).replace("{D}", D);
   const items = s.items.slice(0, 3);
-  const letters = [...D].map((ch, i) => `<i style="animation-delay:${(.5 + i * .09).toFixed(2)}s,${(2.6 + i * .12).toFixed(2)}s">${ch === " " ? "&nbsp;" : esc(ch)}</i>`.replace("<i ", `<i data-c="${esc(ch)}" `)).join("");
+  const letters = [...D].map((ch, i) => `<i style="animation-delay:${(.5 + i * .09).toFixed(2)}s,${(2.6 + i * .12).toFixed(2)}s">${ch === " " ? "&nbsp;" : esc(ch)}</i>`.replace("<i ", `<i data-c="${esc(ch.toLocaleUpperCase(LANG))}" `)).join("");
   const cards = items.map((x, i) => { const pct = Math.round((1 - x.price / +x.it.price) * 100), dl = 1.6 + i * .35;
     return `<div class="mit" style="animation-delay:${dl}s"><span class="pct" style="animation-delay:${dl + .6}s">-${pct}%</span><div class="ph">${x.it.photo ? `<img src="${esc(x.it.photo)}" alt="">` : (ICONS[x.c && x.c.id] || "🍴")}</div><b>${esc(t(x.it.name))}</b><div class="mp"><s>${eur(+x.it.price)}</s><strong style="animation-delay:${dl + .4}s,${dl + 1.4}s">${eur(x.price)}</strong></div></div>`; }).join("");
   const conf = Array.from({length: 38}, (_, i) => `<i style="left:${(Math.random() * 100).toFixed(1)}%;background:${["#f2c14e", "#2f8a45", "#ffffff", "#e63946", "#7fe3c6"][i % 5]};--dx:${(Math.random() * 20 - 10).toFixed(1)}vw;--r:${Math.round(Math.random() * 900 - 450)}deg;animation-duration:${(4 + Math.random() * 4).toFixed(1)}s;animation-delay:${(1.2 + Math.random() * 6).toFixed(1)}s"></i>`).join("");
