@@ -71,8 +71,12 @@ body.mascotmode header img{opacity:0}
 @keyframes mhop{to{transform:translateY(-14px) rotate(-2deg)}}
 .m-body{transform-origin:185px 610px;animation:mbreath 3.2s ease-in-out 1.6s infinite}
 @keyframes mbreath{50%{transform:scale(1.012,.992)}}
-.m-armL{transform-origin:124px 222px;animation:mwave 7s ease-in-out 1.3s infinite}
-@keyframes mwave{0%,62%,100%{transform:rotate(0)}6%{transform:rotate(150deg)}11%,21%,31%{transform:rotate(122deg)}16%,26%,36%{transform:rotate(160deg)}44%{transform:rotate(150deg)}54%{transform:rotate(0)}}
+/* coucou une seule fois, coude plié (avant-bras vertical, main à hauteur de tête), puis le bras redescend et reste le long du corps */
+.m-armL,.m-foreL{animation:none}
+.on .m-armL{transform-origin:124px 222px;animation:mwave 4.6s ease-in-out 1.3s both}
+.on .m-foreL{transform-origin:118px 312px;animation:mwaveF 4.6s ease-in-out 1.3s both}
+@keyframes mwave{0%,100%{transform:rotate(0)}12%,80%{transform:rotate(62deg)}}
+@keyframes mwaveF{0%,100%{transform:rotate(0)}12%{transform:rotate(108deg)}22%,42%,62%{transform:rotate(85deg)}32%,52%,72%{transform:rotate(118deg)}80%{transform:rotate(100deg)}92%{transform:rotate(0)}}
 .m-armR{transform-origin:246px 222px;animation:mplate 3.5s ease-in-out 1.5s infinite}
 @keyframes mplate{50%{transform:rotate(-4deg) translateY(-6px)}}
 .m-head{transform-origin:185px 190px;animation:mhead 4.5s ease-in-out 1.5s infinite}

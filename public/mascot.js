@@ -1,6 +1,6 @@
 /* Personnage de l'écran TV : employé du snack, tenue impeccable, tablier vert avec le logo Mado.
    MADO_MASCOT.svg(photo) renvoie le dessin (SVG) ; photo = image du plat posée sur l'assiette (facultatif).
-   Les parties animées ont une classe (m-walk, m-body, m-armL, m-armR, m-head, m-eyes, m-steam) : les animations sont dans ecran.html. */
+   Les parties animées ont une classe (m-walk, m-body, m-armL + m-foreL (coucou coude plié), m-armR, m-head, m-eyes, m-steam) : les animations sont dans ecran.html. */
 window.MADO_MASCOT = (() => {
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   function svg(photo){
@@ -30,11 +30,14 @@ window.MADO_MASCOT = (() => {
   <g class="m-armL">
     <path d="M128 210 Q108 214 104 236 L100 268 L136 272 L142 222Z" fill="url(#mShirt)" stroke="#cfd8e0" stroke-width="1.5"/>
     <path d="M104 262 L136 266 M102 268 L136 272" stroke="#2f8a45" stroke-width="3"/>
-    <rect x="104" y="266" width="28" height="98" rx="14" fill="url(#mSkin)"/>
+    <rect x="104" y="266" width="28" height="56" rx="14" fill="url(#mSkin)"/>
+    <g class="m-foreL">
+    <rect x="104" y="298" width="28" height="66" rx="14" fill="url(#mSkin)"/>
     <g transform="translate(118 372)">
       <ellipse rx="18" ry="20" fill="url(#mSkin)"/>
       <path d="M-14 -12 Q-24 -2 -20 8" stroke="#e2a77c" stroke-width="9" stroke-linecap="round" fill="none"/>
       <path d="M-8 14 L-8 26 M0 16 L0 30 M8 14 L8 26" stroke="#d99a6c" stroke-width="7" stroke-linecap="round"/>
+    </g>
     </g>
   </g>
 
