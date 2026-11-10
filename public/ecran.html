@@ -361,7 +361,7 @@ function applyTheme(){
 // Les navigateurs bloquent le son tant qu'on n'a pas appuyé sur l'écran : si la lecture est refusée,
 // un gros bouton « Lancer la radio » s'affiche (OK sur la télécommande). La radio se relance seule si le flux coupe.
 const audio = $("#radio");
-let radioUrl = "", radioWant = false, hls = null, lastTime = -1, stuck = 0;
+let radioUrl = "", radioWant = false, hls = null;
 function radioCfg(){ const r = (MENU && MENU.screen && MENU.screen.radio) || {}; return Q.get("radio") === "0" || !r.on || !r.url ? null : r; }
 function loadHls(){
   return window.Hls ? Promise.resolve() : new Promise((ok, ko) => { const sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"; sc.onload = ok; sc.onerror = ko; document.head.appendChild(sc); });
@@ -373,7 +373,7 @@ async function radioStart(){
   try {
     if (hls) { hls.destroy(); hls = null; }
     if (/\.m3u8(\?|$)/i.test(r.url) && !audio.canPlayType("application/vnd.apple.mpegurl")) {
-      await loadHls(); hls = new Hls(); hls.loadSource(r.url); hls.attachMedia(audio);
+      await loadHls(); hls = new Hls(); hls.on(Hls.Events.ERROR, (_, d) => { if (d && d.fatal) setTimeout(() => restart("hls"), 2000); }); hls.loadSource(r.url); hls.attachMedia(audio);
     } else audio.src = r.url + (r.url.includes("?") ? "&" : "?") + "_=" + Date.now(); // évite un vieux tampon
     await audio.play();
     $("#radioGo").hidden = true;
@@ -394,13 +394,20 @@ function radioSync(){
 $("#radioBtn").onclick = () => radioStart();
 document.addEventListener("keydown", () => { if (!$("#radioGo").hidden) radioStart(); });
 document.addEventListener("click", () => { if (!$("#radioGo").hidden) radioStart(); });
-for (const ev of ["error", "ended"]) audio.addEventListener(ev, () => { if (radioWant && !hls) setTimeout(radioStart, 3000); });
-// surveillance : si le son n'avance plus depuis 20 s, on relance le flux
+// Pas de rechargement de page : seul le contenu de la carte est relu toutes les 20 s, la radio n'est pas touchée.
+// Coupures du flux (réseau, serveur de la radio) : on relance seulement si le son est vraiment arrêté.
+let lastProgress = Date.now(), restarts = [];
+const logRestart = (why) => { restarts.push(new Date().toLocaleTimeString("fr-FR") + " " + why); restarts = restarts.slice(-20); try { localStorage.setItem("mado-radio-log", JSON.stringify(restarts)); } catch {} if ($("#rdbg")) $("#rdbg").textContent = "Radio : " + restarts.slice(-6).join(" · "); };
+const restart = (why) => { if (!radioWant || !$("#radioGo").hidden) return; logRestart(why); lastProgress = Date.now(); radioStart(); };
+audio.addEventListener("timeupdate", () => { lastProgress = Date.now(); });
+audio.addEventListener("playing", () => { lastProgress = Date.now(); });
+for (const ev of ["error", "ended"]) audio.addEventListener(ev, () => { if (radioWant && !hls) setTimeout(() => restart(ev), 2000); });
+// surveillance : le son n'avance plus depuis 15 s (et la page ne l'a pas mis en pause) → on relance le flux
 setInterval(() => {
   if (!radioWant || !$("#radioGo").hidden) return;
-  if (audio.currentTime === lastTime || audio.paused) { if (++stuck >= 2) { stuck = 0; radioStart(); } } else stuck = 0;
-  lastTime = audio.currentTime;
-}, 10000);
+  if (Date.now() - lastProgress > 15000) restart(audio.paused ? "pause" : "bloqué");
+}, 5000);
+if (Q.get("debug") === "1") { const d = document.createElement("div"); d.id = "rdbg"; d.style.cssText = "position:fixed;left:1vw;bottom:1vw;z-index:99;background:#000c;color:#ff0;font:1.1vw monospace;padding:.4vw .8vw;border-radius:.4vw"; d.textContent = "Radio : aucune relance"; document.body.appendChild(d); }
 
 async function load(){
   try {
