@@ -229,7 +229,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <div class="panel" style="margin-top:16px">
         <b>📺 Écran TV</b>
         <p class="small">Ouvrez <a href="/ecran" target="_blank" style="color:var(--accent)">/ecran</a> en plein écran (touche F11) sur la TV du restaurant. Les promos en cours s'affichent en grand avec un visuel animé et le temps restant, puis la carte défile. Tout se met à jour seul quand vous enregistrez une promo.</p>
-        <p class="small">Options : <code>/ecran?promos=1</code> (seulement les promos) · <code>/ecran?lang=en</code> (en anglais) · <code>/ecran?radio=0</code> (sans la radio).</p>
+        <p class="small">Options : <code>/ecran?promos=1</code> (seulement les promos) · <code>/ecran?lang=en</code> (en anglais) · <code>/ecran?radio=0</code> (sans la radio) · <code>/ecran?mascotte=1</code> (aperçu du personnage sur les promos en cours).</p>
         <div class="lbl">Pages affichées et durée de chaque page</div>
         <p class="small">Décochez les pages à ne pas montrer. Durée en secondes ; laissez vide pour la durée par défaut.</p>
         <div style="display:flex;gap:8px;align-items:center;margin:6px 0">Durée par défaut <input id="scrDur" type="number" min="3" max="300" style="width:80px"> secondes</div>
@@ -843,6 +843,7 @@ function renderPromos(){
       <div class="times"><input type="time" data-pf="from" value="${esc(p.from)}"><input type="time" data-pf="to" value="${esc(p.to)}"></div>
       <div class="lbl">Dates (optionnel : du … au …)</div>
       <div class="times"><input type="date" data-pf="startDate" value="${esc(p.startDate)}"><input type="date" data-pf="endDate" value="${esc(p.endDate)}"></div>
+      <label class="toggles" style="margin:10px 0 0"><label><input type="checkbox" data-pf="mascot" ${(p.mascot===undefined ? (p.days||[]).includes(2) : p.mascot)?"checked":""}> 🧑‍🍳 Animation avec le personnage Mado sur l'écran TV <span class="small">(cochée d'office pour une promo du mardi)</span></label></label>
       <div class="lbl">Prix promo sur des produits (optionnel)</div>
       ${(p.items||[]).map((x, xi) => `<div class="pitem" data-xi="${xi}">
         <select data-px="id"><option value="">Choisir un produit…</option>${prods.map(o=>`<option value="${esc(o.id)}" ${o.id===x.id?"selected":""}>${esc(o.label)} · ${o.price??"?"} €</option>`).join("")}</select>
@@ -861,8 +862,9 @@ $("#promos").addEventListener("input", (e) => {
   const el = e.target, card = el.closest("[data-pi]"); if (!card) return;
   const p = menu.promos[card.dataset.pi];
   if (el.dataset.pf === "active") p.active = el.checked;
+  else if (el.dataset.pf === "mascot") p.mascot = el.checked;
   else if (el.dataset.pf) setPath(p, el.dataset.pf, el.value);
-  else if (el.dataset.pday) { const d = +el.dataset.pday; p.days = (p.days||[]).filter(x => x !== d); if (el.checked) p.days.push(d); p.days.sort(); }
+  else if (el.dataset.pday) { const d = +el.dataset.pday; p.days = (p.days||[]).filter(x => x !== d); if (el.checked) p.days.push(d); p.days.sort(); if (p.mascot === undefined) { const m = $("[data-pf='mascot']", card); if (m) m.checked = p.days.includes(2); } }
   else if (el.dataset.px) {
     const x = p.items[el.closest("[data-xi]").dataset.xi];
     if (el.dataset.px === "price") { const v = parsePrice(el.value); if (v !== undefined) x.price = v; el.style.borderColor = v===undefined ? "var(--red)" : ""; }
