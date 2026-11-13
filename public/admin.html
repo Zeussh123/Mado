@@ -372,6 +372,13 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <div class="lbl" style="margin-top:16px">Table par table : imprimer un seul QR ou changer son code</div>
         <div id="qrKeys"></div>
       </div>
+      <div class="panel">
+        <b>Plaques gravées au laser (100 x 100 mm)</b>
+        <p class="small">Un fichier PNG par table, à la taille exacte de la plaque, en noir et blanc pur : à ouvrir dans LaserGRBL. Le noir est ce que le laser grave.</p>
+        <p class="small"><b>Normal</b> : alu brut couvert de spray de marquage, le QR sort foncé. <b>Inversé</b> : alu peint ou anodisé noir, le laser éclaircit le fond du QR.</p>
+        <p class="small" style="color:#c0392b"><b>Attention :</b> une plaque gravée ne se change pas. Ne touchez plus au bouton « Changer le code » d'une table gravée, sinon sa plaque ne marchera plus.</p>
+        <div class="actions"><button class="primary" id="grvAll" type="button">Télécharger toutes les tables (normal)</button><button id="grvAllInv" type="button">Toutes les tables (inversé)</button></div>
+      </div>
     </section>
   </div>
 
@@ -388,6 +395,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 <div id="modal" hidden><div class="mbox"><p id="mMsg"></p><input id="mInput" hidden><div class="actions" style="justify-content:flex-end"><button id="mNo" type="button">Annuler</button><button id="mYes" class="primary" type="button">OK</button></div></div></div>
 
 <script src="vendor/qrcode.min.js"></script>
+<script src="gravure.js"></script>
 <script src="icons.js"></script>
 <script src="floor.js"></script>
 <script src="screen-pages.js"></script>
@@ -1341,18 +1349,39 @@ async function printTableQRs(only){
   setTimeout(() => window.print(), 400);
 }
 $("#qrTables").onclick = () => printTableQRs();
+// Fichiers PNG pour le graveur laser (public/gravure.js)
+async function downloadGravure(list, inverse){
+  if (!window.QRCode || !window.MADO_GRAVURE) { toast("Générateur de QR indisponible."); return; }
+  if (DEMO) { toast("Disponible une fois le site en ligne."); return; }
+  const keys = await tableKeys();
+  const base = ($("#qrUrl").value || location.origin + "/").replace(/\?.*$/, "");
+  for (const i of list) {
+    if (!keys[i]) { toast(`Pas de code pour la table ${i}.`); continue; }
+    const label = MADO_FLOOR.label(menu, i);
+    const blob = await MADO_GRAVURE.png(base + "?t=" + i + "&k=" + keys[i], label, inverse);
+    const a = document.createElement("a");
+    a.download = "gravure-" + label.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + (inverse ? "-inverse" : "") + ".png";
+    a.href = URL.createObjectURL(blob); a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    await new Promise(r => setTimeout(r, 400));
+  }
+  toast("Fichiers téléchargés. Si le navigateur demande d'autoriser plusieurs téléchargements, acceptez.");
+}
+$("#grvAll").onclick = () => downloadGravure(tableNums(), false);
+$("#grvAllInv").onclick = () => downloadGravure(tableNums(), true);
 async function drawKeys(){
   const box = $("#qrKeys"), n = (menu.ordering && menu.ordering.tables) || 0;
   if (DEMO) { box.innerHTML = `<p class="small">Disponible une fois le site en ligne.</p>`; return; }
   const keys = await tableKeys();
   box.innerHTML = tableNums().map(i => `<div class="tkrow"><b>${esc(MADO_FLOOR.label(menu, i))}</b><code>${esc(keys[i] || "")}</code>
-    <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button></div>`).join("");
+    <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button><button type="button" data-tk="grv" data-t="${i}">Fichier gravure</button></div>`).join("");
 }
 
 $("#qrKeys").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-tk]"); if (!b) return;
   const n = +b.dataset.t;
   if (b.dataset.tk === "print") return printTableQRs(n);
+  if (b.dataset.tk === "grv") return downloadGravure([n], false);
   if (!(await ask(`Changer le code de la table ${n} ? L'ancien QR de cette table ne marchera plus : il faudra imprimer le nouveau.`, {yes: "Changer le code", danger: true}))) return;
   const r = await api(`/api/table-keys/${n}/reset`, {method: "POST"});
   if (r.ok) { toast(`Nouveau code pour la table ${n}. Imprimez son QR.`); drawKeys(); } else toast("Erreur, réessayez.");
