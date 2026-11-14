@@ -749,6 +749,15 @@
    "it": "Questo link del tavolo non è più valido. Scansiona il QR code sul tuo tavolo per ordinare.",
    "ru": "Эта ссылка стола больше не действует. Отсканируйте QR-код на вашем столе, чтобы заказать."
   },
+  "tbCleared": {
+   "fr": "Le restaurant a vidé le panier de la table. Vous pouvez recommencer votre commande.",
+   "en": "The restaurant has emptied the table's basket. You can start your order again.",
+   "tr": "Restoran masanın sepetini boşalttı. Siparişinize yeniden başlayabilirsiniz.",
+   "de": "Das Restaurant hat den Warenkorb des Tisches geleert. Sie können Ihre Bestellung neu beginnen.",
+   "es": "El restaurante ha vaciado la cesta de la mesa. Puede empezar su pedido de nuevo.",
+   "it": "Il ristorante ha svuotato il carrello del tavolo. Puoi ricominciare il tuo ordine.",
+   "ru": "Ресторан очистил корзину стола. Вы можете начать заказ заново."
+  },
   "tbHours": {
    "fr": "Les commandes depuis la table sont fermées à cette heure-ci. Vous pouvez commander au comptoir.",
    "en": "Table ordering is closed at this time. You can order at the counter.",

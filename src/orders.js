@@ -173,10 +173,12 @@ async function updateBasket(env, table, fn) {
   return { error: "Réessayez", status: 409 };
 }
 // table libérée : panier et convives vidés (version +1 pour que les téléphones déjà ouverts suivent)
-async function resetBasket(env, table) {
-  await env.DB.prepare("UPDATE table_baskets SET data=?, version=version+1, updated_at=? WHERE table_no=?").bind(JSON.stringify(emptyBasket()), new Date().toISOString(), String(table)).run();
+// cleared = vidé à la main depuis la cuisine (les téléphones encore ouverts affichent un message)
+async function resetBasket(env, table, cleared) {
+  const d = cleared ? { ...emptyBasket(), cleared: Date.now() } : emptyBasket();
+  await env.DB.prepare("UPDATE table_baskets SET data=?, version=version+1, updated_at=? WHERE table_no=?").bind(JSON.stringify(d), new Date().toISOString(), String(table)).run();
 }
-const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, last: data.last && { ...data.last, ids: undefined } });
+const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, cleared: data.cleared || 0, last: data.last && { ...data.last, ids: undefined } });
 // Ce téléphone est-il un nouveau client ? (il n'était pas à la table lors du dernier envoi, et la règle de l'admin le dit)
 function isNewClient(d, viewer, cfg, cooking) {
   if (!d.last) return false;
@@ -374,6 +376,19 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       }
       out.sort((a, b) => (+a.table || 0) - (+b.table || 0));
       return json({ baskets: out }, 200, { "cache-control": "no-store" });
+    });
+  }
+
+  // Cuisine : vider le panier pas encore envoyé d'une table (client parti sans envoyer)
+  const mClear = path.match(/^\/api\/baskets\/(\d{1,3})\/clear$/);
+  if (mClear && m === "POST") {
+    return withAuth(request, env, async () => {
+      const table = String(+mClear[1]), st = await tableCooking(env, table);
+      if (!st.open) await resetBasket(env, table, true);   // rien en cours : la table repart à zéro (panier et convives)
+      else await updateBasket(env, table, async (d) => {   // des plats sont déjà servis : on garde le suivi de la commande, on retire seulement les plats pas envoyés
+        d.lines = []; d.members.forEach((x) => (x.ready = false)); d.cleared = Date.now(); return {};
+      });
+      return json({ ok: true, reset: !st.open });
     });
   }
 
