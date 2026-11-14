@@ -98,7 +98,8 @@ export function orderCfg(menu) {
   const o = (menu && menu.ordering) || {};
   const num = (v, d) => (v === undefined || v === null || v === "" ? d : Math.max(0, Math.min(1440, parseInt(v) || 0)));
   return { servedMin: num(o.autoServedMin, 40), paidMin: num(o.autoPaidMin, 60),
-    newClient: ["served", "sent", "minutes"].includes(o.newClient) ? o.newClient : "served", newClientMin: Math.max(1, num(o.newClientMin, 30)) };
+    newClient: ["served", "sent", "minutes"].includes(o.newClient) ? o.newClient : "served", newClientMin: Math.max(1, num(o.newClientMin, 30)),
+    basketMin: Math.min(240, num(o.basketMin, 30)) };   // panier pas envoyé vidé après X min sans activité (0 = 4 h)
 }
 let autoAt = 0;
 async function autoAdvance(env, getMenu) {
@@ -151,17 +152,20 @@ async function createOrder(env, menu, table, rawLines, rawNote, split, newGroup)
 const BASKET_TTL = 4 * 3600 * 1000;   // un panier oublié depuis 4 h repart à zéro
 const MAX_MEMBERS = 20, MAX_BASKET_LINES = 80;
 const emptyBasket = () => ({ members: [], lines: [], last: null });
-async function readBasket(env, table) {
+// linesMin : plats pas envoyés, sans aucune activité à la table depuis X min → retirés (client parti sans envoyer)
+const linesTTL = (min) => (min ? min * 60e3 : BASKET_TTL);
+async function readBasket(env, table, linesMin) {
   const r = await env.DB.prepare("SELECT data, version, updated_at FROM table_baskets WHERE table_no=?").bind(table).first();
   if (!r) return { data: emptyBasket(), version: 0, exists: false };
-  const data = JSON.parse(r.data);
-  if (Date.now() - Date.parse(r.updated_at) > BASKET_TTL) return { data: { ...emptyBasket(), last: null }, version: r.version, exists: true };
+  const data = JSON.parse(r.data), age = Date.now() - Date.parse(r.updated_at);
+  if (age > BASKET_TTL) return { data: { ...emptyBasket(), last: null }, version: r.version, exists: true };
+  if (data.lines.length && age > linesTTL(linesMin)) { data.lines = []; data.members.forEach((x) => (x.ready = false)); }
   return { data, version: r.version, exists: true };
 }
 // modification avec contrôle de version : si deux téléphones écrivent en même temps, on recommence
-async function updateBasket(env, table, fn) {
+async function updateBasket(env, table, fn, linesMin) {
   for (let i = 0; i < 5; i++) {
-    const cur = await readBasket(env, table);
+    const cur = await readBasket(env, table, linesMin);
     const out = await fn(cur.data);
     if (out && out.error) return out;
     const iso = new Date().toISOString(), v = cur.version + 1;
@@ -204,10 +208,11 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   if (!(await checkTableKey(env, table, new URL(request.url).searchParams.get("k")))) return json({ error: "badkey" }, 403);
   if (!action) {
     if (request.method !== "GET") return json({ error: "introuvable" }, 404);
-    let b = await readBasket(env, table), isNew = false;
+    const linesMin = orderCfg(menu).basketMin;
+    let b = await readBasket(env, table, linesMin), isNew = false;
     if (b.data.last && b.data.last.id) {
       const st = await tableCooking(env, table);
-      if (!st.open) { await resetBasket(env, table); b = await readBasket(env, table); }   // tout annulé ou encaissé
+      if (!st.open) { await resetBasket(env, table); b = await readBasket(env, table, linesMin); }   // tout annulé ou encaissé
       else isNew = isNewClient(b.data, cleanStr(new URL(request.url).searchParams.get("m"), 32), orderCfg(menu), st.cooking);
     }
     return json(publicBasket(viewFor(b.data, isNew), b.version), 200, nocache);
@@ -271,7 +276,7 @@ async function handleBasket(request, env, table, action, { json, menuText, check
       return { order: o };
     }
     return { error: "introuvable", status: 404 };
-  });
+  }, cfg.basketMin);
   if (out.error) return json({ error: out.error, ...(out.items ? { items: out.items } : {}) }, out.status || 400);
   const sent = action === "send";
   return json({ ok: true, ...(out.result || {}), basket: publicBasket(viewFor(out.data, !sent && isNewClient(out.data, me, cfg, st.cooking)), out.version) }, 200, nocache);
@@ -362,7 +367,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
   if (path === "/api/baskets" && m === "GET") {
     return withAuth(request, env, async () => {
       const menu = JSON.parse(await menuText(request, env)), now = parisNow(), promos = (menu.promos || []).filter((p) => promoActive(p, now));
-      const since = new Date(Date.now() - BASKET_TTL).toISOString();
+      const since = new Date(Date.now() - linesTTL(orderCfg(menu).basketMin)).toISOString();   // paniers oubliés : plus affichés
       const { results } = await env.DB.prepare("SELECT table_no, data, updated_at FROM table_baskets WHERE updated_at > ?").bind(since).all();
       const out = [];
       for (const r of results) {

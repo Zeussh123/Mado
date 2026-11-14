@@ -289,6 +289,10 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
           <label>« Servie » devient « Encaissée » après <input id="ordPaid" type="number" min="0" max="1440" step="1"> min</label>
         </div>
         <p class="small">Mettez 0 pour ne jamais le faire automatiquement. Le délai d'encaissement part du passage en « Servie » (à la main ou automatique).</p>
+        <div class="ord-auto" style="margin-top:10px">
+          <label>Panier pas envoyé (client parti) vidé après <input id="ordBasket" type="number" min="0" max="240" step="1"> min sans activité</label>
+        </div>
+        <p class="small">Les plats choisis mais jamais envoyés disparaissent tout seuls de la cuisine et de la table. Mettez 0 pour attendre 4 h. Vous pouvez aussi vider un panier à la main depuis la page Cuisine.</p>
         <div class="lbl" style="margin-top:14px">Quand compter quelqu'un qui scanne le QR comme un nouveau client ?</div>
         <div class="gm-modes" id="ordNewCli">
           <label><input type="radio" name="ordNew" value="served"> <span><b>Quand toute la table est servie</b><small>Tant qu'une commande de la table est en préparation, un nouveau scan rejoint le même groupe et la même addition.</small></span></label>
@@ -682,7 +686,7 @@ function renderInfo(){
   $("#ordEnabled").checked = !!ord.enabled; $("#ordTables").value = ord.tables || "";
   $("#ordUseSched").checked = !!ord.useSchedule;
   const dflt = (v, d) => (v === undefined || v === null || v === "" ? d : v);
-  $("#ordServed").value = dflt(ord.autoServedMin, 40); $("#ordPaid").value = dflt(ord.autoPaidMin, 60);
+  $("#ordServed").value = dflt(ord.autoServedMin, 40); $("#ordPaid").value = dflt(ord.autoPaidMin, 60); $("#ordBasket").value = dflt(ord.basketMin, 30);
   $$('[name="ordNew"]').forEach(r => r.checked = r.value === (ord.newClient || "served")); $("#ordNewMin").value = dflt(ord.newClientMin, 30);
   const sch = ord.schedule || {};
   $("#ordSched").style.display = ord.useSchedule ? "" : "none";
@@ -807,6 +811,7 @@ $("#tab-info").addEventListener("input", (e) => {
   else if (e.target.closest && e.target.closest("#ordSched")) menu.ordering.schedule = readSched();
   else if (e.target.id === "ordServed") menu.ordering.autoServedMin = Math.max(0, parseInt(e.target.value) || 0);
   else if (e.target.id === "ordPaid") menu.ordering.autoPaidMin = Math.max(0, parseInt(e.target.value) || 0);
+  else if (e.target.id === "ordBasket") menu.ordering.basketMin = Math.max(0, Math.min(240, parseInt(e.target.value) || 0));
   else if (e.target.name === "ordNew") menu.ordering.newClient = e.target.value;
   else if (e.target.id === "ordNewMin") { menu.ordering.newClientMin = Math.max(1, parseInt(e.target.value) || 30); }
   else if (e.target.id === "ordTables") menu.ordering.tables = Math.max(0, Math.min(200, parseInt(e.target.value) || 0));
