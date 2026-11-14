@@ -56,6 +56,8 @@ section.on{display:block}
 .ch-card .pp{font-size:.82rem;color:var(--muted);margin-bottom:6px}
 .ch-card .pp b{color:var(--green,#4caf50)}
 .ch-card .ln{font-size:.92rem;margin:3px 0}.ch-card .ln small{color:var(--muted)}
+.ch-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.ch-act button{padding:6px 12px}.ch-act span{flex:1;min-width:140px;font-size:.88rem;color:#ffd38a}
 .col-title{grid-column:1/-1;margin:8px 0 0;font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .order{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
 .order.new{border-color:var(--accent)}
@@ -712,9 +714,23 @@ function renderChoosing(){
     const n = b.lines.reduce((x, l) => x + l.qty, 0), mins = Math.max(0, Math.round((Date.now() - Date.parse(b.updated_at)) / 60000));
     return `<div class="ch-card"><h3>${esc(tName(b.table))}<small>${n} article${n > 1 ? "s" : ""} · ${mins ? `il y a ${mins} min` : "à l'instant"}</small></h3>
       <div class="pp">${b.people.map(p => p.ready ? `<b>✓ ${esc(p.name)}</b>` : `${esc(p.name)} choisit…`).join(" · ")}</div>
-      ${b.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.who ? ` <small>· ${esc(l.who)}</small>` : ""}${l.details.length ? `<br><small>${esc(l.details.map(d => d.choices.join(", ")).join(" · "))}</small>` : ""}</div>`).join("")}</div>`;
+      ${b.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.who ? ` <small>· ${esc(l.who)}</small>` : ""}${l.details.length ? `<br><small>${esc(l.details.map(d => d.choices.join(", ")).join(" · "))}</small>` : ""}</div>`).join("")}
+      <div class="ch-act" data-ct="${esc(b.table)}">${CLEARING === String(b.table)
+        ? `<span>Vider le panier de ${esc(tName(b.table))} ? Rien ne sera envoyé en cuisine.</span><button class="danger" data-cl="yes">Oui, vider</button><button data-cl="no">Non</button>`
+        : `<button class="danger" data-cl="ask">🗑 Vider ce panier</button>`}</div></div>`;
   }).join("")}</div>` : "";
 }
+// client parti sans envoyer : on vide le panier de la table (2 clics, pas de fenêtre du navigateur)
+let CLEARING = "";
+$("#choosing").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-cl]"); if (!b) return;
+  const table = b.closest("[data-ct]").dataset.ct;
+  if (b.dataset.cl === "ask") { CLEARING = table; return renderChoosing(); }
+  if (b.dataset.cl === "no") { CLEARING = ""; return renderChoosing(); }
+  b.disabled = true;
+  try { await api(`/api/baskets/${encodeURIComponent(table)}/clear`, {method: "POST"}); } catch {}
+  CLEARING = ""; BASKETS = BASKETS.filter(x => String(x.table) !== table); renderChoosing(); loadBaskets();
+});
 async function load(){
   try {
     const r = await api("/api/orders", {cache: "no-store"});

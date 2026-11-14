@@ -1167,7 +1167,9 @@ function applyTB(b, iSent){
   if (!b || b.version < TB.version) return;
   const first = TB.version === -1, known = new Set(TB.lines.map(l => l.k));
   const prevLast = ss.get("mado-tb-last") || "";
-  TB = {version: b.version, members: b.members || [], lines: b.lines || [], last: b.last || null};
+  // panier vidé par le restaurant (client parti sans envoyer) : on prévient ceux qui sont encore sur la page
+  const cleared = !first && b.cleared && b.cleared !== TB.cleared && TB.lines.length && !(b.lines || []).length;
+  TB = {version: b.version, members: b.members || [], lines: b.lines || [], last: b.last || null, cleared: b.cleared || 0};
   // mes plats (pour les propositions et le geste « glisser pour retirer »)
   CART = TB.lines.filter(l => l.m === ME).map(l => ({key: l.k, id: l.id, sel: l.sel, price: l.price, qty: l.qty}));
   // un ami vient d'ajouter un plat
@@ -1186,6 +1188,7 @@ function applyTB(b, iSent){
     }
   }
   drawPill();
+  if (cleared) toast({name: "M", c: 0}, ui("tbCleared"));
   const open = $("#sheet").classList.contains("on");
   const typing = document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName) && $("#sheet").contains(document.activeElement);
   if (open && STEP === "cart" && !window.SWIPING && !typing) { const y = $("#shScroll").scrollTop, note = ($("#orderNote") || {}).value; drawTableCart(); $("#shScroll").scrollTop = y; if (note && $("#orderNote")) $("#orderNote").value = note; }
