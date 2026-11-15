@@ -379,7 +379,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
       <div class="panel">
         <b>Plaques gravées au laser</b>
         <p class="small">Un fichier PNG par table, à la taille exacte de la plaque, en noir et blanc pur : à ouvrir dans LaserGRBL. Le noir est ce que le laser grave.</p>
-        <label><div class="lbl">Taille de la plaque</div><select id="grvFmt"><option value="carte">Carte bancaire (85,6 x 54 mm)</option><option value="carre">Carrée (100 x 100 mm)</option></select></label>
+        <label><div class="lbl">Taille de la plaque</div><select id="grvFmt"><option value="carte">Carte bancaire (85,6 x 54 mm)</option><option value="carte2">2 cartes bancaires l'une sous l'autre (85,6 x 108 mm)</option><option value="carre">Carrée (100 x 100 mm)</option></select></label>
         <label style="display:block;margin-top:8px"><input type="checkbox" id="grvInv"> Version inversée (pour le bouton « Fichier gravure » d'une table)</label>
         <p class="small"><b>Normal</b> : alu brut couvert de spray de marquage, le QR sort foncé. <b>Inversé</b> : alu anodisé noir ou peint (plaques « spéciales gravure »), le laser éclaircit le fond du QR.</p>
         <p class="small" style="color:#c0392b"><b>Attention :</b> une plaque gravée ne se change pas. Ne touchez plus au bouton « Changer le code » d'une table gravée, sinon sa plaque ne marchera plus.</p>
@@ -1362,10 +1362,24 @@ async function downloadGravure(list, inverse){
   if (DEMO) { toast("Disponible une fois le site en ligne."); return; }
   const keys = await tableKeys();
   const base = ($("#qrUrl").value || location.origin + "/").replace(/\?.*$/, "");
+  const slug = (t) => t.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const save = (blob, name) => { const a = document.createElement("a"); a.download = name; a.href = URL.createObjectURL(blob); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); };
+  if ($("#grvFmt").value === "carte2" && list.length > 1) {
+    // 2 cartes par fichier : tables 1 + 2, 3 + 4…
+    const ok = list.filter(i => keys[i]);
+    for (let j = 0; j < ok.length; j += 2) {
+      const items = ok.slice(j, j + 2).map(i => ({url: base + "?t=" + i + "&k=" + keys[i], label: MADO_FLOOR.label(menu, i)}));
+      const blob = await MADO_GRAVURE.sheet(items, inverse);
+      save(blob, "gravure-2cartes-" + items.map(it => slug(it.label)).join("-et-") + (inverse ? "-inverse" : "") + ".png");
+      await new Promise(r => setTimeout(r, 400));
+    }
+    toast("Fichiers téléchargés. Si le navigateur demande d'autoriser plusieurs téléchargements, acceptez.");
+    return;
+  }
   for (const i of list) {
     if (!keys[i]) { toast(`Pas de code pour la table ${i}.`); continue; }
     const label = MADO_FLOOR.label(menu, i);
-    const fmt = $("#grvFmt").value;
+    const fmt = $("#grvFmt").value === "carte2" ? "carte" : $("#grvFmt").value;
     const blob = await MADO_GRAVURE.png(base + "?t=" + i + "&k=" + keys[i], label, inverse, fmt);
     const a = document.createElement("a");
     a.download = "gravure-" + label.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + (fmt === "carte" ? "-carte" : "-100mm") + (inverse ? "-inverse" : "") + ".png";
