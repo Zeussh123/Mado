@@ -52,7 +52,7 @@
     return full;
   }
   // format : "carre" (100 x 100 mm) ou "carte" (carte bancaire 85,6 x 54 mm, paysage)
-  async function png(url, label, inverse, format) {
+  async function draw(url, label, inverse, format) {
     const card = format === "carte";
     const W = card ? 856 : SIZE, H = card ? 540 : SIZE;
     const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
@@ -88,7 +88,18 @@
     const d = g.getImageData(0, 0, W, H), p = d.data;
     for (let i = 0; i < p.length; i += 4) { const v = p[i] < 128 ? 0 : 255; p[i] = p[i + 1] = p[i + 2] = v; p[i + 3] = 255; }
     g.putImageData(d, 0, 0);
-    return new Promise((ok) => cv.toBlob(ok, "image/png"));
+    return cv;
   }
-  window.MADO_GRAVURE = {png};
+  const toBlob = (cv) => new Promise((ok) => cv.toBlob(ok, "image/png"));
+  async function png(url, label, inverse, format) { return toBlob(await draw(url, label, inverse, format)); }
+  // Planche de cartes bancaires posées l'une contre l'autre, l'une sous l'autre (85,6 x 54 mm chacune, sans espace)
+  async function sheet(items, inverse) {
+    const cards = [];
+    for (const it of items) cards.push(await draw(it.url, it.label, inverse, "carte"));
+    const cv = document.createElement("canvas"); cv.width = 856; cv.height = 540 * cards.length;
+    const g = cv.getContext("2d");
+    cards.forEach((c, i) => g.drawImage(c, 0, i * 540));
+    return toBlob(cv);
+  }
+  window.MADO_GRAVURE = {png, sheet};
 })();
