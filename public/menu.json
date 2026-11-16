@@ -2825,7 +2825,7 @@
      "id": "pizzas-pizza-chevre-miel",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-chevre-miel.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -2933,7 +2933,7 @@
      "id": "pizzas-pizza-orientale",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-orientale.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -3041,7 +3041,7 @@
      "id": "pizzas-pizza-sucuk",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-sucuk.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -3068,7 +3068,7 @@
      "id": "pizzas-pizza-thon",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/pizza-thon.jpg",
      "options": [],
      "upgrade": ""
     },
@@ -3197,7 +3197,7 @@
      "id": "accompagnements-grande-frites",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/grande-frites.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3226,7 +3226,7 @@
      "bestseller": true,
      "id": "accompagnements-moyenne-frites",
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/moyenne-frites.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3255,7 +3255,7 @@
      "id": "accompagnements-petite-frites",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/petite-frites.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3284,7 +3284,7 @@
      "id": "accompagnements-nuggets-6-pieces",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/nuggets-6.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3311,7 +3311,7 @@
      "id": "accompagnements-nuggets-12-pieces",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/nuggets-12.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3338,7 +3338,7 @@
      "id": "accompagnements-nuggets-20-pieces",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/nuggets-20.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3365,7 +3365,7 @@
      "id": "accompagnements-tenders-2-pieces",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/tenders-2.jpg",
      "description": {
       "fr": "",
       "en": "",
@@ -3392,7 +3392,7 @@
      "id": "accompagnements-tenders-5-pieces",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/tenders-5.jpg",
      "description": {
       "fr": "",
       "en": "",

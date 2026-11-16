@@ -244,6 +244,18 @@ function applyTestClient(m) {
   if (t) { t.multi = true; t.max = 2; }
 }
 const PRODUCT_PHOTOS = {
+  "pizzas-pizza-orientale": "/img/produits/pizza-orientale.jpg",
+  "pizzas-pizza-chevre-miel": "/img/produits/pizza-chevre-miel.jpg",
+  "pizzas-pizza-sucuk": "/img/produits/pizza-sucuk.jpg",
+  "pizzas-pizza-thon": "/img/produits/pizza-thon.jpg",
+  "accompagnements-petite-frites": "/img/produits/petite-frites.jpg",
+  "accompagnements-moyenne-frites": "/img/produits/moyenne-frites.jpg",
+  "accompagnements-grande-frites": "/img/produits/grande-frites.jpg",
+  "accompagnements-nuggets-6-pieces": "/img/produits/nuggets-6.jpg",
+  "accompagnements-nuggets-12-pieces": "/img/produits/nuggets-12.jpg",
+  "accompagnements-nuggets-20-pieces": "/img/produits/nuggets-20.jpg",
+  "accompagnements-tenders-2-pieces": "/img/produits/tenders-2.jpg",
+  "accompagnements-tenders-5-pieces": "/img/produits/tenders-5.jpg",
   "assiettes-assiette-kofte": "/img/produits/assiette-kofte.jpg",
   "assiettes-assiette-escalope-de-poulet": "/img/produits/assiette-escalope.jpg",
   "menus-menu-enfant": "/img/produits/menu-enfant.jpg",
