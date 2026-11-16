@@ -481,6 +481,27 @@ function applyMigrations(m){
       it.name = { fr: "Pizza Végétarienne", en: "Vegetarian pizza", tr: "Vejetaryen pizza", de: "Vegetarische Pizza", es: "Pizza vegetariana", it: "Pizza vegetariana", ru: "Вегетарианская пицца", _auto: "Pizza Végétarienne" };
     m.applied.push("pizza-vege-2026-11");
   }
+  if (!m.applied.includes("tables-ab-2026-11")) {
+    // tables 1, 6 et 8 coupées en deux (demande momo) : la moitié A garde le numéro et le QR gravé de l'ancienne table,
+    // la moitié B reçoit un nouveau numéro (après les terrasses) et un nouveau QR à graver
+    const fl = m.floor && Array.isArray(m.floor.tables) ? m.floor.tables : null;
+    if (fl) {
+      let next = fl.reduce((x, t) => Math.max(x, +t.n || 0), 0);
+      for (const n of [1, 6, 8]) {
+        const a = fl.find((t) => +t.n === n);
+        if (!a || fl.some((t) => (t.label || "").trim() === `Table ${n}B`)) continue;
+        const b = { ...a, n: ++next, label: `Table ${n}B`, newPlate: true };
+        a.label = `Table ${n}A`;
+        if (a.w >= a.h) { const w = Math.ceil(a.w / 2); b.x = a.x + w; b.w = a.w - w; a.w = w; }
+        else { const h = Math.ceil(a.h / 2); b.y = a.y + h; b.h = a.h - h; a.h = h; }
+        const s = +a.seats || 0; a.seats = Math.ceil(s / 2); b.seats = s - a.seats;
+        fl.splice(fl.indexOf(a) + 1, 0, b);
+      }
+      m.ordering = m.ordering || {};
+      m.ordering.tables = Math.max(parseInt(m.ordering.tables) || 0, next);
+    }
+    m.applied.push("tables-ab-2026-11");
+  }
   // une fois : on retraduit tout (les traductions d'avant n'avaient pas le repère « _auto »)
   const first = !m.applied.includes("langues-auto-2026-11");
   fillExtraLangs(m, first);

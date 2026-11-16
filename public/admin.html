@@ -153,6 +153,8 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 .sched.off .sr{opacity:.35;pointer-events:none}
 .tkrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 0;border-bottom:1px dashed var(--line)}
 .tkrow b{min-width:70px}
+.tkrow .tkgrv{display:inline-flex;align-items:center;gap:6px;width:auto;margin:0;white-space:nowrap;font-size:.85rem}
+.tkrow .tkgrv input{width:auto;margin:0}
 .tkrow code{color:var(--muted);font-size:.85rem}
 #qrSheet{display:none}
 @media print{
@@ -384,6 +386,7 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
         <p class="small"><b>Normal</b> : alu brut couvert de spray de marquage, le QR sort foncé. <b>Inversé</b> : alu anodisé noir ou peint (plaques « spéciales gravure »), le laser éclaircit le fond du QR.</p>
         <p class="small" style="color:#c0392b"><b>Attention :</b> une plaque gravée ne se change pas. Ne touchez plus au bouton « Changer le code » d'une table gravée, sinon sa plaque ne marchera plus.</p>
         <div class="actions"><button class="primary" id="grvAll" type="button">Télécharger toutes les tables (normal)</button><button id="grvAllInv" type="button">Toutes les tables (inversé)</button></div>
+        <div class="actions"><button class="primary" id="grvSel" type="button">Seulement les tables cochées « à graver » (normal)</button><button id="grvSelInv" type="button">Tables cochées (inversé)</button></div>
       </div>
     </section>
   </div>
@@ -1337,7 +1340,8 @@ async function tableKeys(){
 }
 // tables à imprimer : celles du plan de salle, sinon 1 à N
 function tableNums(){
-  const fl = MADO_FLOOR.tables(menu).map(t => +t.n).sort((a, b) => a - b);
+  // rangées par nom (Table 1A, Table 1B, Table 2… Terrasse 1)
+  const fl = MADO_FLOOR.tables(menu).map(t => +t.n).sort((a, b) => MADO_FLOOR.label(menu, a).localeCompare(MADO_FLOOR.label(menu, b), "fr", {numeric: true}));
   if (fl.length) return fl;
   return Array.from({length: (menu.ordering && menu.ordering.tables) || 0}, (_, i) => i + 1);
 }
@@ -1391,12 +1395,15 @@ async function downloadGravure(list, inverse){
 }
 $("#grvAll").onclick = () => downloadGravure(tableNums(), false);
 $("#grvAllInv").onclick = () => downloadGravure(tableNums(), true);
+const grvChecked = () => [...document.querySelectorAll("#qrKeys [data-grvsel]:checked")].map(x => +x.dataset.grvsel);
+$("#grvSel").onclick = () => { const l = grvChecked(); if (!l.length) return toast("Cochez « à graver » sur les tables voulues (liste au-dessus)."); downloadGravure(l, false); };
+$("#grvSelInv").onclick = () => { const l = grvChecked(); if (!l.length) return toast("Cochez « à graver » sur les tables voulues (liste au-dessus)."); downloadGravure(l, true); };
 async function drawKeys(){
   const box = $("#qrKeys"), n = (menu.ordering && menu.ordering.tables) || 0;
   if (DEMO) { box.innerHTML = `<p class="small">Disponible une fois le site en ligne.</p>`; return; }
   const keys = await tableKeys();
   box.innerHTML = tableNums().map(i => `<div class="tkrow"><b>${esc(MADO_FLOOR.label(menu, i))}</b><code>${esc(keys[i] || "")}</code>
-    <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button><button type="button" data-tk="grv" data-t="${i}">Fichier gravure</button></div>`).join("");
+    <button type="button" data-tk="reset" data-t="${i}">Changer le code</button><button type="button" data-tk="print" data-t="${i}">Imprimer ce QR</button><button type="button" data-tk="grv" data-t="${i}">Fichier gravure</button><label class="tkgrv"><input type="checkbox" data-grvsel="${i}"${(MADO_FLOOR.find(menu, i) || {}).newPlate ? " checked" : ""}> à graver</label></div>`).join("");
 }
 
 $("#qrKeys").addEventListener("click", async (e) => {

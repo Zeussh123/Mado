@@ -42,6 +42,7 @@ img{display:block;max-width:100%}
 .tpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px;width:min(520px,100%)}
 .tpick button{aspect-ratio:1;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface);font-size:1.7rem;font-weight:900}
 .tpick button:hover,.tpick button:focus-visible{border-color:var(--accent);outline:none}
+.tpick button.long{font-size:1rem;line-height:1.15;padding:4px}
 .tpick .emp{grid-column:1/-1;aspect-ratio:auto;padding:18px;font-size:1.2rem;background:var(--accent);color:#1a1100;border-color:var(--accent)}
 .staff-out{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:.9rem}
 #tableChip.click{cursor:pointer}
@@ -1401,8 +1402,13 @@ function staffLogin(){
 function staffLogout(){ STAFF_CODE = ""; try { localStorage.removeItem("mado-staff"); } catch {} closeSheet(); staffLogin(); }
 function staffTables(){
   const n = parseInt((MENU.ordering || {}).tables) || 10;
+  // tables du plan de salle (1A, 1B, Terrasse 1…), sinon 1 à N
+  const fl = window.MADO_FLOOR ? MADO_FLOOR.tables(MENU) : [];
+  const short = (t) => ((t.label || "").trim() || String(t.n)).replace(/^Table\s+/i, "");
+  const picks = fl.length ? [...fl].sort((a, b) => short(a).localeCompare(short(b), "fr", {numeric: true})).map(t => ({n: t.n, l: short(t)}))
+    : Array.from({length: n}, (_, i) => ({n: i + 1, l: String(i + 1)}));
   staffShow(`<h1>Quelle table ?</h1>
-    <div class="tpick">${Array.from({length: n}, (_, i) => `<button data-t="${i + 1}">${i + 1}</button>`).join("")}<button class="emp" data-t="EMP">🛍 À emporter</button></div>
+    <div class="tpick">${picks.map(p => `<button data-t="${p.n}"${p.l.length > 3 ? ' class="long"' : ""}>${esc(p.l)}</button>`).join("")}<button class="emp" data-t="EMP">🛍 À emporter</button></div>
     ${CART.length ? `<p class="small" style="color:var(--muted)">La commande en cours (${cartCount()} article${cartCount() > 1 ? "s" : ""}) est gardée.</p>` : ""}
     <button class="staff-out" id="staffOut">Se déconnecter</button>`);
   $(".tpick").onclick = (e) => { const b = e.target.closest("[data-t]"); if (!b) return; TABLE = b.dataset.t; openMenu("fr"); };

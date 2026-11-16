@@ -444,7 +444,7 @@ function ticketHtml(o){
 }
 function billHtml(t, list){
   const total = list.reduce((n, o) => n + o.total, 0);
-  return `<div class="resto">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big">TABLE ${esc(t)}</div>
+  return `<div class="resto">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big">${esc(tName(t).toUpperCase())}</div>
     <div class="c">Addition · ${new Date().toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"})}</div><div class="sep"></div>
     <table>${list.flatMap(o => o.lines).map(l => row(`${l.qty} x ${esc(l.name)}`, eur(l.unit * l.qty))).join("")}</table><div class="sep"></div>
     <table class="tot">${row("TOTAL TTC", eur(total))}</table><div class="c" style="margin-top:3mm">Merci de votre visite !</div>`;
@@ -462,7 +462,7 @@ function people(orders){
   return Object.entries(by).map(([who, lines]) => ({who, lines, total: lines.reduce((n, l) => n + l.unit * l.qty, 0)}));
 }
 function receiptHtml(t, p){
-  return `<div class="resto">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big" style="font-size:20pt">TABLE ${esc(t)}</div>
+  return `<div class="resto">MADO</div><div class="c">${esc(INFO.address || "")}</div><div class="big" style="font-size:20pt">${esc(tName(t).toUpperCase())}</div>
     <div class="c" style="font-size:14pt;font-weight:900">${esc(p.who.toUpperCase())}</div>
     <div class="c">Reçu · ${new Date().toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"})}</div><div class="sep"></div>
     <table>${p.lines.map(l => row(`${l.qty} x ${esc(l.name)}`, eur(l.unit * l.qty))).join("")}</table><div class="sep"></div>
@@ -544,7 +544,7 @@ const LAB = {free: "Libre", new: "En préparation", ready: "Prête à servir", d
 function minutes(iso){ const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0"); }
 function tblHtml(t, s, extraCls = "", style = ""){
   const fl = window.MADO_FLOOR && MADO_FLOOR.find(MENUC, t);
-  return `<button class="tbl ${s.state} ${extraCls}" data-t="${t}" style="${style}">${fl ? MADO_FLOOR.chairsHtml(fl) : ""}<span class="num">${esc(fl && fl.label ? fl.label : t)}</span><span class="lab">${LAB[s.state]}</span>
+  return `<button class="tbl ${s.state} ${extraCls}" data-t="${t}" style="${style}">${fl ? MADO_FLOOR.chairsHtml(fl) : ""}<span class="num">${esc(fl && fl.label ? fl.label.replace(/^Table\s+/i, "") : t)}</span><span class="lab">${LAB[s.state]}</span>
       ${s.groups.length ? `<span class="amt">${eur(s.total)}</span><span class="since">depuis ${minutes(s.since)}</span>` : ""}
       ${s.older ? `<span class="older">+ ${s.older} addition${s.older > 1 ? "s" : ""} d'avant</span>` : ""}</button>`;
 }
