@@ -243,6 +243,53 @@ function applyTestClient(m) {
   const t = (m.optionGroups || []).find((g) => g.id === "viande-tacos");
   if (t) { t.multi = true; t.max = 2; }
 }
+const MENU_PLUS = 3.5;
+const L7 = (fr, en, tr, de, es, it, ru) => ({ fr, en, tr, de, es, it, ru });
+const menuDesc = (s) => L7(`${s.fr}, frites, boisson 33 cl`, `${s.en}, fries, 33 cl drink`, `${s.tr}, patates kızartması, 33 cl içecek`,
+  `${s.de}, Pommes, Getränk 33 cl`, `${s.es}, patatas fritas, bebida 33 cl`, `${s.it}, patatine, bibita 33 cl`, `${s.ru}, картофель фри, напиток 0,33 л`);
+const MENUS_SANDWICHS = [
+  { sandwich: "sandwichs-escalope-de-poulet", id: "menus-menu-escalope-de-poulet", options: ["crudites", "sauces", "sauce-frites", "supplement"],
+    name: L7("Menu Escalope de poulet", "Chicken breast meal", "Tavuk göğsü menü", "Hähnchenschnitzel-Menü", "Menú Escalope de pollo", "Menu Scaloppina di pollo", "Комбо Куриное филе"),
+    desc: L7("Escalope de poulet", "Chicken breast", "Tavuk göğsü", "Hähnchenschnitzel", "Escalope de pollo", "Scaloppina di pollo", "Куриное филе") },
+  { sandwich: "sandwichs-kofte", id: "menus-menu-kofte", options: ["crudites", "sauces", "sauce-frites", "supplement"],
+    name: L7("Menu Köfte", "Köfte meal", "Köfte menü", "Köfte-Menü", "Menú Köfte", "Menu Köfte", "Комбо Кёфте"),
+    desc: L7("Köfte", "Köfte", "Köfte", "Köfte", "Köfte", "Köfte", "Кёфте") },
+  { sandwich: "sandwichs-maxi-tacos", id: "menus-menu-maxi-tacos", photo: "/img/produits/menu-tacos.jpg", options: ["viande-tacos", "crudites", "sauces", "sauce-frites", "supplement"],
+    name: L7("Menu Maxi Tacos", "Maxi tacos meal", "Maxi tacos menü", "Maxi-Tacos-Menü", "Menú Maxi Tacos", "Menu Maxi Tacos", "Комбо Макси-такос"),
+    desc: L7("Maxi tacos", "Maxi tacos", "Maxi tacos", "Maxi tacos", "Maxi tacos", "Maxi tacos", "Макси-такос") },
+  { sandwich: "sandwichs-vegetarien", id: "menus-menu-vegetarien", options: ["crudites", "sauces", "sauce-frites"],
+    name: L7("Menu Végétarien", "Vegetarian meal", "Vejetaryen menü", "Vegetarisches Menü", "Menú Vegetariano", "Menu Vegetariano", "Комбо Вегетарианский"),
+    desc: L7("Végétarien", "Vegetarian", "Vejetaryen", "Vegetarisch", "Vegetariano", "Vegetariano", "Вегетарианский") },
+  { sandwich: "sandwichs-falafel", id: "menus-menu-falafel", options: ["crudites", "sauces", "sauce-frites"],
+    name: L7("Menu Falafel", "Falafel meal", "Falafel menü", "Falafel-Menü", "Menú Falafel", "Menu Falafel", "Комбо Фалафель"),
+    desc: L7("Falafel", "Falafel", "Falafel", "Falafel", "Falafel", "Falafel", "Фалафель") },
+];
+function applyMenusSandwichs(m) {
+  const cats = m.categories || [], menus = cats.find((c) => c.id === "menus");
+  if (!menus) return;
+  const find = (id) => { for (const c of cats) for (const it of c.items || []) if (it.id === id) return it; return null; };
+  let at = menus.items.findIndex((x) => x.id === "menus-menu-falafel");
+  if (at < 0) at = menus.items.findIndex((x) => x.id === "menus-menu-bowl") - 1;
+  const ids = new Set();
+  for (const d of MENUS_SANDWICHS) {
+    const s = find(d.sandwich); if (!s) continue;
+    let menu = find(d.id);
+    if (!menu) {
+      menu = { name: d.name, price: 0, description: menuDesc(d.desc), id: d.id, bestseller: false, hidden: false, photo: "", options: d.options, upgrade: "" };
+      menus.items.splice(at < 0 ? menus.items.length : ++at, 0, menu);
+    }
+    // prix du menu = prix du sandwich + 3,50 € (modifiable ensuite dans l'admin)
+    menu.price = Math.round(((+s.price || 0) + MENU_PLUS) * 100) / 100;
+    menu.hidden = false;
+    if (!menu.photo) menu.photo = d.photo || s.photo || "";
+    if (!menu.uses && s.uses) menu.uses = [...s.uses];                       // rupture par ingrédient (köfte, escalope…)
+    for (const k of ["optMax", "optPre"]) if (!menu[k] && s[k]) menu[k] = JSON.parse(JSON.stringify(s[k]));
+    s.upgrade = d.id;
+    ids.add(d.id);
+  }
+  // pas de prix promo sur ces menus
+  for (const p of m.promos || []) if (Array.isArray(p.items)) p.items = p.items.filter((x) => !ids.has(x.id));
+}
 const PRODUCT_PHOTOS = {
   "pizzas-pizza-orientale": "/img/produits/pizza-orientale.jpg",
   "pizzas-pizza-chevre-miel": "/img/produits/pizza-chevre-miel.jpg",
@@ -501,6 +548,12 @@ function applyMigrations(m){
       m.ordering.tables = Math.max(parseInt(m.ordering.tables) || 0, next);
     }
     m.applied.push("tables-ab-2026-11");
+  }
+  if (!m.applied.includes("menus-sandwichs-2026-11")) {
+    // escalope, köfte, maxi tacos, végétarien et falafel en menu : sandwich + frites + boisson 33 cl pour 3,50 € de plus (demande momo).
+    // Ces menus ne sont jamais en promo : pendant les promos, seul le menu kebab baisse.
+    applyMenusSandwichs(m);
+    m.applied.push("menus-sandwichs-2026-11");
   }
   // une fois : on retraduit tout (les traductions d'avant n'avaient pas le repère « _auto »)
   const first = !m.applied.includes("langues-auto-2026-11");
