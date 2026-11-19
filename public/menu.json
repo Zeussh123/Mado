@@ -1410,7 +1410,7 @@
       "it": "Menu Maxi Tacos",
       "ru": "Комбо Макси-такос"
      },
-     "price": 15,
+     "price": 15.5,
      "description": {
       "fr": "Maxi tacos, frites, boisson 33 cl",
       "en": "Maxi tacos, fries, 33 cl drink",
@@ -1423,7 +1423,7 @@
      "id": "menus-menu-maxi-tacos",
      "bestseller": false,
      "hidden": false,
-     "photo": "",
+     "photo": "/img/produits/menu-tacos.jpg",
      "options": [
       "viande-tacos",
       "crudites",
@@ -1454,6 +1454,104 @@
       "ru": "Фалафель, картофель фри, напиток 0,33 л"
      },
      "id": "menus-menu-falafel",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "options": [
+      "crudites",
+      "sauces",
+      "sauce-frites"
+     ],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Escalope de poulet",
+      "en": "Chicken breast meal",
+      "tr": "Tavuk göğsü menü",
+      "de": "Hähnchenschnitzel-Menü",
+      "es": "Menú Escalope de pollo",
+      "it": "Menu Scaloppina di pollo",
+      "ru": "Комбо Куриное филе"
+     },
+     "price": 11.5,
+     "description": {
+      "fr": "Escalope de poulet, frites, boisson 33 cl",
+      "en": "Chicken breast, fries, 33 cl drink",
+      "tr": "Tavuk göğsü, patates kızartması, 33 cl içecek",
+      "de": "Hähnchenschnitzel, Pommes, Getränk 33 cl",
+      "es": "Escalope de pollo, patatas fritas, bebida 33 cl",
+      "it": "Scaloppina di pollo, patatine, bibita 33 cl",
+      "ru": "Куриное филе, картофель фри, напиток 0,33 л",
+      "_auto": "Escalope de poulet, frites, boisson 33 cl"
+     },
+     "id": "menus-menu-escalope-de-poulet",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "options": [
+      "crudites",
+      "sauces",
+      "sauce-frites",
+      "supplement"
+     ],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Köfte",
+      "en": "Köfte meal",
+      "tr": "Köfte menü",
+      "de": "Köfte-Menü",
+      "es": "Menú Köfte",
+      "it": "Menu Köfte",
+      "ru": "Комбо Кёфте"
+     },
+     "price": 11.5,
+     "description": {
+      "fr": "Köfte, frites, boisson 33 cl",
+      "en": "Köfte, fries, 33 cl drink",
+      "tr": "Köfte, patates kızartması, 33 cl içecek",
+      "de": "Köfte, Pommes, Getränk 33 cl",
+      "es": "Köfte, patatas fritas, bebida 33 cl",
+      "it": "Köfte, patatine, bibita 33 cl",
+      "ru": "Кёфте, картофель фри, напиток 0,33 л",
+      "_auto": "Köfte, frites, boisson 33 cl"
+     },
+     "id": "menus-menu-kofte",
+     "bestseller": false,
+     "hidden": false,
+     "photo": "",
+     "options": [
+      "crudites",
+      "sauces",
+      "sauce-frites",
+      "supplement"
+     ],
+     "upgrade": ""
+    },
+    {
+     "name": {
+      "fr": "Menu Végétarien",
+      "en": "Vegetarian meal",
+      "tr": "Vejetaryen menü",
+      "de": "Vegetarisches Menü",
+      "es": "Menú Vegetariano",
+      "it": "Menu Vegetariano",
+      "ru": "Комбо Вегетарианский"
+     },
+     "price": 9.5,
+     "description": {
+      "fr": "Végétarien, frites, boisson 33 cl",
+      "en": "Vegetarian, fries, 33 cl drink",
+      "tr": "Vejetaryen, patates kızartması, 33 cl içecek",
+      "de": "Vegetarisch, Pommes, Getränk 33 cl",
+      "es": "Vegetariano, patatas fritas, bebida 33 cl",
+      "it": "Vegetariano, patatine, bibita 33 cl",
+      "ru": "Вегетарианский, картофель фри, напиток 0,33 л",
+      "_auto": "Végétarien, frites, boisson 33 cl"
+     },
+     "id": "menus-menu-vegetarien",
      "bestseller": false,
      "hidden": false,
      "photo": "",
@@ -1738,7 +1836,7 @@
       "sauces",
       "supplement"
      ],
-     "upgrade": ""
+     "upgrade": "menus-menu-escalope-de-poulet"
     },
     {
      "name": {
@@ -1769,7 +1867,7 @@
       "sauces",
       "supplement"
      ],
-     "upgrade": ""
+     "upgrade": "menus-menu-kofte"
     },
     {
      "name": {
@@ -1863,7 +1961,7 @@
       "crudites",
       "sauces"
      ],
-     "upgrade": ""
+     "upgrade": "menus-menu-vegetarien"
     },
     {
      "name": {
@@ -5507,7 +5605,8 @@
   "supp-feta-2026-11",
   "tacos-3viandes-2026-11",
   "test-client-2026-11",
-  "vin-rouge-2026-11"
+  "vin-rouge-2026-11",
+  "menus-sandwichs-2026-11"
  ],
  "game": {
   "enabled": false,
