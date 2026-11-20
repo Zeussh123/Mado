@@ -1010,23 +1010,41 @@
    "it": "Niente all'ultimo giro.",
    "ru": "Последняя попытка — мимо."
   },
-  "tbWaitFor": {
-   "fr": "En attente de {names}",
-   "en": "Waiting for {names}",
-   "tr": "{names} bekleniyor",
-   "de": "Warten auf {names}",
-   "es": "Esperando a {names}",
-   "it": "In attesa di {names}",
-   "ru": "Ждём: {names}"
+  "tbJoinTip": {
+   "fr": "Si vous êtes plusieurs, chacun peut scanner le même QR code pour commander ensemble sur la table.",
+   "en": "If there are several of you, everyone can scan the same QR code to order together at the table.",
+   "tr": "Birkaç kişiyseniz, herkes aynı QR kodu okutarak masada birlikte sipariş verebilir.",
+   "de": "Wenn Sie zu mehreren sind, kann jeder denselben QR-Code scannen, um gemeinsam am Tisch zu bestellen.",
+   "es": "Si son varios, cada uno puede escanear el mismo código QR para pedir juntos en la mesa.",
+   "it": "Se siete in più persone, ognuno può scansionare lo stesso codice QR per ordinare insieme al tavolo.",
+   "ru": "Если вас несколько, каждый может отсканировать этот же QR-код, чтобы заказать вместе за столом."
   },
-  "tbWait2": {
-   "fr": "Pas encore fini : {names}. Attendez son « J'ai fini » pour ne rien oublier, ou envoyez quand même.",
-   "en": "Not finished yet: {names}. Wait for “I'm done” so nothing is forgotten, or send anyway.",
-   "tr": "Henüz bitirmedi: {names}. Hiçbir şey unutulmasın diye « Bitirdim »i bekleyin ya da yine de gönderin.",
-   "de": "Noch nicht fertig: {names}. Warten Sie auf „Ich bin fertig“, damit nichts vergessen wird, oder senden Sie trotzdem.",
-   "es": "Aún no ha terminado: {names}. Espere su «He terminado» para no olvidar nada, o envíe de todos modos.",
-   "it": "Non ha ancora finito: {names}. Aspetta il suo «Ho finito» per non dimenticare niente, o invia comunque.",
-   "ru": "Ещё не выбрал(а): {names}. Дождитесь «Я выбрал(а)», чтобы ничего не забыть, или отправьте сразу."
+  "tbCheckH": {
+   "fr": "Tout le monde a bien choisi ?",
+   "en": "Has everyone chosen?",
+   "tr": "Herkes seçimini yaptı mı?",
+   "de": "Haben alle gewählt?",
+   "es": "¿Todos han elegido?",
+   "it": "Hanno scelto tutti?",
+   "ru": "Все выбрали?"
+  },
+  "tbCheckP": {
+   "fr": "Vérifiez que chacun a ajouté ses plats, puis envoyez la commande.",
+   "en": "Check that everyone has added their dishes, then send the order.",
+   "tr": "Herkesin yemeğini eklediğinden emin olun, sonra siparişi gönderin.",
+   "de": "Prüfen Sie, ob alle ihre Gerichte hinzugefügt haben, und senden Sie dann die Bestellung.",
+   "es": "Compruebe que cada uno ha añadido sus platos y envíe el pedido.",
+   "it": "Controlla che ognuno abbia aggiunto i suoi piatti, poi invia l'ordine.",
+   "ru": "Проверьте, что все добавили свои блюда, затем отправьте заказ."
+  },
+  "tbConfirmSend": {
+   "fr": "✓ Oui, envoyer la commande",
+   "en": "✓ Yes, send the order",
+   "tr": "✓ Evet, siparişi gönder",
+   "de": "✓ Ja, Bestellung senden",
+   "es": "✓ Sí, enviar el pedido",
+   "it": "✓ Sì, invia l'ordine",
+   "ru": "✓ Да, отправить заказ"
   },
   "maxHint": {
    "fr": "{n} choix maximum",

@@ -713,7 +713,7 @@ function renderChoosing(){
   $("#choosing").innerHTML = list.length ? `<h2 class="choosing-h">🕓 En train de choisir · pas encore envoyé</h2><div class="ch-grid">${list.map(b => {
     const n = b.lines.reduce((x, l) => x + l.qty, 0), mins = Math.max(0, Math.round((Date.now() - Date.parse(b.updated_at)) / 60000));
     return `<div class="ch-card"><h3>${esc(tName(b.table))}<small>${n} article${n > 1 ? "s" : ""} · ${mins ? `il y a ${mins} min` : "à l'instant"}</small></h3>
-      <div class="pp">${b.people.map(p => p.ready ? `<b>✓ ${esc(p.name)}</b>` : `${esc(p.name)} choisit…`).join(" · ")}</div>
+      <div class="pp">${b.people.map(p => esc(p.name)).join(" · ")} ${b.people.length > 1 ? "choisissent" : "choisit"}…</div>
       ${b.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.who ? ` <small>· ${esc(l.who)}</small>` : ""}${l.details.length ? `<br><small>${esc(l.details.map(d => d.choices.join(", ")).join(" · "))}</small>` : ""}</div>`).join("")}
       <div class="ch-act" data-ct="${esc(b.table)}">${CLEARING === String(b.table)
         ? `<span>Vider le panier de ${esc(tName(b.table))} ? Rien ne sera envoyé en cuisine.</span><button class="danger" data-cl="yes">Oui, vider</button><button data-cl="no">Non</button>`
