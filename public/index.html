@@ -280,6 +280,14 @@ main{padding-bottom:96px}
 .oline:first-of-type{border-top:0}
 .splitchk{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:700}
 .splitchk input{width:20px;height:20px;accent-color:var(--accent)}
+.join .tip{background:#1f3a24;color:#cdeccd;border:1px solid #3f7a4a;border-radius:12px;padding:10px 12px;font-weight:600;line-height:1.35}
+#tbCheck{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;animation:fadein .2s}
+#tbCheck .ck-box{background:var(--surface);color:var(--text);border:2px solid var(--accent);border-radius:20px;padding:24px 20px;max-width:360px;width:100%;text-align:center;display:grid;gap:10px;justify-items:center;animation:popin .3s}
+#tbCheck .big{font-size:2.6rem}#tbCheck h2{margin:0;font-size:1.4rem;text-wrap:balance}#tbCheck p{margin:0;color:var(--muted)}
+#tbCheck .ck-n{width:64px;height:64px;border-radius:50%;background:var(--accent);color:#1a1a1a;font-size:2rem;font-weight:900;display:flex;align-items:center;justify-content:center}
+.btn.blinkbtn{animation:blinkbtn .8s ease-in-out infinite}
+@keyframes blinkbtn{0%,100%{filter:none;box-shadow:0 0 0 0 rgba(243,146,0,.7)}50%{filter:brightness(1.35);box-shadow:0 0 0 12px rgba(243,146,0,0)}}
+@keyframes fadein{from{opacity:0}}
 .warnbox{background:#3a2e14;color:#ffd38a;border-radius:12px;padding:10px 12px;margin-top:12px;font-weight:600}
 .join{padding:26px 18px 8px;display:grid;gap:12px}
 .join h2{margin:0;font-size:1.4rem;text-wrap:balance}
@@ -1106,16 +1114,17 @@ const ME = (() => { let id = ss.get("mado-member"); if (!id) { id = newKey() + n
 const COLORS = ["#f39200", "#7cc4ff", "#b9d76a", "#f28cb1", "#c9a3ff", "#ffd166", "#5ee0c3", "#ff8a65"];
 let TB = {version: -1, members: [], lines: [], last: null}, tbTimer = null, tbBusy = 0;
 let SPLIT = false;   // « chacun paie sa part » coché dans le panier commun
-let lastActivity = Date.now(), remindedAt = 0, allDoneKey = "", sendConfirm = false;
+let lastActivity = Date.now(), remindedAt = 0;
+// à plusieurs sur la table : « Tout le monde a bien choisi ? » (5 s), puis le bouton d'envoi clignote et envoie
+const CHECK_SECS = 5, CHECK_KEEP = 60;
+let checkAt = 0;
+const checkLeft = () => Math.max(0, CHECK_SECS - Math.floor((Date.now() - checkAt) / 1000));
+const checkArmed = () => checkAt && !checkLeft() && Date.now() - checkAt < CHECK_KEEP * 1000;
 const member = (id) => TB.members.find(m => m.id === id) || {id, name: "", c: 0};
 const mname = (m) => m.name || ui("tbGuest");
 const avatar = (m) => `<span class="av" style="background:${COLORS[(m.c || 0) % COLORS.length]}">${esc((m.name || "?").slice(0, 1).toUpperCase())}</span>`;
-// convives qui choisissent : ceux qui ont des plats, et ceux qui ont mis leur prénom et sont actifs depuis moins de 15 min
-const tbChoosers = () => { const own = tbOwners(), ids = new Set(own.map(m => m.id));
-  return own.concat(TB.members.filter(m => !ids.has(m.id) && m.name && Date.now() - (m.t || 0) < 15 * 60e3)); };
-const tbWaiting = () => tbChoosers().filter(m => !m.ready && m.id !== ME);
-let sendConfirmAt = 0;
-const SEND_WAIT = 10;   // secondes avant de pouvoir « envoyer quand même »
+// personnes sur la table : celles qui ont des plats, et celles qui ont scanné il y a moins de 15 min (moi compris)
+const tbCount = () => new Set([ME, ...TB.lines.map(l => l.m), ...TB.members.filter(m => Date.now() - (m.t || 0) < 15 * 60e3).map(m => m.id)]).size;
 const tbOwners = () => { const ids = [...new Set(TB.lines.map(l => l.m))]; return ids.map(member).sort((a, b) => (b.id === ME) - (a.id === ME)); };
 const meM = () => member(ME);
 
@@ -1184,7 +1193,7 @@ function applyTB(b, iSent){
     if (!first || iSent) {
       ORDERS.unshift({id: TB.last.id, num: TB.last.num, token: TB.last.token, table: TABLE, status: "new", at: Date.now(), shared: true, by: TB.last.by, total: TB.last.total, tea: !!TB.last.tea});
       ORDERS = ORDERS.slice(0, 5); saveOrders();
-      CUR = null; STEP = "sent"; sendConfirm = false; drawSent(true); showSheet(); pollOrders();
+      CUR = null; STEP = "sent"; checkAt = 0; hideCheck(); drawSent(true); showSheet(); pollOrders();
       drawPill(); return;
     }
   }
@@ -1194,12 +1203,6 @@ function applyTB(b, iSent){
   const typing = document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName) && $("#sheet").contains(document.activeElement);
   if (open && STEP === "cart" && !window.SWIPING && !typing) { const y = $("#shScroll").scrollTop, note = ($("#orderNote") || {}).value; drawTableCart(); $("#shScroll").scrollTop = y; if (note && $("#orderNote")) $("#orderNote").value = note; }
   if (open && STEP === "join") drawJoin(true);
-  // tout le monde a fini : chaque téléphone propose d'envoyer
-  const owners = tbOwners();
-  if (owners.length && tbChoosers().every(m => m.ready) && orderingOpen()) {
-    const key = TB.lines.map(l => l.k + l.qty).join();
-    if (key !== allDoneKey && (!open || STEP === "cart" || STEP === "remind")) { allDoneKey = key; STEP = "alldone"; CUR = null; drawAsk(); showSheet(); }
-  }
 }
 function toast(m, text){
   const el = $("#toast"); el.innerHTML = `${avatar(m)}<span>${esc(text)}</span>`; el.hidden = false;
@@ -1235,7 +1238,7 @@ function cartClear(){ if (!SHARED()) { CART = []; saveCart(); return; } [...CART
 function drawJoin(refresh){
   const others = TB.members.filter(m => m.id !== ME && (m.name || TB.lines.some(l => l.m === m.id)));
   const html = `<div class="join"><h2>${esc(fill(ui("tbJoinH"), {t: tableNo()}))}</h2><p>${esc(ui("tbJoinP"))}</p>
-    ${others.length ? `<div class="who">${esc(ui("tbAlready"))} ${others.map(m => `${avatar(m)}<span>${esc(mname(m))}</span>`).join("")}</div>` : ""}
+    ${others.length ? `<div class="who">${esc(ui("tbAlready"))} ${others.map(m => `${avatar(m)}<span>${esc(mname(m))}</span>`).join("")}</div>` : `<div class="tip">📱 ${esc(ui("tbJoinTip"))}</div>`}
     <input id="tbName" maxlength="20" autocomplete="given-name" placeholder="${esc(ui("tbNamePh"))}" value="${esc(ss.get("mado-name") || "")}"></div>`;
   if (refresh && $("#tbName")) {
     // ne touche pas au champ du prénom (sinon le clavier du téléphone se ferme) : on met à jour seulement « Déjà là »
@@ -1243,25 +1246,20 @@ function drawJoin(refresh){
     const nw = box.querySelector(".who"), old = $("#shScroll .who");
     if (old && nw) { if (old.innerHTML !== nw.innerHTML) old.replaceWith(nw); }
     else if (old) old.remove();
-    else if (nw) $("#tbName").before(nw);
+    else if (nw) { $("#tbName").before(nw); const tip = $("#shScroll .join .tip"); if (tip) tip.remove(); }
     return;
   }
   $("#shScroll").innerHTML = html;
   $("#shBar").innerHTML = `<button class="btn grow" data-sh="tbJoin">${esc(ui("tbGo"))}</button>`;
 }
+// rappel « Vous avez fini ? » : « Oui » ouvre le panier de la table pour l'envoyer
 function drawAsk(){
-  if (STEP === "remind") {
-    const n = CART.reduce((n, l) => n + l.qty, 0), name = meM().name;
-    $("#shScroll").innerHTML = `<div class="ask"><div class="big">⏰</div><h2>${esc(ui("tbRemindH"))}${name ? `<br><small style="font-size:1rem;color:var(--muted)">${esc(name)}</small>` : ""}</h2><p>${esc(fill(ui("tbRemindP"), {n}))}</p></div>`;
-    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="tbContinue">${esc(ui("tbContinue"))}</button><button class="btn grow" data-sh="tbYes">${esc(ui("tbYes"))}</button>`;
-  } else {
-    $("#shScroll").innerHTML = `<div class="ask"><div class="big">🎉</div><h2>${esc(ui("tbAllH"))}</h2><p>${esc(ui("tbAllP"))}</p>
-      <div class="big-total" style="width:100%;display:flex;justify-content:space-between;font-weight:800;font-size:1.2rem"><span>${esc(fill(ui("tbItems"), {n: cartCount()}))}</span><span style="color:var(--accent)">${esc(fmtPrice(cartTotal()))}</span></div></div>`;
-    $("#shBar").innerHTML = `<button class="btn ghost" data-sh="cart">${esc(ui("seeOrder"))}</button><button class="btn grow pulse" data-sh="tbSendForce">${esc(ui("tbSend"))}</button>`;
-  }
+  const n = CART.reduce((n, l) => n + l.qty, 0), name = meM().name;
+  $("#shScroll").innerHTML = `<div class="ask"><div class="big">⏰</div><h2>${esc(ui("tbRemindH"))}${name ? `<br><small style="font-size:1rem;color:var(--muted)">${esc(name)}</small>` : ""}</h2><p>${esc(fill(ui("tbRemindP"), {n}))}</p></div>`;
+  $("#shBar").innerHTML = `<button class="btn ghost" data-sh="tbContinue">${esc(ui("tbContinue"))}</button><button class="btn grow" data-sh="cart">${esc(ui("tbYes"))}</button>`;
 }
 function drawTableCart(){
-  const owners = tbOwners(), me = meM(), mine = TB.lines.some(l => l.m === ME);
+  const owners = tbOwners(), mine = TB.lines.some(l => l.m === ME);
   const line = (l, editable) => {
     const it = findItem(l.id)[0]; if (!it) return "";
     const s = choiceSummary(it, l.sel || {});
@@ -1274,58 +1272,60 @@ function drawTableCart(){
   $("#shScroll").innerHTML = `<div class="cart">
     <div class="cart-h"><h2>${esc(ui("tbBasket"))} · ${esc(tableLabel())}</h2><button class="sh-x" data-sh="close" aria-label="Fermer">✕</button></div>
     <p class="hint">${esc(ui("payAtCounter"))}${mine ? `<br><small>↔ ${esc(ui("tbSwipe"))}</small>` : ""}</p>
-    ${people.length ? people.map(m => `<div class="person ${m.id === ME ? "me" : ""}"><div class="ph">${avatar(m)}<span>${esc(mname(m))}${m.id === ME ? ` (${esc(ui("tbYou"))})` : ""}</span>
-        <span class="stt ${m.ready ? "ok" : "wait"}">${esc(ui(m.ready ? "tbDone" : "tbChoosing"))}</span></div>
+    ${people.length ? people.map(m => `<div class="person ${m.id === ME ? "me" : ""}"><div class="ph">${avatar(m)}<span>${esc(mname(m))}${m.id === ME ? ` (${esc(ui("tbYou"))})` : ""}</span></div>
         ${TB.lines.filter(l => l.m === m.id).map(l => line(l, m.id === ME)).join("")}</div>`).join("") : `<p class="empty">${esc(ui("emptyOrder"))}</p>`}
     ${TB.lines.length ? `<div class="big-total"><span>${esc(ui("tbTotal"))}</span><span>${esc(fmtPrice(cartTotal()))}</span></div>
       <textarea id="orderNote" class="note-in" rows="2" maxlength="300" placeholder="${esc(ui("notePh"))}"></textarea>` : ""}
-    ${sendConfirm ? `<div class="warnbox">${esc(fill(ui("tbWait2"), {names: tbWaiting().map(mname).join(", ")}))}</div>` : ""}
   </div>`;
   if (!TB.lines.length) { $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return; }
   if (!orderingOpen()) {
     $("#shScroll .cart").insertAdjacentHTML("beforeend", `<div class="warnbox">${esc(ui("tbHours"))}</div>`);
     $("#shBar").innerHTML = `<button class="btn grow" data-sh="close">OK</button>`; return;
   }
-  const readyBtn = (mine || me.name) ? `<button class="btn ghost" data-sh="tbReady">${esc(ui(me.ready ? "tbNotDone" : "tbImDone"))}</button>` : "";
-  const waiting = tbWaiting();
-  if (sendConfirm && !waiting.length) sendConfirm = false;
-  const left = Math.max(0, SEND_WAIT - Math.floor((Date.now() - sendConfirmAt) / 1000));
-  $("#shBar").innerHTML = sendConfirm
-    ? `<button class="btn ghost" data-sh="tbCancel">${esc(ui("tbLater"))}</button><button class="btn grow" data-sh="tbSendForce" id="tbForce"${left ? " disabled" : ""}>${esc(ui("tbSendAnyway"))}${left ? ` (${left})` : ""}</button>`
-    : waiting.length
-      ? `${readyBtn}<button class="btn grow wait-btn" data-sh="tbSend">⏳ ${esc(fill(ui("tbWaitFor"), {names: waiting.map(mname).join(", ")}))}</button>`
-      : `${readyBtn}<button class="btn grow pulse" data-sh="tbSend">${esc(ui("tbSend"))} · ${esc(fmtPrice(cartTotal()))}</button>`;
+  // après « Tout le monde a bien choisi ? », le bouton clignote et un appui envoie
+  $("#shBar").innerHTML = checkArmed()
+    ? `<button class="btn grow blinkbtn" data-sh="tbSend" id="tbSendBtn">${esc(ui("tbConfirmSend"))} · ${esc(fmtPrice(cartTotal()))}</button>`
+    : `<button class="btn grow pulse" data-sh="tbSend" id="tbSendBtn">${esc(ui("tbSend"))} · ${esc(fmtPrice(cartTotal()))}</button>`;
 }
+// popup « Tout le monde a bien choisi ? » avec les secondes qui défilent ; elle part seule après 5 s
+function showCheck(){
+  checkAt = Date.now(); hideCheck();
+  const el = document.createElement("div"); el.id = "tbCheck"; el.setAttribute("role", "alertdialog");
+  el.innerHTML = `<div class="ck-box"><div class="big">👥</div><h2>${esc(ui("tbCheckH"))}</h2><p>${esc(ui("tbCheckP"))}</p><div class="ck-n" id="tbCheckN">${CHECK_SECS}</div></div>`;
+  document.body.appendChild(el);
+  if (navigator.vibrate) navigator.vibrate(60);
+}
+function hideCheck(){ const el = $("#tbCheck"); if (el) el.remove(); }
+setInterval(() => {
+  const el = $("#tbCheck"); if (!el) return;
+  const left = checkLeft();
+  if (left) { $("#tbCheckN").textContent = left; return; }
+  hideCheck();
+  if ($("#sheet").classList.contains("on") && STEP === "cart") drawTableCart();
+}, 200);
 async function tbSendNow(btn){
   btn.disabled = true; btn.textContent = ui("sending");
   const j = await tbPost("send", {note: ($("#orderNote") || {}).value || "", split: SPLIT && tbOwners().length > 1});
   if (j) SPLIT = false;
   if (!j) { btn.disabled = false; btn.textContent = ui("tbSend"); toast(meM(), ui("sendError")); }
+  checkAt = 0;
 }
 function tbAction(a, b){
   if (a === "tbJoin") {
     const name = ($("#tbName") || {}).value || ""; ss.set("mado-name", name.trim()); ss.set("mado-joined", "1");
     tbPost("join", {name: name.trim()}); closeSheet();
-  } else if (a === "tbReady") { const r = !meM().ready; meM().ready = r; tbPost("ready", {ready: r}); drawTableCart(); }
-  else if (a === "tbYes") { meM().ready = true; tbPost("ready", {ready: true}); closeSheet(); }
-  else if (a === "tbContinue") { lastActivity = Date.now(); closeSheet(); }
-  else if (a === "tbCancel") { sendConfirm = false; drawTableCart(); }
-  else if (a === "tbSend") {
-    if (tbWaiting().length) { sendConfirm = true; sendConfirmAt = Date.now(); drawTableCart(); $("#shScroll").scrollTop = 1e6; } else tbSendNow(b);
   }
-  else if (a === "tbSendForce") { if (sendConfirm && Date.now() - sendConfirmAt < SEND_WAIT * 1000) return; tbSendNow(b); }
+  else if (a === "tbContinue") { lastActivity = Date.now(); closeSheet(); }
+  else if (a === "tbSend") {
+    // seul à la table : envoi direct ; à plusieurs : d'abord « Tout le monde a bien choisi ? »
+    if (tbCount() > 1 && !checkArmed()) { if (!checkLeft() || !checkAt) showCheck(); return; }
+    tbSendNow(b);
+  }
 }
-// compte à rebours du bouton « Envoyer quand même »
-setInterval(() => {
-  const f = $("#tbForce"); if (!f || !sendConfirm) return;
-  const left = Math.max(0, SEND_WAIT - Math.floor((Date.now() - sendConfirmAt) / 1000));
-  f.disabled = left > 0; f.textContent = ui("tbSendAnyway") + (left ? ` (${left})` : "");
-}, 250);
-// rappel : des plats dans le panier, pas « fini », rien ajouté depuis 1 minute
+// rappel : des plats dans le panier pas encore envoyés, rien ajouté depuis 1 minute (une fois)
 setInterval(() => {
   if (!SHARED() || $("#sheet").classList.contains("on") || $("#app").style.display !== "block") return;
-  const me = meM();
-  if (!CART.length || me.ready || Date.now() - lastActivity < 60000 || remindedAt > lastActivity) return;
+  if (!CART.length || Date.now() - lastActivity < 60000 || remindedAt > lastActivity) return;
   remindedAt = Date.now(); CUR = null; STEP = "remind"; drawAsk(); showSheet();
   if (navigator.vibrate) navigator.vibrate(80);
 }, 5000);
