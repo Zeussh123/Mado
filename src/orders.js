@@ -239,7 +239,7 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   const out = await updateBasket(env, table, async (d) => {
     meNew = isNewClient(d, me, cfg, st.cooking);
     const m = touch(d);
-    if (action === "join") { m.name = cleanStr(body.name, 20); return {}; }
+    if (action === "join") { m.name = cleanStr(body.name, 20); m.j = now; return {}; }   // j : a passé l'étape du prénom (vu sur /cuisine)
     if (action === "add") {
       if (d.lines.length >= MAX_BASKET_LINES) return { error: "Panier plein", status: 400 };
       const l = body.line || {};
@@ -372,11 +372,16 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const out = [];
       for (const r of results) {
         let d; try { d = JSON.parse(r.data); } catch { continue; }
-        if (!d.lines || !d.lines.length) continue;
+        d.lines = d.lines || [];
+        // à la table : ceux qui ont des plats, et ceux qui viennent de scanner (prénom passé) depuis le dernier envoi
+        const lastAt = (d.last && d.last.at) || 0;
+        const hasLines = (x) => d.lines.some((l) => l.m === x.id), joined = (x) => x.j && x.t > lastAt;
+        const active = (d.members || []).filter((x) => hasLines(x) || joined(x));
+        if (!active.length) continue;
         let gi = 0; const names = {};
-        for (const x of d.members || []) if (d.lines.some((l) => l.m === x.id)) names[x.id] = x.name || `Invité ${++gi}`;
+        for (const x of active.filter(hasLines)) names[x.id] = x.name || `Invité ${++gi}`;   // même numéro que sur le ticket
+        for (const x of active) if (!names[x.id]) names[x.id] = x.name || `Invité ${++gi}`;
         const lines = d.lines.map((l) => { const p = priceLine(menu, l, promos); return p && { ...p, who: names[l.m] || "" }; }).filter(Boolean);
-        const active = (d.members || []).filter((x) => d.lines.some((l) => l.m === x.id));
         out.push({ table: r.table_no, updated_at: r.updated_at, lines, people: active.map((x) => ({ name: names[x.id], ready: !!x.ready })) });
       }
       out.sort((a, b) => (+a.table || 0) - (+b.table || 0));
@@ -391,7 +396,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       const table = String(+mClear[1]), st = await tableCooking(env, table);
       if (!st.open) await resetBasket(env, table, true);   // rien en cours : la table repart à zéro (panier et convives)
       else await updateBasket(env, table, async (d) => {   // des plats sont déjà servis : on garde le suivi de la commande, on retire seulement les plats pas envoyés
-        d.lines = []; d.members.forEach((x) => (x.ready = false)); d.cleared = Date.now(); return {};
+        d.lines = []; d.members.forEach((x) => { x.ready = false; delete x.j; }); d.cleared = Date.now(); return {};
       });
       return json({ ok: true, reset: !st.open });
     });
