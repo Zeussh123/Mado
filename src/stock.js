@@ -54,3 +54,18 @@ export function stockState(menu, soldList) {
     .sort((a, b) => ((ORDER.indexOf(a.section) + 1) || 99) - ((ORDER.indexOf(b.section) + 1) || 99));
   return { soldOut: [...sold], outItems, outChoices, ingredients };
 }
+
+// « Épuisé aujourd'hui » : heure de remise en vente (heure de Paris), réglable dans l'admin.
+export function soldResetAt(menu) {
+  const v = menu && menu.ordering && menu.ordering.soldReset;
+  return typeof v === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(v) ? v : "02:00";
+}
+// Jour de service (AAAA-MM-JJ) : avant l'heure de remise, on est encore dans le service de la veille.
+export function serviceDay(reset, date = new Date()) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+    .formatToParts(date).map((x) => [x.type, x.value]));
+  const [h, mn] = reset.split(":").map(Number);
+  let d = Date.UTC(+p.year, +p.month - 1, +p.day);
+  if (+p.hour * 60 + +p.minute < h * 60 + mn) d -= 86400000;
+  return new Date(d).toISOString().slice(0, 10);
+}
