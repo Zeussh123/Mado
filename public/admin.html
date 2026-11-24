@@ -23,10 +23,14 @@ button:disabled{opacity:.5;cursor:default}
 .wrap{max-width:820px;margin:0 auto;padding:0 16px}
 /* ---------- plan de salle ---------- */
 .toggles .so.on{color:#ff8d86;font-weight:800}
+.so-mode{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;margin:0 0 10px}
+.so-mode label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:400}
+.so-mode input{width:auto;margin:0}
 #gmThemes button.on{border-color:var(--accent);background:#2b2214}
 .ord-auto{display:flex;flex-direction:column;gap:8px}
 .ord-auto label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .ord-auto input{width:80px!important;display:inline-block;padding:4px 6px}
+.ord-auto input[type=time]{width:120px!important}
 .gm-modes{display:flex;flex-direction:column;gap:8px}
 .gm-modes>label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
 .gm-modes>label:has(input:checked){border-color:var(--accent);background:#2b2214}
@@ -210,6 +214,9 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
 
     <section id="tab-menu">
       <p class="small">Touchez une catégorie pour l'ouvrir. Décochez « Visible » pour retirer un produit de la carte sans le perdre, ou supprimez-le définitivement avec « Plus ». N'oubliez pas d'enregistrer en bas de l'écran.</p>
+      <div class="small so-mode" id="soModeBar"><span>Quand je coche « Épuisé » :</span>
+        <label><input type="radio" name="soMode" value="today"> <span><b>aujourd'hui seulement</b> (remis en vente tout seul à <span id="soResetLbl">02:00</span>)</span></label>
+        <label><input type="radio" name="soMode" value="perm"> jusqu'à nouvel ordre</label></div>
       <details class="panel ing-panel" id="ingPanel"><summary><b>Ingrédients épuisés</b> <span class="small" id="ingCount"></span></summary>
         <p class="small">Cochez ce qui manque (ex. bœuf) : les options qui l'utilisent deviennent indisponibles sur tous les plats (kebab bœuf et mixte dans le kebab, tacos, yufka, assiette…). Enregistré tout de suite. Aussi disponible sur la page Cuisine, onglet « Épuisés ».</p>
         <div id="ingList"></div>
@@ -295,6 +302,10 @@ header h1{font-size:1rem;margin:0;flex:1;min-width:120px}
           <label>Panier pas envoyé (client parti) vidé après <input id="ordBasket" type="number" min="0" max="240" step="1"> min sans activité</label>
         </div>
         <p class="small">Les plats choisis mais jamais envoyés disparaissent tout seuls de la cuisine et de la table. Mettez 0 pour attendre 4 h. Vous pouvez aussi vider un panier à la main depuis la page Cuisine.</p>
+        <div class="ord-auto" style="margin-top:10px">
+          <label>« Épuisé aujourd'hui » remis en vente à <input id="ordSoldReset" type="time" step="60"> (après la fin du service)</label>
+        </div>
+        <p class="small">Un produit ou ingrédient marqué « Épuisé aujourd'hui » redevient commandable tout seul à cette heure. Si vous fermez à 1h30, mettez 02:00 : ce qui est épuisé à 23h ou à 1h du matin revient à 2h, pas à minuit. Pensez à enregistrer.</p>
         <div class="lbl" style="margin-top:14px">Quand compter quelqu'un qui scanne le QR comme un nouveau client ?</div>
         <div class="gm-modes" id="ordNewCli">
           <label><input type="radio" name="ordNew" value="served"> <span><b>Quand toute la table est servie</b><small>Tant qu'une commande de la table est en préparation, un nouveau scan rejoint le même groupe et la même addition.</small></span></label>
@@ -486,11 +497,12 @@ async function loadMenu(){
   }
   const r = await fetch("/api/menu", {cache:"no-store"}); const m = await r.json();
   // ruptures de stock : gérées à part, enregistrées tout de suite (pas besoin de cliquer Enregistrer)
-  SOLD = new Set(m.soldOut || []); INGS = m.ingredients || [];
-  for (const k of ["soldOut", "outItems", "outChoices", "ingredients"]) delete m[k];
+  SOLD = new Set(m.soldOut || []); TODAY = new Set(m.soldToday || []); INGS = m.ingredients || [];
+  for (const k of ["soldOut", "soldToday", "soldReset", "outItems", "outChoices", "ingredients"]) delete m[k];
   return m;
 }
-let SOLD = new Set(), INGS = [];
+let SOLD = new Set(), TODAY = new Set(), INGS = [];
+const soLabel = (id) => SOLD.has(id) && TODAY.has(id) ? "Épuisé aujourd'hui" : "Épuisé";
 
 function uid(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 const blankL = () => Object.fromEntries(LANGS.map(l => [l, ""]));
@@ -561,7 +573,7 @@ function itemHtml(c, ci, it, ii){
       <div class="toggles">
         <label><input type="checkbox" data-f="visible" ${it.hidden?"":"checked"}> Visible sur la carte</label>
         <label><input type="checkbox" data-f="bestseller" ${it.bestseller?"checked":""}> ★ Meilleure vente</label>
-        <label class="so ${SOLD.has(it.id)?"on":""}"><input type="checkbox" data-so="${esc(it.id)}" ${SOLD.has(it.id)?"checked":""}> Épuisé</label>
+        <label class="so ${SOLD.has(it.id)?"on":""}"><input type="checkbox" data-so="${esc(it.id)}" ${SOLD.has(it.id)?"checked":""}> <span>${soLabel(it.id)}</span></label>
         <button class="ghost" data-act="toggleItem" style="padding:2px 8px;font-size:.85rem">${open?"Moins ▲":"Plus ▼"}</button>
       </div>
     </div>
@@ -691,7 +703,7 @@ function renderInfo(){
   $("#ordEnabled").checked = !!ord.enabled; $("#ordTables").value = ord.tables || "";
   $("#ordUseSched").checked = !!ord.useSchedule;
   const dflt = (v, d) => (v === undefined || v === null || v === "" ? d : v);
-  $("#ordServed").value = dflt(ord.autoServedMin, 40); $("#ordPaid").value = dflt(ord.autoPaidMin, 60); $("#ordBasket").value = dflt(ord.basketMin, 30);
+  $("#ordServed").value = dflt(ord.autoServedMin, 40); $("#ordPaid").value = dflt(ord.autoPaidMin, 60); $("#ordBasket").value = dflt(ord.basketMin, 30); $("#ordSoldReset").value = ord.soldReset || "02:00"; renderSoMode();
   $$('[name="ordNew"]').forEach(r => r.checked = r.value === (ord.newClient || "served")); $("#ordNewMin").value = dflt(ord.newClientMin, 30);
   const sch = ord.schedule || {};
   $("#ordSched").style.display = ord.useSchedule ? "" : "none";
@@ -816,6 +828,7 @@ $("#tab-info").addEventListener("input", (e) => {
   else if (e.target.closest && e.target.closest("#ordSched")) menu.ordering.schedule = readSched();
   else if (e.target.id === "ordServed") menu.ordering.autoServedMin = Math.max(0, parseInt(e.target.value) || 0);
   else if (e.target.id === "ordPaid") menu.ordering.autoPaidMin = Math.max(0, parseInt(e.target.value) || 0);
+  else if (e.target.id === "ordSoldReset") { if (/^\d{2}:\d{2}$/.test(e.target.value)) menu.ordering.soldReset = e.target.value; renderSoMode(); }
   else if (e.target.id === "ordBasket") menu.ordering.basketMin = Math.max(0, Math.min(240, parseInt(e.target.value) || 0));
   else if (e.target.name === "ordNew") menu.ordering.newClient = e.target.value;
   else if (e.target.id === "ordNewMin") { menu.ordering.newClientMin = Math.max(1, parseInt(e.target.value) || 30); }
@@ -1134,16 +1147,22 @@ function renderIngs(){
   const secs = []; for (const i of INGS) { let s = secs.find(x => x.name === i.section); if (!s) secs.push(s = {name: i.section, list: []}); s.list.push(i); }
   const n = INGS.filter(i => SOLD.has("ing:" + i.id)).length;
   $("#ingCount").textContent = n ? `· ${n} épuisé${n > 1 ? "s" : ""}` : "· tout est disponible";
-  $("#ingList").innerHTML = secs.map(s => `<div class="lbl">${esc(s.name)}</div><div class="toggles">${s.list.map(i => `<label class="so ${SOLD.has("ing:"+i.id)?"on":""}"><input type="checkbox" data-so="ing:${esc(i.id)}" ${SOLD.has("ing:"+i.id)?"checked":""}> ${esc(i.name)}</label>`).join("")}</div>`).join("") || '<p class="small">Disponible une fois le site en ligne.</p>';
+  $("#ingList").innerHTML = secs.map(s => `<div class="lbl">${esc(s.name)}</div><div class="toggles">${s.list.map(i => `<label class="so ${SOLD.has("ing:"+i.id)?"on":""}"><input type="checkbox" data-so="ing:${esc(i.id)}" ${SOLD.has("ing:"+i.id)?"checked":""}> ${esc(i.name)}${TODAY.has("ing:"+i.id) ? " <small>(aujourd'hui)</small>" : ""}</label>`).join("")}</div>`).join("") || '<p class="small">Disponible une fois le site en ligne.</p>';
 }
 $("#ingList").addEventListener("change", (e) => { if (e.target.dataset.so) toggleSoldOut(e.target).then(renderIngs); });
+let SO_MODE = ls.get("mado-so-mode") === "perm" ? "perm" : "today";
+const soResetAt = () => (typeof menu !== "undefined" && menu && menu.ordering && menu.ordering.soldReset) || "02:00";
+function renderSoMode(){ document.querySelectorAll('#soModeBar input').forEach(x => x.checked = x.value === SO_MODE); $("#soResetLbl").textContent = soResetAt(); }
+$("#soModeBar").addEventListener("change", (e) => { if (e.target.name === "soMode") { SO_MODE = e.target.value; ls.set("mado-so-mode", SO_MODE); } });
 async function toggleSoldOut(box){
   const id = box.dataset.so, out = box.checked;
-  if (DEMO) { out ? SOLD.add(id) : SOLD.delete(id); return; }
-  const r = await api("/api/soldout", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({id, out})}).catch(() => null);
+  const today = SO_MODE === "today";
+  if (DEMO) { out ? SOLD.add(id) : SOLD.delete(id); TODAY.delete(id); if (out && today) TODAY.add(id); return; }
+  const r = await api("/api/soldout", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({id, out, today})}).catch(() => null);
   if (!r || !r.ok) { box.checked = !out; toast("Erreur, réessayez."); return; }
-  const j = await r.json(); SOLD = new Set(j.soldOut); if (j.ingredients) INGS = j.ingredients; box.closest(".so").classList.toggle("on", out);
-  toast(out ? "Marqué épuisé : les clients ne peuvent plus le commander." : "De nouveau disponible.");
+  const j = await r.json(); SOLD = new Set(j.soldOut); TODAY = new Set(j.soldToday || []); if (j.ingredients) INGS = j.ingredients;
+  const lb = box.closest(".so"); lb.classList.toggle("on", out); const sp = lb.querySelector("span"); if (sp) sp.textContent = soLabel(id);
+  toast(!out ? "De nouveau disponible." : today ? `Épuisé aujourd'hui : remis en vente tout seul à ${soResetAt()}.` : "Marqué épuisé jusqu'à nouvel ordre : les clients ne peuvent plus le commander.");
 }
 
 /* ---------- Plan de salle ---------- */

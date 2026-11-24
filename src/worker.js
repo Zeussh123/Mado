@@ -4,7 +4,7 @@
 // - protège les modifications par le mot de passe ADMIN_PASSWORD (secret Cloudflare)
 
 import { handleOrders, stats } from "./orders.js";
-import { stockState } from "./stock.js";
+import { stockState, soldResetAt, serviceDay } from "./stock.js";
 import { postFeedback, listFeedback } from "./feedback.js";
 import { spin, gameStatus, gameStats } from "./game.js";
 import { EXTRA_LANGS, translateExtra } from "./i18n-extra.js";
@@ -154,16 +154,30 @@ async function safeEqual(a, b) {
 }
 
 // Ruptures de stock : liste d'ids à part (un clic dans l'admin ou la cuisine, sans toucher au menu enregistré)
-async function loadSoldOut(env) { try { return JSON.parse((await env.MADO.get("soldout")) || "[]"); } catch { return []; } }
+// - "soldout" : épuisé jusqu'à nouvel ordre (liste d'ids)
+// - "soldout-today" : épuisé aujourd'hui seulement, { id: "AAAA-MM-JJ" = jour de service } ; revient tout seul
+//   quand le jour de service change, c.-à-d. à l'heure de remise (menu.ordering.soldReset, 02:00 par défaut :
+//   un service qui finit à 1h30 compte encore pour la veille).
+async function kvJson(env, key, dflt) { try { return JSON.parse((await env.MADO.get(key)) || "null") || dflt; } catch { return dflt; } }
+async function loadSoldOut(env, menu) {
+  const [perm, today] = await Promise.all([kvJson(env, "soldout", []), kvJson(env, "soldout-today", {})]);
+  const day = serviceDay(soldResetAt(menu));
+  const todayIds = Object.keys(today).filter((id) => today[id] === day && !perm.includes(id));
+  return { all: [...perm, ...todayIds], today: todayIds };
+}
 async function setSoldOut(request, env) {
   if (!(await staffAuth(request, env))) return json({ error: "Non autorisé" }, 401);
   let b = {}; try { b = await request.json(); } catch {}
   if (!b.id || typeof b.id !== "string") return json({ error: "id manquant" }, 400);
-  const set = new Set(await loadSoldOut(env));
-  if (b.out) set.add(b.id); else set.delete(b.id);
-  await env.MADO.put("soldout", JSON.stringify([...set]));
+  const menu = JSON.parse((await env.MADO.get(MENU_KEY)) || "{}");
+  const set = new Set(await kvJson(env, "soldout", [])), today = await kvJson(env, "soldout-today", {});
+  const day = serviceDay(soldResetAt(menu));
+  for (const k of Object.keys(today)) if (today[k] !== day) delete today[k];   // ménage : jours passés
+  set.delete(b.id); delete today[b.id];
+  if (b.out) { if (b.today) today[b.id] = day; else set.add(b.id); }
+  await Promise.all([env.MADO.put("soldout", JSON.stringify([...set])), env.MADO.put("soldout-today", JSON.stringify(today))]);
   const m = JSON.parse(await menuText(request, env));
-  return json({ ok: true, soldOut: m.soldOut, outItems: m.outItems, outChoices: m.outChoices, ingredients: m.ingredients });
+  return json({ ok: true, soldOut: m.soldOut, soldToday: m.soldToday, soldReset: m.soldReset, outItems: m.outItems, outChoices: m.outChoices, ingredients: m.ingredients });
 }
 async function getMenu(request, env) {
   const body = await menuText(request, env);
@@ -205,7 +219,8 @@ export async function menuText(request, env) {
   }
   // ruptures (plats et ingrédients) : état calculé à chaque lecture
   const m = JSON.parse(body);
-  Object.assign(m, stockState(m, await loadSoldOut(env)));
+  const so = await loadSoldOut(env, m);
+  Object.assign(m, stockState(m, so.all), { soldToday: so.today, soldReset: soldResetAt(m) });
   body = JSON.stringify(m);
   return body;
 }
@@ -578,7 +593,7 @@ async function putMenu(request, env) {
   let data;
   try { data = JSON.parse(text); } catch { return json({ error: "JSON invalide" }, 400); }
   if (!data || !Array.isArray(data.categories)) return json({ error: "Menu invalide" }, 400);
-  for (const k of ["soldOut", "outItems", "outChoices", "ingredients"]) delete data[k]; // géré à part (/api/soldout)
+  for (const k of ["soldOut", "soldToday", "soldReset", "outItems", "outChoices", "ingredients"]) delete data[k]; // géré à part (/api/soldout)
   data.updatedAt = new Date().toISOString();
   const out = JSON.stringify(data);
   // garde la version précédente en sauvegarde
