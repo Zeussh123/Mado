@@ -425,7 +425,7 @@ function applyMigrations(m){
     m.applied.push("sauce-piment-2026-11");
   }
   if (!m.game) m.game = { enabled: false, resetHours: 3, prizes: [
-    { id: "p1", name: { fr: "Boisson offerte", en: "Free drink", tr: "İkram içecek", de: "Gratis-Getränk" }, chance: 10 },
+    { id: "p1", name: { fr: "Boisson 33 cl offerte", en: "Free 33 cl drink", tr: "İkram içecek 33 cl", de: "Gratis-Getränk 33 cl" }, chance: 10 },
     { id: "p2", name: { fr: "Dessert offert", en: "Free dessert", tr: "İkram tatlı", de: "Gratis-Dessert" }, chance: 5 },
   ] };
   if (!m.applied.includes("review2-2026-11")) {
@@ -569,6 +569,12 @@ function applyMigrations(m){
     // Ces menus ne sont jamais en promo : pendant les promos, seul le menu kebab baisse.
     applyMenusSandwichs(m);
     m.applied.push("menus-sandwichs-2026-11");
+  }
+  if (!m.applied.includes("roue-boisson-33cl-2026-11")) {
+    // roue : la boisson offerte est une 33 cl, écrit sur la roue, l'écran du lot et le ticket cadeau (demande momo)
+    for (const p of (m.game && m.game.prizes) || []) if (p && p.name && /^boisson offerte$/i.test((p.name.fr || "").trim()))
+      p.name = { fr: "Boisson 33 cl offerte", en: "Free 33 cl drink", tr: "İkram içecek 33 cl", de: "Gratis-Getränk 33 cl", es: "Bebida 33 cl gratis", it: "Bibita 33 cl offerta", ru: "Напиток 0,33 л в подарок", _auto: "Boisson 33 cl offerte" };
+    m.applied.push("roue-boisson-33cl-2026-11");
   }
   // une fois : on retraduit tout (les traductions d'avant n'avaient pas le repère « _auto »)
   const first = !m.applied.includes("langues-auto-2026-11");
