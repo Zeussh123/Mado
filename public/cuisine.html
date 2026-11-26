@@ -317,6 +317,8 @@ let ORDERS = [], TABLES = 10, started = false, audio = null, firstLoad = true, t
 const idSet = (k) => new Set((ls.get(k) || "").split(",").filter(Boolean).map(Number));
 const saveSet = (k, s) => ls.set(k, [...s].slice(-400).join(","));
 const printed = idSet("mado-printed"), seen = idSet("mado-seen"), gifts = new Set((ls.get("mado-gifts2") || "").split("|").filter(Boolean));
+// lot de la roue : les commandes d'avant le changement disent « Boisson offerte », on écrit la 33 cl
+const prizeTxt = (p) => String(p || "").replace(/\bBoisson offerte\b/gi, "Boisson 33 cl offerte");
 const giftKey = (o) => o.id + ":" + o.prize, saveGifts = () => ls.set("mado-gifts2", [...gifts].slice(-300).join("|"));
 const api = (p, o = {}) => fetch(p, {...o, headers: {...(o.headers || {}), authorization: "Bearer " + token}});
 
@@ -438,7 +440,7 @@ function ticketHtml(o){
   const cats = byCategory(o.lines), k = cats.findIndex(c => c.oven), cut = k > 0;
   const catsHtml = (list) => list.map(c => `<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("");
   const extra = `${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}
-    ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(o.prize).toUpperCase()}</div>` : ""}<div class="sep"></div>
+    ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(prizeTxt(o.prize)).toUpperCase()}</div>` : ""}<div class="sep"></div>
     ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}`;
   const foot = `<div class="big again">${esc(tName(o.table_no).toUpperCase())}</div><div class="c">n° ${o.num} · ${hm(o.created_at)}</div>`;
   if (cut) return `<div class="resto">MADO</div><div class="big"${isEmp(o.table_no) ? ' style="font-size:22pt"' : ""}>${esc(tName(o.table_no).toUpperCase())}</div>
@@ -448,7 +450,7 @@ function ticketHtml(o){
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div>
     ${cats.map(c => `<div class="cat">${esc(c.name.toUpperCase())}</div>${c.lines.map((l, i) => `${i ? '<div class="dash"></div>' : ""}<div class="prod">${l.qty} x ${esc(l.name).toUpperCase()}</div>${ticketDetails(l)}`).join("")}`).join("")}
     ${o.note ? `<div class="nt">NOTE : ${esc(o.note)}</div>` : ""}
-    ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(o.prize).toUpperCase()}</div>` : ""}<div class="sep"></div>
+    ${o.prize ? `<div class="nt">CADEAU ROUE : ${esc(prizeTxt(o.prize)).toUpperCase()}</div>` : ""}<div class="sep"></div>
     ${S.printPrice ? `<table class="tot">${row("TOTAL", eur(o.total))}</table><div class="c" style="margin-top:1.5mm;font-size:10.5pt">À payer au comptoir</div>` : ""}
     <div class="big again">${esc(tName(o.table_no).toUpperCase())}</div><div class="c">n° ${o.num} · ${hm(o.created_at)}</div>`;
 }
@@ -489,7 +491,7 @@ function giftHtml(o){
   return `<div class="resto">MADO</div><div class="big">${esc(tName(o.table_no).toUpperCase())}</div>
     <div class="c">Commande n° ${o.num} · ${hm(o.created_at)}</div><div class="sep"></div>
     <div class="c" style="font-size:13pt;font-weight:900">🎁 CADEAU ROUE DE LA CHANCE</div>
-    <div class="prod" style="text-align:center;margin-top:2mm">${esc(o.prize).toUpperCase()}</div>
+    <div class="prod" style="text-align:center;margin-top:2mm">${esc(prizeTxt(o.prize)).toUpperCase()}</div>
     <div class="c" style="margin-top:2mm">Offert · à servir avec la commande</div>`;
 }
 function runQueue(){
@@ -506,7 +508,7 @@ function orderCard(o, opts = {}){
     ${o.split ? `<div class="note">💳 Paiement séparé</div>` : ""}
     ${o.lines.map(l => `<div class="ln"><b>${l.qty} × ${esc(l.name)}</b>${l.who ? ` <small style="color:var(--muted)">· ${esc(l.who)}</small>` : ""}${detailsHtml(l)}</div>`).join("")}
     ${o.note ? `<div class="note">📝 ${esc(o.note)}</div>` : ""}
-    ${o.prize ? `<div class="note gift">🎁 Gagné à la roue : <b>${esc(o.prize)}</b> (offert)</div>` : ""}
+    ${o.prize ? `<div class="note gift">🎁 Gagné à la roue : <b>${esc(prizeTxt(o.prize))}</b> (offert)</div>` : ""}
     <div class="of"><span class="tot">${eur(o.total)}</span>
       <button data-a="print">🖨</button>
       ${isNew ? `<button data-a="seen">Vu</button>` : ""}
@@ -758,7 +760,7 @@ async function load(){
     // nouveaux gagnants de la roue : ticket cadeau + annonce
     const won = ORDERS.filter(o => o.prize && !gifts.has(giftKey(o)) && o.status !== "cancelled");
     if (won.length) {
-      won.forEach(o => { gifts.add(giftKey(o)); if (started && S.autoPrint && !firstLoad) printHtml(giftHtml(o)); if (started && S.voice && !firstLoad) say(`${tName(o.table_no)} a gagné ${o.prize}`); });
+      won.forEach(o => { gifts.add(giftKey(o)); if (started && S.autoPrint && !firstLoad) printHtml(giftHtml(o)); if (started && S.voice && !firstLoad) say(`${tName(o.table_no)} a gagné ${prizeTxt(o.prize)}`); });
       saveGifts();
     }
     firstLoad = false;

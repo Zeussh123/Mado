@@ -1626,6 +1626,11 @@ export const TR_EXTRA = {
 "it": "Sprite",
 "ru": "Sprite"
 },
+"Boisson 33 cl offerte": {
+"es": "Bebida 33 cl gratis",
+"it": "Bibita 33 cl offerta",
+"ru": "Напиток 0,33 л в подарок"
+},
 "Boisson offerte": {
 "es": "Bebida gratis",
 "it": "Bibita offerta",

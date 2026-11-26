@@ -5633,13 +5633,13 @@
    {
     "id": "p1",
     "name": {
-     "fr": "Boisson offerte",
-     "en": "Free drink",
-     "tr": "İkram içecek",
-     "de": "Gratis-Getränk",
-     "es": "Bebida gratis",
-     "it": "Bibita offerta",
-     "ru": "Напиток в подарок"
+     "fr": "Boisson 33 cl offerte",
+     "en": "Free 33 cl drink",
+     "tr": "İkram içecek 33 cl",
+     "de": "Gratis-Getränk 33 cl",
+     "es": "Bebida 33 cl gratis",
+     "it": "Bibita 33 cl offerta",
+     "ru": "Напиток 0,33 л в подарок"
     },
     "chance": 10
    },
