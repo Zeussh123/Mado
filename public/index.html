@@ -541,6 +541,23 @@ const STAFF = location.pathname.replace(/\/+$/, "") === "/serveur";
 let STAFF_CODE = (() => { try { return localStorage.getItem("mado-staff") || ""; } catch { return ""; } })();
 // code secret de la table (dans le QR code)
 // Le code du QR est échangé contre un « pass » de table valable 2 h (voir tableSession côté serveur)
+// Pass de table gardé aussi dans le téléphone jusqu'à sa fin (2 h) : si le navigateur ferme ou recharge l'onglet
+// pendant que le client choisit (autre appli ouverte, lien rouvert…), il retrouve sa table, son prénom et ses plats
+// sans rescanner. Un nouveau scan (?t=…) passe toujours avant.
+const PASS_KEYS = ["mado-table", "mado-tkey", "mado-member", "mado-joined", "mado-name", "mado-tb-last", "mado-orders"];
+if (!STAFF) try {
+  const p = JSON.parse(localStorage.getItem("mado-pass") || "null");
+  if (p && p.exp > Date.now() && !new URLSearchParams(location.search).get("t") && !sessionStorage.getItem("mado-table"))
+    for (const k of PASS_KEYS) if (p.ss && typeof p.ss[k] === "string") sessionStorage.setItem(k, p.ss[k]);
+} catch {}
+function savePass(){ try {
+  if (STAFF || !TABLE || !TKEY) return;
+  const exp = +String(TKEY).split(".")[0]; if (!(exp > Date.now())) return;
+  try { const ss = {}; for (const k of PASS_KEYS) { const v = sessionStorage.getItem(k); if (v !== null) ss[k] = v; } localStorage.setItem("mado-pass", JSON.stringify({exp, ss})); } catch {}
+} catch {} }
+const dropPass = () => { try { localStorage.removeItem("mado-pass"); } catch {} };
+addEventListener("pagehide", savePass);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") savePass(); });
 const RAWK = (() => { const k = new URLSearchParams(location.search).get("k"); return k && /^[a-f0-9]{6,20}$/.test(k) ? k : ""; })();
 let TKEY = (() => { try { return sessionStorage.getItem("mado-tkey") || ""; } catch { return ""; } })();
 async function openTableSession(){
@@ -552,6 +569,7 @@ async function openTableSession(){
     const j = await r.json(); TKEY = r.ok ? j.token : "";
   } catch { TKEY = ""; }
   try { sessionStorage.setItem("mado-tkey", TKEY); } catch {}
+  if (TKEY) savePass(); else dropPass();
 }
 let TABLE = STAFF ? "" : (() => {
   const q = new URLSearchParams(location.search).get("t");
@@ -1155,6 +1173,7 @@ async function tbPoll(){
 function badKey(){
   clearTimeout(tbTimer); tbTimer = null;
   TABLE = ""; try { sessionStorage.removeItem("mado-table"); } catch {}
+  dropPass();
   $("#tableChip").hidden = true; CART = []; drawPill();
   CUR = null; STEP = "info";
   $("#shScroll").innerHTML = `<div class="ask"><div class="big">📷</div><p style="color:var(--text);font-size:1.05rem">${esc(ui("tbBadKey"))}</p></div>`;
@@ -1312,7 +1331,7 @@ async function tbSendNow(btn){
 }
 function tbAction(a, b){
   if (a === "tbJoin") {
-    const name = ($("#tbName") || {}).value || ""; ss.set("mado-name", name.trim()); ss.set("mado-joined", "1");
+    const name = ($("#tbName") || {}).value || ""; ss.set("mado-name", name.trim()); ss.set("mado-joined", "1"); savePass();
     tbPost("join", {name: name.trim()}); closeSheet();
   }
   else if (a === "tbContinue") { lastActivity = Date.now(); closeSheet(); }

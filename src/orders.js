@@ -111,12 +111,12 @@ async function autoAdvance(env, getMenu) {
   if (AUTO_SERVED_MIN) await env.DB.prepare("UPDATE orders SET status='done', updated_at=? WHERE status IN ('new','ready') AND created_at < ?").bind(now, ago(AUTO_SERVED_MIN)).run();
   if (!AUTO_PAID_MIN) return;
   // le délai d'1 h part du passage en « Servie » (à la main, ou automatique après 40 min)
-  const paid = await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE status='done' AND updated_at < ?").bind(now, ago(AUTO_PAID_MIN)).run();
-  if (paid.meta && paid.meta.changes) {
-    // tables qui n'ont plus rien en cours : panier et convives vidés
-    const { results } = await env.DB.prepare("SELECT table_no FROM table_baskets WHERE table_no NOT IN (SELECT table_no FROM orders WHERE status IN ('new','ready','done'))").all();
-    for (const r of results) await resetBasket(env, r.table_no);
-  }
+  // Seules les tables dont une commande vient de passer en « Encaissée » sont libérées. Avant, toutes les tables
+  // sans commande en cours étaient vidées : les clients en train de choisir ailleurs perdaient leurs plats (bug 2026-11-27).
+  const { results } = await env.DB.prepare("SELECT DISTINCT table_no FROM orders WHERE status='done' AND updated_at < ?").bind(ago(AUTO_PAID_MIN)).all();
+  if (!results.length) return;
+  await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE status='done' AND updated_at < ?").bind(now, ago(AUTO_PAID_MIN)).run();
+  for (const r of results) if (r.table_no !== "EMP") await releaseIfFree(env, r.table_no, cfg.basketMin);
 }
 
 // Thé offert (libre service) avec une pizza, un pide, un menu ou une assiette, à table seulement (réglable : menu.tea)
@@ -182,6 +182,23 @@ async function resetBasket(env, table, cleared) {
   const d = cleared ? { ...emptyBasket(), cleared: Date.now() } : emptyBasket();
   await env.DB.prepare("UPDATE table_baskets SET data=?, version=version+1, updated_at=? WHERE table_no=?").bind(JSON.stringify(d), new Date().toISOString(), String(table)).run();
 }
+// Commande d'avant encaissée ou annulée : le groupe qui l'avait envoyée quitte la table (convives, plats pas envoyés, suivi).
+// Les personnes arrivées après cet envoi (nouveau client déjà en train de choisir) gardent leurs plats.
+async function releaseTable(env, table, linesMin) {
+  return updateBasket(env, String(table), async (d) => {
+    if (!d.last) return { error: "rien à libérer" };   // aucune commande envoyée : ce sont les clients actuels, on ne touche à rien
+    const old = new Set(d.last.ids || []);
+    d.members = d.members.filter((x) => !old.has(x.id));
+    const keep = new Set(d.members.map((x) => x.id));
+    d.lines = d.lines.filter((l) => keep.has(l.m));
+    d.members.forEach((x) => (x.ready = false));
+    d.last = null; return {};
+  }, linesMin);
+}
+async function releaseIfFree(env, table, linesMin) {
+  const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready','done')").bind(String(table)).first();
+  if (!left.n) await releaseTable(env, table, linesMin);
+}
 const publicBasket = (data, version) => ({ version, members: data.members, lines: data.lines, cleared: data.cleared || 0, last: data.last && { ...data.last, ids: undefined } });
 // Ce téléphone est-il un nouveau client ? (il n'était pas à la table lors du dernier envoi, et la règle de l'admin le dit)
 function isNewClient(d, viewer, cfg, cooking) {
@@ -209,11 +226,20 @@ async function handleBasket(request, env, table, action, { json, menuText, check
   if (!action) {
     if (request.method !== "GET") return json({ error: "introuvable" }, 404);
     const linesMin = orderCfg(menu).basketMin;
+    const viewer = cleanStr(new URL(request.url).searchParams.get("m"), 32);
     let b = await readBasket(env, table, linesMin), isNew = false;
     if (b.data.last && b.data.last.id) {
       const st = await tableCooking(env, table);
-      if (!st.open) { await resetBasket(env, table); b = await readBasket(env, table, linesMin); }   // tout annulé ou encaissé
-      else isNew = isNewClient(b.data, cleanStr(new URL(request.url).searchParams.get("m"), 32), orderCfg(menu), st.cooking);
+      if (!st.open) { await releaseTable(env, table, linesMin); b = await readBasket(env, table, linesMin); }   // tout annulé ou encaissé
+      else isNew = isNewClient(b.data, viewer, orderCfg(menu), st.cooking);
+    }
+    // Une personne qui a la page ouverte compte comme de l'activité à la table (même sans ajouter de plat) :
+    // les plats des amis qui ont fermé leur page restent dans le panier tant que quelqu'un choisit encore.
+    // On l'écrit au plus une fois par minute et par téléphone, sans changer la version du panier.
+    const me = b.exists && b.data.members.find((x) => x.id === viewer);
+    if (me && Date.now() - (me.t || 0) > 60e3) {
+      me.t = Date.now();
+      await env.DB.prepare("UPDATE table_baskets SET data=?, updated_at=? WHERE table_no=? AND version=?").bind(JSON.stringify(b.data), new Date().toISOString(), table, b.version).run();
     }
     return json(publicBasket(viewFor(b.data, isNew), b.version), 200, nocache);
   }
@@ -320,6 +346,8 @@ export function orderingOpen(menu, now = parisNow()) {
   return false;
 }
 
+const basketMinOf = async (request, env, menuText) => { try { return orderCfg(JSON.parse(await menuText(request, env))).basketMin; } catch { return 30; } };
+
 export async function handleOrders(request, env, path, { withAuth, json, menuText, staffAuth, checkTableKey }) {
   if (!env.DB) return json({ error: "Les commandes ne sont pas encore activées sur ce site." }, 503);
   await ensureSchema(env.DB);
@@ -425,10 +453,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       // commande annulée ou encaissée : s'il ne reste rien en cours sur la table, on vide le panier et la liste des convives
       if (status === "cancelled" || status === "paid") {
         const o = await env.DB.prepare("SELECT table_no FROM orders WHERE id=?").bind(+mSet[1]).first();
-        if (o && o.table_no && o.table_no !== "EMP") {
-          const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready','done')").bind(o.table_no).first();
-          if (!left.n) await resetBasket(env, o.table_no);
-        }
+        if (o && o.table_no && o.table_no !== "EMP") await releaseIfFree(env, o.table_no, await basketMinOf(request, env, menuText));
       }
       return json({ ok: true });
     });
@@ -442,7 +467,7 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
       await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE COALESCE(grp,id)=? AND status IN ('new','ready','done')").bind(new Date().toISOString(), +mGrp[1]).run();
       // plus rien en cours sur la table : le panier commun repart à zéro
       if (o) { const left = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE table_no=? AND status IN ('new','ready')").bind(o.table_no).first();
-        if (!left.n) await resetBasket(env, o.table_no); }
+        if (!left.n) await releaseTable(env, o.table_no, await basketMinOf(request, env, menuText)); }
       return json({ ok: true });
     });
   }
@@ -466,8 +491,8 @@ export async function handleOrders(request, env, path, { withAuth, json, menuTex
   if (mTable && m === "POST") {
     return withAuth(request, env, async () => {
       await env.DB.prepare("UPDATE orders SET status='paid', updated_at=? WHERE table_no=? AND status IN ('new','ready','done')").bind(new Date().toISOString(), mTable[1]).run();
-      // table libérée : le panier commun repart à zéro pour les clients suivants
-      await resetBasket(env, mTable[1]);
+      // table libérée : le groupe d'avant quitte le panier commun (ceux qui viennent d'arriver gardent leurs plats)
+      await releaseTable(env, mTable[1], await basketMinOf(request, env, menuText));
       return json({ ok: true });
     });
   }
